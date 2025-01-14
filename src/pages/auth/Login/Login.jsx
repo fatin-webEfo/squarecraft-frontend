@@ -75,7 +75,7 @@ const Login = () => {
                   <input
                     type="checkbox"
                     id="customCheckbox"
-                    className="w-4 h-4 appearance-none bg-gray-200 rounded cursor-pointer checked:bg-jaffa-400 transition-colors duration-300"
+                    className="w-4 h-4  appearance-none bg-gray-200 rounded cursor-pointer checked:bg-jaffa-400 transition-colors duration-300"
                     onChange={(e) => setIsChecked(e.target.checked)}
                   />
                   {isChecked && (

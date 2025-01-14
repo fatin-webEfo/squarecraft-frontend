@@ -6,10 +6,12 @@ import google from "../../../../public/images/auth/login/google.svg"
 import squuarespace from "../../../../public/images/auth/login/squarespace.svg"
 import user from "../../../../public/images/auth/login/user.svg"
 import eye from "../../../../public/images/auth/login/eye.svg"
+import {useNavigate} from "react-router-dom"
 
 
 const Register = () => {
-    useTitle("Sign Up | SquareCraft")
+    useTitle("Sign Up | SquareCraft");
+    const navigate = useNavigate();
     return (
         <div className="w-full flex items-center justify-center mt-[10rem] " >
             <div className="max-w-[480px] w-full mx-auto bg-white border-[#EDEDED] shadow-gray-100 shadow-md rounded-[10px] p-12">
@@ -50,7 +52,7 @@ const Register = () => {
                             </div>
                         </div>
 
-                        <button className="w-full mt-7 bg-jaffa-400 py-3 rounded-[10px] font-semibold">Sign Up</button>
+                        <button onClick={() => navigate("/dashboard/pricing-plan")} className="w-full mt-7 bg-jaffa-400 py-3 rounded-[10px] font-semibold">Sign Up</button>
                         <div className="flex flex-nowrap  items-end mt-6 gap-2 w-full">
                             <p className="text-xs text-nowrap text-gray-400">Or Continue With</p>
                             <div className="w-full  border-gray-200 border-dotted border-b"></div>
