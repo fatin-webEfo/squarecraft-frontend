@@ -9,7 +9,7 @@ import eye from "../../../../public/images/auth/login/eye.svg"
 
 
 const Register = () => {
-    useTitle("SquareCraft | Login")
+    useTitle("Sign Up | SquareCraft")
     return (
         <div className="w-full flex items-center justify-center mt-[10rem] " >
             <div className="max-w-[480px] w-full mx-auto bg-white border-[#EDEDED] shadow-gray-100 shadow-md rounded-[10px] p-12">
