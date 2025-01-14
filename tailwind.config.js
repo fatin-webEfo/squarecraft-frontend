@@ -5,7 +5,15 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'jaffa-400': 'var(--Jaffa-400, #F08234)', // Use the CSS variable with a fallback
+      },
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'], // Add "Inter" font
+        roboto: ['Roboto', 'sans-serif'], // Add "Roboto" font
+      },
+    },
   },
   plugins: [],
 }
