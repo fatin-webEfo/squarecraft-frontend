@@ -85,7 +85,7 @@ const ForgotPassOtp = () => {
           </div>
           <div className="flex w-full text-sm justify-between items-center mt-4">
             <p className="">
-              Didn't receive the code? <span className="text-jaffa-400 cursor-pointer font-semibold">resend code</span>
+              Didn&apos;t receive the code? <span className="text-jaffa-400 cursor-pointer font-semibold">resend code</span>
             </p>
             <p className={timeLeft === 0 ? "text-red-600" : ""}>{formatTime(timeLeft)}</p>
           </div>

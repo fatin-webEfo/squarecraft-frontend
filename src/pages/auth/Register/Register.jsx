@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import useTitle from "../../../hooks/useTitle";
 import email from "../../../../public/images/auth/login/email.svg";
 import lock from "../../../../public/images/auth/login/lock.svg";
@@ -10,7 +10,6 @@ import eye from "../../../../public/images/auth/login/eye.svg";
 
 const Register = () => {
   useTitle("Sign Up | SquareCraft");
-  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
