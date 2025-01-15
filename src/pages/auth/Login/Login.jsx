@@ -11,8 +11,8 @@ import tik from "../../../../public/images/auth/login/tik.svg";
 const Login = () => {
   useTitle("Sign In | SquareCraft");
 
-  // State to track checkbox status
   const [isChecked, setIsChecked] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="w-full flex items-center justify-center mt-[10rem]">
@@ -47,7 +47,7 @@ const Login = () => {
                 </p>
                 <div className="relative w-full">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-none border-[#EDEDED] pr-10 pl-[38px] border py-3"
                     placeholder="Enter Your Password"
                   />
@@ -58,13 +58,15 @@ const Login = () => {
                     loading="lazy"
                     width={13}
                   />
-                  <img
-                    src={eye}
+                  <div
                     className="absolute top-[25px] right-3.5 cursor-pointer"
-                    alt=""
-                    loading="lazy"
-                    width={20}
-                  />
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <img src={eye} alt="Eye Icon" loading="lazy" width={20} />
+                    {!showPassword && (
+                      <div className="absolute top-[6px]  -left-[2px] w-6 h-[2px] bg-jaffa-400 rotate-45"></div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -75,7 +77,7 @@ const Login = () => {
                   <input
                     type="checkbox"
                     id="customCheckbox"
-                    className="w-4 h-4  appearance-none bg-gray-200 rounded cursor-pointer checked:bg-jaffa-400 transition-colors duration-300"
+                    className="w-4 h-4 appearance-none bg-gray-200 rounded cursor-pointer checked:bg-jaffa-400 transition-colors duration-300"
                     onChange={(e) => setIsChecked(e.target.checked)}
                   />
                   {isChecked && (

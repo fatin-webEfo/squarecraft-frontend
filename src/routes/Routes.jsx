@@ -5,6 +5,7 @@ import App from "../App"
 import Login from "../pages/auth/Login/Login"
 import Register from "../pages/auth/Register/Register"
 import Pricingplan from "../pages/dashboard/Pricingplan/Pricingplan"
+import RegisterOtp from "../pages/auth/Register/RegisterOtp/RegisterOtp"
 
 const routes = [
   {
@@ -19,6 +20,10 @@ const routes = [
      {
       path:"/auth/register",
       element:<Register/>
+     },
+     {
+      path:"/auth/register-otp",
+      element:<RegisterOtp/>
      },
 
      {
