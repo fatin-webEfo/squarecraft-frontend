@@ -3,7 +3,7 @@ import email from "../../../../public/images/auth/login/email.svg";
 import lock from "../../../../public/images/auth/login/lock.svg";
 import { Link } from "react-router-dom";
 import google from "../../../../public/images/auth/login/google.svg";
-import squuarespace from "../../../../public/images/auth/login/squarespace.svg";
+import squuarespace from "../../../../public/images/auth/login/squareSpace.svg";
 import eye from "../../../../public/images/auth/login/eye.svg";
 import tik from "../../../../public/images/auth/login/tik.svg";
 import useTitle from "../../../hooks/useTitle";
