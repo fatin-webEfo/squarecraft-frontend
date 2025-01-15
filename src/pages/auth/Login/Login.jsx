@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import useTitle from "../../../hooks/useTitle";
 import email from "../../../../public/images/auth/login/email.svg";
 import lock from "../../../../public/images/auth/login/lock.svg";
 import { Link } from "react-router-dom";
@@ -7,6 +6,7 @@ import google from "../../../../public/images/auth/login/google.svg";
 import squuarespace from "../../../../public/images/auth/login/squarespace.svg";
 import eye from "../../../../public/images/auth/login/eye.svg";
 import tik from "../../../../public/images/auth/login/tik.svg";
+import useTitle from "../../../hooks/useTitle";
 
 const Login = () => {
   useTitle("Sign In | SquareCraft");
@@ -29,7 +29,7 @@ const Login = () => {
                 <div className="relative w-full">
                   <input
                     type="email"
-                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-none border-[#EDEDED] pl-[38px] border py-3"
+                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-[#f7decd] border-[#EDEDED] pl-[38px] border py-3"
                     placeholder="Enter Your Email"
                   />
                   <img
@@ -48,7 +48,7 @@ const Login = () => {
                 <div className="relative w-full">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-none border-[#EDEDED] pr-10 pl-[38px] border py-3"
+                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-[#f7decd] border-[#EDEDED] pr-10 pl-[38px] border py-3"
                     placeholder="Enter Your Password"
                   />
                   <img
@@ -91,7 +91,7 @@ const Login = () => {
                 <p className="font-semibold text-sm">Remember Me</p>
               </div>
 
-              <Link to="/auth/forgotPass" className="text-jaffa-400 text-sm">
+              <Link to="/auth/Forgot-pass-email-verify" className="text-jaffa-400 text-sm">
                 Forgot Password?
               </Link>
             </div>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import arrow from "../../../../../public/images/auth/register/backArrow.png";
 import useTitle from "./../../../../hooks/useTitle";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
-const RegisterOtp = () => {
+const ForgotPassOtp = () => {
   useTitle("Verify OTP | SquareCraft");
   const [otp, setOtp] = useState(["", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(120); // Timer starts at 2:00 (120 seconds)
@@ -57,7 +57,7 @@ const RegisterOtp = () => {
       <div className="max-w-[480px] w-full mx-auto bg-white border-[#EDEDED] shadow-gray-100 shadow-md rounded-[10px] p-12">
         <div className="w-full flex items-center gap-2 xl:-ml-2">
           <img
-            onClick={() => navigate("/auth/register")}
+            onClick={() => navigate(-1)}
             src={arrow}
             alt=""
             className="rotate-180 cursor-pointer h-7"
@@ -90,16 +90,17 @@ const RegisterOtp = () => {
             <p className={timeLeft === 0 ? "text-red-600" : ""}>{formatTime(timeLeft)}</p>
           </div>
 
-          <button
+          <Link
+          to="/auth/forgot-pass-set-new-pass"
             type="submit"
-            className="w-full mt-7 bg-jaffa-400 py-3 rounded-[10px] font-semibold"
+            className="w-full mt-7 block text-center bg-jaffa-400 py-3 rounded-[10px] font-semibold"
           >
             Verify OTP
-          </button>
+          </Link>
         </form>
       </div>
     </div>
   );
 };
 
-export default RegisterOtp;
+export default ForgotPassOtp;

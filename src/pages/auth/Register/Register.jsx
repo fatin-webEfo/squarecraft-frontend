@@ -30,7 +30,7 @@ const Register = () => {
                 <div className="relative w-full">
                   <input
                     type="text"
-                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-none border-[#EDEDED] pl-[38px] border py-3"
+                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-[#f7decd] border-[#EDEDED] pl-[38px] border py-3"
                     placeholder="Enter Your Name"
                   />
                   <img
@@ -49,7 +49,7 @@ const Register = () => {
                 <div className="relative w-full">
                   <input
                     type="text"
-                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-none border-[#EDEDED] pl-[38px] border py-3"
+                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-[#f7decd] border-[#EDEDED] pl-[38px] border py-3"
                     placeholder="Enter Your Email"
                   />
                   <img
@@ -68,7 +68,7 @@ const Register = () => {
                 <div className="relative w-full">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-none border-[#EDEDED] pr-10 pl-[38px] border py-3"
+                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-[#f7decd] border-[#EDEDED] pr-10 pl-[38px] border py-3"
                     placeholder="Enter Your Password"
                   />
                   <img
@@ -96,7 +96,7 @@ const Register = () => {
                 <div className="relative w-full">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
-                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-none border-[#EDEDED] pr-10 pl-[38px] border py-3"
+                    className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-[#f7decd] border-[#EDEDED] pr-10 pl-[38px] border py-3"
                     placeholder="Confirm Your Password"
                   />
                   <img
