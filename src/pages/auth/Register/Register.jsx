@@ -4,7 +4,7 @@ import email from "../../../../public/images/auth/login/email.svg";
 import lock from "../../../../public/images/auth/login/lock.svg";
 import { Link } from "react-router-dom";
 import google from "../../../../public/images/auth/login/google.svg";
-import squuarespace from "../../../../public/images/auth/login/squarespace.svg";
+import squarespace from "../../../../public/images/auth/login/squareSpace.svg";
 import user from "../../../../public/images/auth/login/user.svg";
 import eye from "../../../../public/images/auth/login/eye.svg";
 
@@ -136,7 +136,7 @@ const Register = () => {
                 <p className="text-[16px] font-semibold">Google</p>
               </div>
               <div className="bg-[#FAFBFE] hover:bg-[#f3f4f8] transition-all duration-300 cursor-pointer border w-full rounded-md py-4 justify-center flex items-center gap-2 border-[#EDEDED]">
-                <img src={squuarespace} alt="" loading="lazy" width={25} />
+                <img src={squarespace} alt="" loading="lazy" width={25} />
                 <p className="text-[16px] font-semibold">Squarespace</p>
               </div>
             </div>
