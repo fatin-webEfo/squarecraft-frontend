@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import arrow from "../../../../../public/images/auth/register/backArrow.png";
 import useTitle from "./../../../../hooks/useTitle";
 import { useNavigate } from "react-router";

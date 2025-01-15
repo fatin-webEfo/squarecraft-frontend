@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import useTitle from "../../../../hooks/useTitle";
-import ReCAPTCHA from "react-google-recaptcha";
 import arrow from "../../../../../public/images/auth/register/backArrow.png";
 import { Link, useNavigate } from "react-router";
 
@@ -9,13 +8,6 @@ const ForgotPassEmailVerify = () => {
   const [recaptchaVerified, setRecaptchaVerified] = useState(false);
   const navigate = useNavigate();
 
-  const handleRecaptchaChange = (value) => {
-    if (value) {
-      setRecaptchaVerified(true);
-    } else {
-      setRecaptchaVerified(false);
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -46,13 +38,7 @@ const ForgotPassEmailVerify = () => {
             placeholder="Enter your email"
             className="w-full border border-[#EDEDED] rounded-lg bg-[#FAFBFE] py-3 px-4 mb-4 focus:outline-[#f7decd] "
           />
-          {/* <div className="mx-auto">
-            <ReCAPTCHA
-              sitekey="YOUR_RECAPTCHA_SITE_KEY"
-              className="mx-auto"
-              onChange={handleRecaptchaChange}
-            />
-          </div> */}
+
           <Link
           to="/auth/Forgot-pass-email-otp"
             type="submit"

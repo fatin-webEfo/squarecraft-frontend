@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import email from "../../../../public/images/auth/login/email.svg";
 import lock from "../../../../public/images/auth/login/lock.svg";
 import { Link } from "react-router-dom";

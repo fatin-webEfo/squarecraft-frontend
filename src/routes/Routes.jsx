@@ -4,7 +4,6 @@ import { createBrowserRouter } from 'react-router-dom';
 import App from "../App"
 import Login from "../pages/auth/Login/Login"
 import Register from "../pages/auth/Register/Register"
-import Pricingplan from "../pages/dashboard/Pricingplan/Pricingplan"
 import RegisterOtp from "../pages/auth/Register/RegisterOtp/RegisterOtp"
 import RegisterSuccess from "../pages/auth/Register/RegisterSuccess/RegisterSuccess"
 import ForgotPassEmailVerify from './../pages/auth/ForgotPassword/ForgotPassEmailVerify/ForgotPassEmailVerify';

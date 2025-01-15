@@ -2,7 +2,7 @@ import  { useState } from "react";
 import useTitle from "../../../hooks/useTitle";
 import email from "../../../../public/images/auth/login/email.svg";
 import lock from "../../../../public/images/auth/login/lock.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import google from "../../../../public/images/auth/login/google.svg";
 import squuarespace from "../../../../public/images/auth/login/squarespace.svg";
 import user from "../../../../public/images/auth/login/user.svg";

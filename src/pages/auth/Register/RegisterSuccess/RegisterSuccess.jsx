@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import useTitle from "./../../../../hooks/useTitle";
 import { useNavigate } from "react-router";
-import like from "../../../../../public/images/auth/register/like.gif"
 import checked from "../../../../../public/images/auth/register/checked.png"
 
 const RegisterSuccess = () => {

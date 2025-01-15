@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import useTitle from "../../../../hooks/useTitle";
 import arrow from "../../../../../public/images/auth/register/backArrow.png";
 import eye from "../../../../../public/images/auth/login/eye.svg";
