@@ -20,8 +20,8 @@ const ForgotPassEnterNewPass = () => {
   };
 
   return (
-    <div className="w-full flex items-center justify-center mt-[10rem]">
-      <div className="max-w-[480px] w-full mx-auto bg-white border-[#EDEDED] shadow-gray-100 shadow-md rounded-[10px] p-12">
+    <div className="w-full flex items-center justify-center mt-[6.5rem] xl:mt-[10rem]">
+      <div className="max-w-[480px] w-full bg-white border-[#EDEDED] shadow-gray-100 shadow-md rounded-[10px] p-6 xl:p-12">
         <div className="w-full flex items-center gap-2 xl:-ml-2">
           <img
             onClick={() => navigate(-1)}
@@ -29,7 +29,7 @@ const ForgotPassEnterNewPass = () => {
             alt=""
             className="rotate-180 cursor-pointer h-7"
           />
-          <h2 className="font-semibold text-[28px]">Set New Password</h2>
+          <h2 className="font-semibold text-[20px] xl:text-[28px]">Set New Password</h2>
         </div>
 
         <form className="mt-4">
