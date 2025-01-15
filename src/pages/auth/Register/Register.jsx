@@ -15,9 +15,9 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
-    <div className="w-full flex items-center justify-center mt-[10rem]">
-      <div className="max-w-[480px] w-full mx-auto bg-white border-[#EDEDED] shadow-gray-100 shadow-md rounded-[10px] p-12">
-        <p className="font-semibold text-[28px]">Sign Up Your Account</p>
+    <div className="w-full flex items-center justify-center mt-[6.5rem]  xl:mt-[10rem] xl:px-4 sm:px-8">
+      <div className="max-w-[480px] w-full bg-white border-[#EDEDED] shadow-gray-100 shadow-md rounded-[10px] p-6 xl:p-12">
+        <p className="font-semibold text-[20px] xl:text-[28px]">Sign Up Your Account</p>
 
         <div className="mt-6">
           <form>
@@ -130,7 +130,7 @@ const Register = () => {
               <div className="w-full border-gray-200 border-dotted border-b"></div>
             </div>
 
-            <div className="mt-6 flex items-center justify-between gap-3 w-full">
+            <div className="mt-6 flex flex-col xl:flex-row items-center justify-between gap-3 w-full">
               <div className="bg-[#FAFBFE] hover:bg-[#f3f4f8] transition-all duration-300 cursor-pointer border w-full rounded-md py-4 justify-center flex items-center gap-2 border-[#EDEDED]">
                 <img src={google} alt="" loading="lazy" width={25} />
                 <p className="text-[16px] font-semibold">Google</p>
