@@ -4,12 +4,18 @@ import Image from '../../hooks/Image/Image';
 import qs from "../../../public/images/navbar/question.svg"
 import notification from "../../../public/images/navbar/notification.svg"
 import downArrow from "../../../public/images/navbar/downArrow.svg"
+import { useState } from 'react';
+import ProfileDropDown from '../ProfileDropDown/ProfileDropDown';
 
 const Navbar = () => {
   const location = useLocation();
   const pathname = location.pathname;
+  const [profileDropdown, setProfileDropdown] = useState(false);
+  const toogleProfileDropdown = () => {
+    setProfileDropdown(!profileDropdown);
+  }
 
-  const isDashboardPricingPlan = ['/dashboard/pricingPlan', '/dashboard/myWebsites', '/dashboard/pluginLibraries'].includes(pathname);
+  const isDashboardPricingPlan = ['/dashboard/pricingPlan', '/dashboard/myWebsites', '/dashboard/pluginLibraries','/profile/editProfile'].includes(pathname);
   const isAuthRegister = ['/auth/register'].includes(pathname);
 
   return (
@@ -48,7 +54,12 @@ const Navbar = () => {
               <Image src={notification} className='bg-gray-100 px-3 py-2.5 w-full h-full flex items-center cursor-pointer justify-center rounded-full'></Image>
               <p className='absolute top-0 right-0 bg-jaffa-400 h-4 w-4 rounded-full flex items-center justify-center text-xs'>5</p>
             </div>
-            <div className='border cursor-pointer rounded-md px-2 py-1 flex items-center gap-2'>
+            <div className='border relative cursor-pointer rounded-md px-2 py-1 flex items-center gap-2' onClick={() => toogleProfileDropdown()}>
+              {
+                profileDropdown && (
+                  <ProfileDropDown/>
+                )
+              }
               <Image src="https://www.shutterstock.com/image-photo/head-shot-portrait-close-smiling-600nw-1714666150.jpg" className="rounded-full object-cover object-top h-9 w-9"></Image>
 
               <div className='flex flex-col items-start'>

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const PlusIcon = ({ className }) => {
+const PlusIcon = ({ className = '' }) => {
   return (
     <svg
       width="14"
@@ -17,10 +17,6 @@ const PlusIcon = ({ className }) => {
 
 PlusIcon.propTypes = {
   className: PropTypes.string,
-};
-
-PlusIcon.defaultProps = {
-  className: '',
 };
 
 export default PlusIcon;

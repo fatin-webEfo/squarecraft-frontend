@@ -4,6 +4,7 @@ import App from '../App';
 import MyWebsite from '../pages/dashboard/MyWebsite/MyWebsite';
 import LazyWrapper from '../hooks/PageWrapper/LazyWrapper';
 import PreloadCriticalRoutes from '../hooks/PreloadRoutes/PreloadCriticalRoutes';
+import UpdateProfile from '../pages/dashboard/Profile/UpdateProfile/UpdateProfile';
 
 const Login = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/Login/Login'));
 const Register = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/Register/Register'));
@@ -77,9 +78,18 @@ const routes = [
       {
         path:"/dashboard/pricingPlan",
 
-      }
+      },
 
       // dashboard routes ends
+
+
+      // Profile routes starts
+      {
+path:"/profile/editProfile",
+element: <LazyWrapper> <UpdateProfile/> </LazyWrapper>,
+      },
+
+      
     ],
   },
 ];

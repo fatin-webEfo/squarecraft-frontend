@@ -1,12 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-const Image = ({ src, alt = '', className = '', ...props }) => {
-  const [loading, setLoading] = useState(true);
+const imageCache = new Set(); 
 
-  const handleLoad = () => {
+const Image = ({ src, alt = '', className = '', ...props }) => {
+  const isCached = useMemo(() => imageCache.has(src), [src]);
+  const [loading, setLoading] = useState(!isCached);
+
+  useEffect(() => {
+    if (isCached) {
+      setLoading(false); 
+    }
+  }, [isCached]);
+
+  const handleLoad = useCallback(() => {
     setLoading(false);
-  };
+    imageCache.add(src); 
+  }, [src]);
 
   return (
     <div className={`relative ${loading ? 'flex items-center justify-center bg-gray-200 animate-pulse' : ''}`}>
@@ -17,7 +27,7 @@ const Image = ({ src, alt = '', className = '', ...props }) => {
         onLoad={handleLoad}
         className={`transition-opacity duration-500 ease-in-out ${
           loading ? 'opacity-0' : 'opacity-100'
-        } ${className}`} // Apply custom className here
+        } ${className}`}
         {...props}
       />
     </div>

@@ -9,7 +9,9 @@ function App() {
   return (
     <>
       <Navbar/>
+      <div className='mt-28'>
       <Outlet/>
+      </div>
       <Footer/>
     </>
   )
