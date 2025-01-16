@@ -96,9 +96,9 @@ const Login = () => {
               </Link>
             </div>
 
-            <button className="w-full mt-7 bg-jaffa-400 py-3 rounded-[10px] font-semibold">
+            <Link to="/dashboard/myWebsites" className="w-full block text-center mt-7 bg-jaffa-400 py-3 rounded-[10px] font-semibold">
               Sign In
-            </button>
+            </Link>
             <div className="flex flex-nowrap items-end mt-6 gap-2 w-full">
               <p className="text-xs text-nowrap text-gray-400">
                 Or Continue With

@@ -29,7 +29,7 @@ const ForgotPassEnterNewPass = () => {
             alt=""
             className="rotate-180 cursor-pointer h-7"
           />
-          <h2 className="font-semibold text-[20px] xl:text-[28px]">Set New Password</h2>
+          <p className="font-semibold text-[20px] xl:text-[28px]">Set New Password</p>
         </div>
 
         <form className="mt-4">

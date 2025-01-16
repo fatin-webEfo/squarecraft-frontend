@@ -62,7 +62,7 @@ const RegisterOtp = () => {
             alt=""
             className="rotate-180 cursor-pointer h-7"
           />
-          <p className="font-semibold text-[20px] xl:text-[28px]">Verify Your Account</p>
+          <p className="font-semibold text-[20px] xl:text-[28px]">Enter OTP</p>
         </div>
         <p className="mt-2 text-gray-500 text-sm">
           Enter the code sent to abc***mail.com.
