@@ -7,9 +7,9 @@ const MyWwebsiteFetch = () => {
     return (
         <>
         <div className="w-full border rounded-md xl:gap-5 grid grid-cols-12 border-gray-200 p-3">
-            <Image src={image1} className="col-span-2 w-full object-contain border rounded-md"></Image>
+            <div className="col-span-2 w-full"><Image src={image1} className=" w-full object-cover border rounded-md h-full"></Image></div>
 
-            <div className="col-span-10 w-full">
+            <div className="col-span-9 w-full">
                 <div className="flex flex-col items-start w-full h-full justify-between">
                     <div className="w-full"><div className="flex items-center gap-5 mt-2">
                         <p className="text-jaffa-400 font-semibold">Pro Plan</p>
@@ -43,9 +43,9 @@ const MyWwebsiteFetch = () => {
         </div>
         
         <div className="w-full border rounded-md xl:gap-5 grid grid-cols-12 border-gray-200 p-3">
-            <Image src={image2} className="col-span-2 w-full object-contain border rounded-md"></Image>
+            <div className="col-span-2 w-full"><Image src={image2} className=" w-full object-cover border rounded-md h-full"></Image></div>
 
-            <div className="col-span-10 w-full">
+            <div className="col-span-9 w-full">
                 <div className="flex flex-col items-start w-full h-full justify-between">
                     <div className="w-full"><div className="flex items-center gap-5 mt-2">
                         <p className="text-jaffa-400 font-semibold">Pro Plan</p>
@@ -78,9 +78,9 @@ const MyWwebsiteFetch = () => {
             </div>
         </div>
         <div className="w-full border rounded-md xl:gap-5 grid grid-cols-12 border-gray-200 p-3">
-            <Image src={image3} className="col-span-2 w-full object-contain border rounded-md"></Image>
+            <div className="col-span-2 w-full"><Image src={image3} className=" w-full object-cover border rounded-md h-full"></Image></div>
 
-            <div className="col-span-10 w-full">
+            <div className="col-span-9 w-full">
                 <div className="flex flex-col items-start w-full h-full justify-between">
                     <div className="w-full"><div className="flex items-center gap-5 mt-2">
                         <p className="text-jaffa-400 font-semibold">Pro Plan</p>
@@ -113,9 +113,9 @@ const MyWwebsiteFetch = () => {
             </div>
         </div>
         <div className="w-full border rounded-md xl:gap-5 grid grid-cols-12 border-gray-200 p-3">
-            <Image src={image1} className="col-span-2 w-full object-contain border rounded-md"></Image>
+            <div className="col-span-2 w-full"><Image src={image1} className=" w-full object-cover border rounded-md h-full"></Image></div>
 
-            <div className="col-span-10 w-full">
+            <div className="col-span-9 w-full">
                 <div className="flex flex-col items-start w-full h-full justify-between">
                     <div className="w-full"><div className="flex items-center gap-5 mt-2">
                         <p className="text-jaffa-400 font-semibold">Pro Plan</p>
