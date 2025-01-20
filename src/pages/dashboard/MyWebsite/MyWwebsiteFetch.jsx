@@ -44,7 +44,6 @@ const MyWebsiteFetch = () => {
   const renderPagination = useCallback(() => {
     const buttons = [];
 
-    // "Previous" button
     buttons.push(
       <button
         key="prev"
@@ -59,7 +58,6 @@ const MyWebsiteFetch = () => {
     );
 
     if (totalPages <= 5) {
-      // Show all pages if total pages are <= 5
       for (let i = 1; i <= totalPages; i++) {
         buttons.push(
           <button
@@ -74,7 +72,6 @@ const MyWebsiteFetch = () => {
         );
       }
     } else {
-      // Show first page
       buttons.push(
         <button
           key={1}
@@ -87,7 +84,6 @@ const MyWebsiteFetch = () => {
         </button>
       );
 
-      // Show ellipsis if needed
       if (currentPage > 3) {
         buttons.push(
           <span key="dots-left" className="px-2 py-1 text-gray-500">
@@ -96,7 +92,6 @@ const MyWebsiteFetch = () => {
         );
       }
 
-      // Show current page and its neighbors
       for (
         let i = Math.max(2, currentPage - 1);
         i <= Math.min(totalPages - 1, currentPage + 1);
@@ -115,7 +110,6 @@ const MyWebsiteFetch = () => {
         );
       }
 
-      // Show ellipsis before last page if needed
       if (currentPage < totalPages - 2) {
         buttons.push(
           <span key="dots-right" className="px-2 py-1 text-gray-500">
@@ -158,11 +152,11 @@ const MyWebsiteFetch = () => {
   return (
     <>
       {currentItems.map((item) => (
-        <div key={item.id} className="w-full border rounded-md xl:gap-5 grid grid-cols-12 border-gray-200 p-3">
+        <div key={item.id} className="w-full border rounded-md gap-2 grid grid-cols-12 border-gray-200 p-3">
           <div className="col-span-2 w-full">
             <Image src={item.image} className="w-full object-cover border rounded-md h-full" />
           </div>
-          <div className="col-span-9 w-full">
+          <div className="col-span-10 px-4 w-full">
             <div className="flex flex-col items-start w-full h-full justify-between">
               <div className="w-full">
                 <div className="flex items-center gap-5 mt-2">
