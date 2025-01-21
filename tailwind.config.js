@@ -12,6 +12,8 @@ export default {
       fontFamily: {
         inter: ['Inter', 'sans-serif'], // Add "Inter" font
         roboto: ['Roboto', 'sans-serif'], // Add "Roboto" font
+      }, animation: {
+        "spin-fast": "spin 0.5s linear infinite",
       },
     },
   },

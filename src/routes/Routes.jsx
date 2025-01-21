@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import  { lazy } from 'react';
+import { lazy } from 'react';
 import App from '../App';
 import MyWebsite from '../pages/dashboard/MyWebsite/MyWebsite';
 import LazyWrapper from '../hooks/PageWrapper/LazyWrapper';
@@ -18,6 +18,7 @@ const ForgotPassSuccess = lazy(() => import(/* webpackPrefetch: true */ '../page
 
 
 
+
 const routes = [
   {
     path: '/',
@@ -28,6 +29,9 @@ const routes = [
       </>
     ),
     children: [
+      {
+        path:"/loadTest" , element:<LoadTest/>
+      },
       // auth routes starts
       {
         path: '/auth/login',
@@ -68,15 +72,15 @@ const routes = [
 
       // dashboard routes starts
       {
-        path:"/dashboard/myWebsites",
+        path: "/dashboard/myWebsites",
         element: <LazyWrapper><MyWebsite /></LazyWrapper>,
       },
       {
-        path:"/dashboard/pluginLibraries",
+        path: "/dashboard/pluginLibraries",
 
       },
       {
-        path:"/dashboard/pricingPlan",
+        path: "/dashboard/pricingPlan",
 
       },
 
@@ -85,11 +89,11 @@ const routes = [
 
       // Profile routes starts
       {
-path:"/profile/editProfile",
-element: <LazyWrapper> <UpdateProfile/> </LazyWrapper>,
+        path: "/profile/editProfile",
+        element: <LazyWrapper> <UpdateProfile /> </LazyWrapper>,
       },
 
-      
+
     ],
   },
 ];
