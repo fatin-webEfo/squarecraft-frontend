@@ -14,8 +14,7 @@ const ForgotPassEmailVerify = lazy(() => import(/* webpackPrefetch: true */ '../
 const ForgotPassOtp = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/ForgotPassword/ForgotPassOtp/ForgotPassOtp'));
 const ForgotPassEnterNewPass = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/ForgotPassword/ForgotPassEnterNewPass/ForgotPassEnterNewPass'));
 const ForgotPassSuccess = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/ForgotPassword/ForgotPassSuccess/ForgotPassSuccess'));
-
-
+import LoadTest from '../components/LoadTest/LoadTest';
 
 
 
@@ -31,6 +30,7 @@ const routes = [
     children: [
       {
         path:"/loadTest" , element:<LoadTest/>
+   
       },
       // auth routes starts
       {

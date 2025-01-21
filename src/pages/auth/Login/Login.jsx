@@ -136,7 +136,7 @@ const Login = () => {
           </button>
 
           <div className="flex items-end mt-6 gap-2 w-full">
-            <p className="text-xs text-gray-400">Or Continue With</p>
+            <p className="text-xs text-gray-400 text-nowrap">Or Continue With</p>
             <div className="w-full border-gray-200 border-dotted border-b"></div>
           </div>
 

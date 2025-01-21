@@ -8,9 +8,11 @@ import google from "../../../../public/images/auth/login/google.svg";
 import squarespace from "../../../../public/images/auth/login/squarespace.svg";
 import eyeIcon from "../../../../public/images/auth/login/eye.svg";
 import Notification from "../../../hooks/Notification/Notification";
+import { useNavigate } from "react-router";
 
 const RegisterSchema = () => {
   useTitle("Sign Up | SquareCraft");
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +20,6 @@ const RegisterSchema = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [errors, setErrors] = useState({});
 
   const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
@@ -76,7 +77,7 @@ const RegisterSchema = () => {
 
       if (response.status === 201) {
         console.log("Registration successful!");
-        
+        navigate("/dashboard/myWebsites")
       console.log("Token", token)
       localStorage.setItem("token", token);
       sessionStorage.setItem("token", token);
