@@ -4,7 +4,7 @@ Copy and paste the following script into your Squarespace Code Injection section
 
 ```html
 <script id="squarecraft-script"
-        src="https://fatin-webefo.github.io/squarespace-block/scripts/test.js" async>
+        src="https://fatin-webefo.github.io/squarecraft-frontend/src/plugins/test.js" async>
 </script>
 ```
 

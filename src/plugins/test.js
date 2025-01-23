@@ -1,4 +1,4 @@
-// Example Frontend Code (In the Code Injection Page on Squarespace)
+
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ SquareCraft Plugin Loaded");
 
