@@ -1,4 +1,5 @@
 // Create a basic widget template
+console.log('Creating widget...');
 const widget = document.createElement('div');
 widget.style.position = 'fixed';
 widget.style.top = '10px';
