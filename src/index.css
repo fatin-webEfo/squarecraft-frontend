@@ -8,3 +8,56 @@
 p {
     font-family: 'Roboto', sans-serif !important;
 }
+
+
+/* index.css or a separate CSS file */
+@keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .gradient-text {
+    background: linear-gradient(to right, #9b5f4d, #f472b6, #f87171);
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient 3s ease infinite;
+  }
+
+  .gradient-text {
+    font-weight: normal;
+    font-family: 'Roboto', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    
+    /* Orange gradient effect */
+    background: linear-gradient(to right, rgba(255, 165, 0, 1) 0%, rgba(255, 99, 71, 1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* Shine effect animation */
+    animation: shine 3s infinite linear;
+  }
+  
+  @keyframes shine {
+    0% {
+      background-position: 0;
+    }
+    60% {
+      background-position: 800px;
+    }
+    100% {
+      background-position: 600px;
+    }
+  }
+  

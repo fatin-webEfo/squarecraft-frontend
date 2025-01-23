@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import emailIcon from "../../../../public/images/auth/login/email.svg";
 import lockIcon from "../../../../public/images/auth/login/lock.svg";
@@ -13,7 +14,7 @@ import ButtonLoader from "../../../hooks/ButtonLoader/ButtonLoader";
 
 const Login = () => {
   useTitle("Sign In | SquareCraft");
-
+const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
@@ -48,6 +49,10 @@ const Login = () => {
         password,
         rememberMe: isChecked,
       });
+      if(response.status===200){
+        navigate("/dashboard/myWebsites");
+      }
+    
       console.log("Login successful:", response.data);
     } catch (error) {
       setErrors({ api: error.response?.data?.message || "An error occurred." });

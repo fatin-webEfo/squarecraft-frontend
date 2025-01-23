@@ -29,7 +29,7 @@ const Footer = () => {
 
   return (
     <>
-      <div className="bg-[#FEF6EE] mt-20 py-12">
+      <div className="bg-[#FEF6EE]  py-12">
         <div className="px-6 md:px-10">
           <div className="max-w-[95%] mx-auto">
             <div className="flex flex-col items-center md:flex-row md:items-start md:justify-between">

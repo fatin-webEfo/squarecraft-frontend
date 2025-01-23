@@ -15,6 +15,7 @@ const ForgotPassOtp = lazy(() => import(/* webpackPrefetch: true */ '../pages/au
 const ForgotPassEnterNewPass = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/ForgotPassword/ForgotPassEnterNewPass/ForgotPassEnterNewPass'));
 const ForgotPassSuccess = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/ForgotPassword/ForgotPassSuccess/ForgotPassSuccess'));
 import LoadTest from '../components/LoadTest/LoadTest';
+import Home from '../pages/Home/Home/Home';
 
 
 
@@ -28,6 +29,10 @@ const routes = [
       </>
     ),
     children: [
+      {
+        path: '/',
+        element: <LazyWrapper><Home /></LazyWrapper>,
+      },
       {
         path:"/loadTest" , element:<LoadTest/>
    

@@ -15,13 +15,13 @@ const Navbar = () => {
     setProfileDropdown(!profileDropdown);
   }
 
-  const isDashboardPricingPlan = ['/dashboard/pricingPlan', '/dashboard/myWebsites', '/dashboard/pluginLibraries','/profile/editProfile'].includes(pathname);
+  const isDashboardPricingPlan = ['/dashboard/pricingPlan', '/dashboard/myWebsites', '/dashboard/pluginLibraries','/profile/editProfile', "/"].includes(pathname);
   const isAuthRegister = ['/auth/register'].includes(pathname);
 
   return (
     <div className="w-full bg-[#F7F5F7] flex items-center justify-center fixed p-6 z-[9999] top-0">
       <div className="xl:max-w-[95%] w-full mx-auto flex items-center justify-between border-[#EDEDED] bg-white shadow-gray-100 shadow-sm px-4 py-[18px] rounded-[10px]">
-        <Image src={logo}></Image>
+        <Link to="/"><Image src={logo}></Image></Link>
         {isDashboardPricingPlan && (
           <div className="flex items-center gap-4">
             <Link
