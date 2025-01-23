@@ -54,7 +54,7 @@ const navigate = useNavigate();
       localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
-      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; domain=.squarespace.com; secure; samesite=strict;`;
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; domain=.squarespace.com; secure; samesite=none;`;
       // Send the squarCraft_auth_token to the Squarespace page
       window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token: squarCraft_auth_token }, "*");
 
