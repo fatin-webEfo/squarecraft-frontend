@@ -1,2 +1,2 @@
-<b> <h2>Plugin cdn</h2> </b>  (https://fatin-webefo.github.io/squarecraft-frontend/src/plugins/plugin.js)
+<b> <h2>Plugin cdn</h2> </b>  (<script  id="squarecraft-script" src="https://fatin-webefo.github.io/squarespace-block/scripts/plugin.js" async></script>)
 <b><h2>Pugin website</h2></b>   (https://charming-dragon-fe5e7c.netlify.app)
