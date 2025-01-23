@@ -4,6 +4,7 @@ Copy and paste the following script into your Squarespace Code Injection section
 
 ```html
 <script id="squarecraft-script"
+        type="module"
         src="https://fatin-webefo.github.io/squarespace-block/scripts/test.js" defer>
 </script>
 

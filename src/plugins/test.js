@@ -2,7 +2,8 @@ import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ SquareCraft Plugin Loaded");
-
+    const token = localStorage.getItem('token') || document.cookie.match(/(?:^|;\s*)token=([^;]*)/)[1];
+ console.log(token);
     let selectedElement = null;
 
     // Create & Inject Widget Button
@@ -85,7 +86,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     fontSize: fontSize,
                 },
             }, {
-                withCredentials: true, // Ensures cookies and credentials are included
+                  headers: {
+        Authorization: `Bearer ${token}`,
+    } // Ensures cookies and credentials are included
             })
             .then(response => console.log("Styles saved to backend:", response.data))
             .catch(error => console.error("Error saving styles:", error));
@@ -94,7 +97,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Load saved styles from backend API using Axios
     axios.get("http://localhost:8000/api/v1/modifications", {
-        withCredentials: true, // Ensures cookies and credentials are included
+          headers: {
+        Authorization: `Bearer ${token}`,
+    } // Ensures cookies and credentials are included
     })
     .then(response => {
         const styles = response.data;
