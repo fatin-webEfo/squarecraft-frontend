@@ -4,10 +4,16 @@ import Image from '../../hooks/Image/Image';
 import qs from "../../../public/images/navbar/question.svg"
 import notification from "../../../public/images/navbar/notification.svg"
 import downArrow from "../../../public/images/navbar/downArrow.svg"
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import ProfileDropDown from '../ProfileDropDown/ProfileDropDown';
+import blankuser from "../../../public/images/navbar/blankuser.png";
+
+import { AuthContext } from '../../context/AuthContext';
 
 const Navbar = () => {
+    const { user, loading, error } = useContext(AuthContext);
+   
+    console.log("User", user)
   const location = useLocation();
   const pathname = location.pathname;
   const [profileDropdown, setProfileDropdown] = useState(false);
@@ -17,7 +23,12 @@ const Navbar = () => {
 
   const isDashboardPricingPlan = ['/dashboard/pricingPlan', '/dashboard/myWebsites', '/dashboard/pluginLibraries','/profile/editProfile', "/"].includes(pathname);
   const isAuthRegister = ['/auth/register'].includes(pathname);
-
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
   return (
     <div className="w-full bg-[#F7F5F7] flex items-center justify-center fixed p-6 z-[9999] top-0">
       <div className="xl:max-w-[95%] w-full mx-auto flex items-center justify-between border-[#EDEDED] bg-white shadow-gray-100 shadow-sm px-4 py-[18px] rounded-[10px]">
@@ -50,24 +61,37 @@ const Navbar = () => {
               <Image src={qs}></Image>
               <p className="transition-all duration-300 group-hover:text-jaffa-400">Need Help?</p>
             </div>
-            <div className='relative w-10 h-10 '>
-              <Image src={notification} className='bg-gray-100 px-3 py-2.5 w-full h-full flex items-center cursor-pointer justify-center rounded-full'></Image>
-              <p className='absolute top-0 right-0 bg-jaffa-400 h-4 w-4 rounded-full flex items-center justify-center text-xs'>5</p>
-            </div>
+            {
+              user ? (<><div className='relative w-10 h-10 '>
+                <Image src={notification} className='bg-gray-100 px-3 py-2.5 w-full h-full flex items-center cursor-pointer justify-center rounded-full'></Image>
+                <p className='absolute top-0 right-0 bg-jaffa-400 h-4 w-4 rounded-full flex items-center justify-center text-xs'>5</p>
+              </div></>):(<></>)
+            }
+           {
+            user ? (<> 
             <div className='border relative cursor-pointer rounded-md px-2 py-1 flex items-center gap-2' onClick={() => toogleProfileDropdown()}>
-              {
-                profileDropdown && (
-                  <ProfileDropDown/>
-                )
-              }
-              <Image src="https://www.shutterstock.com/image-photo/head-shot-portrait-close-smiling-600nw-1714666150.jpg" className="rounded-full object-cover object-top h-9 w-9"></Image>
+            {
+              profileDropdown && (
+                <ProfileDropDown/>
+              )
+            }
+            <Image src={user?.userImage || blankuser} className="object-top object-cover  h-9 w-9"></Image>
 
-              <div className='flex flex-col items-start'>
-                <p className='font-semibold'>Sakibul Alam</p>
-                <p className='text-gray-400 text-xs -mt-1'>sakib@gmail.com</p>
-              </div>
-              <Image src={downArrow} className='w-3 opacity-60'></Image>
+            <div className='flex flex-col items-start'>
+              <p className='font-semibold'>{user?.name}</p>
+              <p className='text-gray-400 text-xs -mt-1'>{user?.email}</p>
             </div>
+            <Image src={downArrow} className='w-3 opacity-60'></Image>
+          </div>
+          </>)
+            :
+            (<> <Link
+              to="/auth/login"
+              className="bg-jaffa-400 px-6 py-[10px] rounded-md font-semibold"
+            >
+              Sign In
+            </Link></>)
+           }
           </div>
         ) : isAuthRegister ? (
           <Link

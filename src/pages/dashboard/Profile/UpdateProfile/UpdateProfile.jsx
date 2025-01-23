@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import eye from "../../../../../public/images/auth/login/eye.svg";
 import blankuser from "../../../../../public/images/navbar/blankuser.png";
 import edit from "../../../../../public/images/navbar/edit.png";
+import { AuthContext } from "../../../../context/AuthContext";
 
 const UpdateProfile = () => {
+    const { user, loading, error } = useContext(AuthContext);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState(blankuser);
@@ -26,7 +28,12 @@ const UpdateProfile = () => {
       reader.readAsDataURL(file);
     }
   };
-
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
   return (
     <div className="bg-white py-10">
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
@@ -65,7 +72,7 @@ const UpdateProfile = () => {
               </label>
               <input
                 type="text"
-                placeholder="Sakibul Islam"
+                placeholder={user?.name}
                 className="mt-2 block w-full rounded-md border-[#E7E7E7] border bg-white px-4 py-2.5 text-sm focus:outline-[#f7decd]"
               />
             </div>
@@ -97,7 +104,8 @@ const UpdateProfile = () => {
               </label>
               <input
                 type="email"
-                placeholder="info@gmail.com"
+                autoComplete="off"
+                placeholder={user?.email}
                 className="mt-2 block w-full rounded-md border-[#E7E7E7] border bg-white px-4 py-2.5 text-sm focus:outline-[#f7decd]"
               />
             </div>

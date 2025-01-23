@@ -1,26 +1,29 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import useTitle from "../../../hooks/useTitle";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaPlugCirclePlus } from "react-icons/fa6";
+import { AuthContext } from "../../../context/AuthContext";
 
 const MyWebsite = () => {
     useTitle("My Website | SquareCraft");
-console.log("token - " , localStorage.getItem("token"))
-    const installationCode = `<script  id="squarecraft-script" src="https://fatin-webefo.github.io/squarespace-block/scripts/plugin.js" async></script>`;
+    const { user, loading, error } = useContext(AuthContext);
+
+    console.log("squarCraft_auth_token - ", localStorage.getItem("squarCraft_auth_token"))
+    const installationCode = `<script  id="squarecraft-script" src="https://fatin-webefo.github.io/squarespace-block/scripts/plugin.js" token=${user?.user_id} defer></script>`;
 
     const [plugins, setPlugins] = useState([{ id: 1, name: "", copied: false }]);
 
     const copyToClipboard = (pluginId) => {
         navigator.clipboard.writeText(installationCode);
-        setPlugins(prevPlugins => 
-            prevPlugins.map(plugin => 
+        setPlugins(prevPlugins =>
+            prevPlugins.map(plugin =>
                 plugin.id === pluginId ? { ...plugin, copied: true } : plugin
             )
         );
         setTimeout(() => {
-            setPlugins(prevPlugins => 
-                prevPlugins.map(plugin => 
+            setPlugins(prevPlugins =>
+                prevPlugins.map(plugin =>
                     plugin.id === pluginId ? { ...plugin, copied: false } : plugin
                 )
             );
@@ -31,14 +34,21 @@ console.log("token - " , localStorage.getItem("token"))
         setPlugins([...plugins, { id: plugins.length + 1, name: "", copied: false }]);
     };
 
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+
     return (
         <div className="bg-white pt-10 pb-20 px-6 md:px-12">
             {/* Header Section */}
-            <motion.div 
-                initial={{ opacity: 0, y: -20 }} 
-                animate={{ opacity: 1, y: 0 }} 
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="text-center"
+                className="text-center pb-8"
             >
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
                     Install SquareCraft on Your Website
@@ -49,20 +59,20 @@ console.log("token - " , localStorage.getItem("token"))
             </motion.div>
 
             {/* Plugins List */}
-            {plugins.map((plugin) => (
-                <motion.div 
+            {plugins?.map((plugin) => (
+                <motion.div
                     key={plugin.id}
-                    initial={{ opacity: 0, scale: 0.9 }} 
-                    animate={{ opacity: 1, scale: 1 }} 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
-                    className="mt-8 flex justify-center"
+                    className="mt-3.5 flex justify-center"
                 >
                     <div className="flex items-center justify-between gap-5 border shadow-sm shadow-gray-300 py-2 pl-5 pr-2.5 rounded-2xl">
                         <div>
-                            <input 
-                                type="text" 
-                                placeholder="Your plugin name" 
-                                className="w-full py-1 focus:outline-none" 
+                            <input
+                                type="text"
+                                placeholder="Your plugin name"
+                                className="w-full py-1 focus:outline-none"
                                 value={plugin.name}
                                 onChange={(e) => {
                                     const newPlugins = plugins.map((p) => p.id === plugin.id ? { ...p, name: e.target.value } : p);
@@ -72,11 +82,10 @@ console.log("token - " , localStorage.getItem("token"))
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <button 
-                                    onClick={() => copyToClipboard(plugin.id)} 
-                                    className={`px-6 py-3 rounded-2xl text-white shadow-md text-sm transition duration-300 ease-in-out transform hover:scale-105 ${
-                                        plugin.copied ? "bg-green-600" : "bg-jaffa-400 hover:bg-orange-700"
-                                    }`}
+                                <button
+                                    onClick={() => copyToClipboard(plugin.id)}
+                                    className={`px-6 py-3 rounded-2xl text-white shadow-md text-sm transition duration-300 ease-in-out transform hover:scale-105 ${plugin.copied ? "bg-green-600" : "bg-jaffa-400 hover:bg-orange-700"
+                                        }`}
                                 >
                                     {plugin.copied ? "Copied!" : "Copy Installation Code"}
                                 </button>
@@ -88,8 +97,8 @@ console.log("token - " , localStorage.getItem("token"))
             ))}
 
             {/* Add More Plugin Button */}
-            <button 
-                onClick={addPlugin} 
+            <button
+                onClick={addPlugin}
                 className="flex cursor-pointer mx-auto rounded-xl px-4 py-1.5 hover:border-b hover:border-gray-300 transition-all duration-300 items-center justify-center mt-4 text-sm text-gray-500 gap-1.5"
             >
                 <FaPlugCirclePlus />
@@ -97,9 +106,9 @@ console.log("token - " , localStorage.getItem("token"))
             </button>
 
             {/* Video Guide Section */}
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }} 
-                animate={{ opacity: 1, y: 0 }} 
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.6 }}
                 className="mt-12 text-center"
             >
@@ -107,13 +116,13 @@ console.log("token - " , localStorage.getItem("token"))
                 <p className="text-gray-500 mt-2">Watch this quick guide to set up SquareCraft on your website.</p>
 
                 <div className="mt-6 flex justify-center">
-                    <iframe 
+                    <iframe
                         className="w-full max-w-3xl aspect-video rounded-lg shadow-lg"
-                        src="https://www.youtube.com/embed/5cgpFGVy12Q?si=FLYwRSZpy25HZU-u" 
-                        title="Installation Guide" 
-                        frameBorder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        referrerPolicy="strict-origin-when-cross-origin" 
+                        src="https://www.youtube.com/embed/5cgpFGVy12Q?si=FLYwRSZpy25HZU-u"
+                        title="Installation Guide"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
                         allowFullScreen
                     ></iframe>
                 </div>

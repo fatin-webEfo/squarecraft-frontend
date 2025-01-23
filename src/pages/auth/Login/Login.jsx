@@ -49,14 +49,14 @@ const navigate = useNavigate();
         password,
         rememberMe: isChecked,
       });
-      const token = response.data.token;
-      console.log("Token", token)
-      localStorage.setItem("token", token);
-      sessionStorage.setItem("token", token);
-      document.cookie = `token=${token}; path=/; max-age=${60 * 60}`;
-      document.cookie = `token=${token}; path=/; domain=.squarespace.com; secure; samesite=strict;`;
-      // Send the token to the Squarespace page
-      window.parent.postMessage({ type: "token", token: token }, "*");
+      const squarCraft_auth_token = response.data.squarCraft_auth_token;
+      console.log("squarCraft_auth_token", squarCraft_auth_token)
+      localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+      sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; domain=.squarespace.com; secure; samesite=strict;`;
+      // Send the squarCraft_auth_token to the Squarespace page
+      window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token: squarCraft_auth_token }, "*");
 
       if(response.status===200){
         navigate("/dashboard/myWebsites");

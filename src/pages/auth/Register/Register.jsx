@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import useTitle from "../../../hooks/useTitle";
 import emailIcon from "../../../../public/images/auth/login/email.svg";
@@ -9,9 +9,11 @@ import squarespace from "../../../../public/images/auth/login/squarespace.svg";
 import eyeIcon from "../../../../public/images/auth/login/eye.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import { useNavigate } from "react-router";
+import { AuthContext } from "../../../context/AuthContext";
 
 const RegisterSchema = () => {
   useTitle("Sign Up | SquareCraft");
+  const { registerUser} = useContext(AuthContext);
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -73,16 +75,24 @@ const RegisterSchema = () => {
         confirmPassword
       });
       console.log(response)
-      const token = response?.data?.token;
+      const squarCraft_auth_token = response?.data?.squarCraft_auth_token;
 
       if (response.status === 201) {
+        const registerUserData = {
+          name:response.data.user.name,
+          email: response.data.user.email,
+          squarCraft_auth_token: response.data.squarCraft_auth_token,
+          user_id: response.data.user.id
+        }
+        console.log("registered user data" , registerUserData)
+        registerUser(registerUserData);
         console.log("Registration successful!");
         navigate("/dashboard/myWebsites")
-      console.log("Token", token)
-      localStorage.setItem("token", token);
-      sessionStorage.setItem("token", token);
-      document.cookie = `token=${token}; path=/; max-age=${60 * 60}`;
-      document.cookie = `token=${token}; path=/; domain=maroon-quillfish-bbn6.squarespace.com; secure; samesite=strict;`;
+        console.log("squarCraft_auth_token", squarCraft_auth_token)
+        localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+        sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+        document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
+        document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; domain=maroon-quillfish-bbn6.squarespace.com; secure; samesite=strict;`;
 
       }
     } catch (error) {
