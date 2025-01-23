@@ -10,7 +10,7 @@ const MyWebsite = () => {
     const { user, loading, error } = useContext(AuthContext);
 
     console.log("squarCraft_auth_token - ", localStorage.getItem("squarCraft_auth_token"))
-    const installationCode = `<script  id="squarecraft-script" src="https://fatin-webefo.github.io/squarespace-block/scripts/plugin.js" token="${user?.user_id}" defer></script>`;
+    const installationCode = `<script  id="squarecraft-script" src="https://fatin-webefo.github.io/squarecraft-frontend/src/plugins/test.js" token="${user?.user_id}" defer></script>`;
 
     const [plugins, setPlugins] = useState([{ id: 1, name: "", copied: false }]);
 
