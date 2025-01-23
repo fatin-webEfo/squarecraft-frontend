@@ -49,6 +49,15 @@ const navigate = useNavigate();
         password,
         rememberMe: isChecked,
       });
+      const token = response.data.token;
+      console.log("Token", token)
+      localStorage.setItem("token", token);
+      sessionStorage.setItem("token", token);
+      document.cookie = `token=${token}; path=/; max-age=${60 * 60}`;
+      document.cookie = `token=${token}; path=/; domain=.squarespace.com; secure; samesite=strict;`;
+      // Send the token to the Squarespace page
+      window.parent.postMessage({ type: "token", token: token }, "*");
+
       if(response.status===200){
         navigate("/dashboard/myWebsites");
       }

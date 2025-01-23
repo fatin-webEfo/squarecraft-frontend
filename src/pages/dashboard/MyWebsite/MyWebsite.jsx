@@ -6,7 +6,7 @@ import { FaPlugCirclePlus } from "react-icons/fa6";
 
 const MyWebsite = () => {
     useTitle("My Website | SquareCraft");
-
+console.log("token - " , localStorage.getItem("token"))
     const installationCode = `<script  id="squarecraft-script" src="https://fatin-webefo.github.io/squarespace-block/scripts/plugin.js" async></script>`;
 
     const [plugins, setPlugins] = useState([{ id: 1, name: "", copied: false }]);

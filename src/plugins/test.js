@@ -1,3 +1,4 @@
+import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ SquareCraft Plugin Loaded");
@@ -75,39 +76,39 @@ document.addEventListener("DOMContentLoaded", function () {
             selectedElement.style.color = textColor;
             selectedElement.style.fontSize = fontSize;
 
-            // Send styles to backend API for saving
-            fetch("http://localhost:8000/api/v1/modifications", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            // Send styles to backend API for saving using Axios
+            axios.post("http://localhost:8000/api/v1/modifications", {
+                elementSelector: selectedElement.tagName + selectedElement.className,
+                styles: {
+                    backgroundColor: bgColor,
+                    color: textColor,
+                    fontSize: fontSize,
                 },
-                body: JSON.stringify({
-                    elementSelector: selectedElement.tagName + selectedElement.className,
-                    styles: {
-                        backgroundColor: bgColor,
-                        color: textColor,
-                        fontSize: fontSize,
-                    },
-                }),
-            }).then(response => response.json())
-              .then(data => console.log("Styles saved to backend:", data));
+            }, {
+                withCredentials: true, // Ensures cookies and credentials are included
+            })
+            .then(response => console.log("Styles saved to backend:", response.data))
+            .catch(error => console.error("Error saving styles:", error));
         }
     });
 
-    // Load saved styles from backend API
-    fetch("http://localhost:8000/api/v1/modifications")
-        .then(response => response.json())
-        .then(styles => {
-            Object.keys(styles).forEach(selector => {
-                let element = document.querySelector(selector);
-                if (element) {
-                    let style = styles[selector];
-                    element.style.backgroundColor = style.backgroundColor;
-                    element.style.color = style.color;
-                    element.style.fontSize = style.fontSize;
-                }
-            });
+    // Load saved styles from backend API using Axios
+    axios.get("http://localhost:8000/api/v1/modifications", {
+        withCredentials: true, // Ensures cookies and credentials are included
+    })
+    .then(response => {
+        const styles = response.data;
+        Object.keys(styles).forEach(selector => {
+            let element = document.querySelector(selector);
+            if (element) {
+                let style = styles[selector];
+                element.style.backgroundColor = style.backgroundColor;
+                element.style.color = style.color;
+                element.style.fontSize = style.fontSize;
+            }
         });
+    })
+    .catch(error => console.error("Error loading styles:", error));
 
     console.log("🎉 SquareCraft Widget is Ready!");
 });

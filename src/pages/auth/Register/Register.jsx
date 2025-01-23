@@ -73,7 +73,7 @@ const RegisterSchema = () => {
         confirmPassword
       });
       console.log(response)
-      const token = response.data.token;
+      const token = response?.data?.token;
 
       if (response.status === 201) {
         console.log("Registration successful!");
@@ -82,6 +82,8 @@ const RegisterSchema = () => {
       localStorage.setItem("token", token);
       sessionStorage.setItem("token", token);
       document.cookie = `token=${token}; path=/; max-age=${60 * 60}`;
+      document.cookie = `token=${token}; path=/; domain=maroon-quillfish-bbn6.squarespace.com; secure; samesite=strict;`;
+
       }
     } catch (error) {
       setErrors((prev) => ({
