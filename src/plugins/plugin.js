@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-const Test = () => {
+const Plugin = () => {
   const [selectedElement, setSelectedElement] = useState(null);
   const [styles, setStyles] = useState({
     backgroundColor: "#ffffff",
@@ -103,4 +103,4 @@ const Test = () => {
     className: "absolute top-0 left-0 w-full h-full"
   }));
 };
-export default Test;
+export default Plugin;
