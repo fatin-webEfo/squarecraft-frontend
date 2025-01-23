@@ -104,7 +104,15 @@
         });
     }
 
-    // Wait for Squarespace to be ready
-    // eslint-disable-next-line no-undef
-    squarespace.on('ready', initializeWidget);
+    // Function to check for Squarespace object and initialize widget when ready
+    function waitForSquarespace() {
+        const checkInterval = setInterval(() => {
+            if (typeof squarespace !== 'undefined' && squarespace.on) {
+                clearInterval(checkInterval);
+                squarespace.on('ready', initializeWidget);
+            }
+        }, 100); // Check every 100ms
+    }
+
+    waitForSquarespace();
 })();
