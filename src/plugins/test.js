@@ -41,7 +41,6 @@
             function moveAt(pageX, pageY) {
                 widget.style.left = pageX - shiftX + 'px';
                 widget.style.top = pageY - shiftY + 'px';
-                console.log(`Widget moved to: (${widget.style.left}, ${widget.style.top})`);
             }
 
             function onMouseMove(event) {
@@ -71,12 +70,20 @@
 
         // Load saved changes on page load
         const savedColor = localStorage.getItem('bgColor');
+        const savedPositionX = localStorage.getItem('widgetPosX');
+        const savedPositionY = localStorage.getItem('widgetPosY');
+
         if (savedColor) {
             document.body.style.backgroundColor = savedColor;
             colorPicker.value = savedColor; // Set color picker to saved color
             console.log(`Loaded saved background color: ${savedColor}`);
-        } else {
-            console.log('No saved background color found.');
+        }
+
+        // Restore widget position
+        if (savedPositionX && savedPositionY) {
+            widget.style.left = savedPositionX + 'px';
+            widget.style.top = savedPositionY + 'px';
+            console.log(`Widget position restored: (${savedPositionX}, ${savedPositionY})`);
         }
 
         // Save changes to localStorage
@@ -86,12 +93,18 @@
                 document.body.style.backgroundColor = bgColor; // Apply change
                 localStorage.setItem('bgColor', bgColor); // Save to localStorage
                 console.log(`Background color changed to: ${bgColor}`);
+
+                // Save the position of the widget
+                localStorage.setItem('widgetPosX', widget.offsetLeft);
+                localStorage.setItem('widgetPosY', widget.offsetTop);
+                console.log(`Widget position saved: (${widget.offsetLeft}, ${widget.offsetTop})`);
             } catch (error) {
-                console.error('Error saving background color:', error);
+                console.error('Error saving background color or widget position:', error);
             }
         });
     }
 
+    // Wait for Squarespace to be ready
     // eslint-disable-next-line no-undef
     squarespace.on('ready', initializeWidget);
 })();
