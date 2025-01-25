@@ -48,13 +48,14 @@ const navigate = useNavigate();
     try {
       setLoading(true);
   
-      // Call the API for login
+      // Call the login API
       const response = await axios.post("http://localhost:8000/api/v1/login", {
         email,
         password,
         rememberMe: isChecked,
       });
   
+      // Extract user data and token
       const loginUserData = {
         name: response?.data?.user?.name,
         email: response?.data?.user?.email,
@@ -62,27 +63,20 @@ const navigate = useNavigate();
         squarCraft_auth_token: response?.data?.squarCraft_auth_token,
       };
   
-      // Use AuthContext to set user
+      // Use AuthContext's loginUser function to set the user globally
       loginUser(loginUserData);
   
       const squarCraft_auth_token = response.data.squarCraft_auth_token;
-      console.log("squarCraft_auth_token", squarCraft_auth_token);
   
-      // Save token locally in your plugin
+      // Save the token locally and set cookies
       localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-  
-      // Set cookies for Squarespace and its subdomains
-      const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString(); // Expires in 1 hour
-      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}; secure; samesite=none`;
-      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; domain=.squarespace.com; path=/; expires=${expires}; secure; samesite=none`;
+      const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString(); // 1 hour
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; domain=.squarespace.com; expires=${expires}; secure; samesite=None`;
   
       console.log("Token successfully set for Squarespace cookies:", document.cookie);
   
-      // Notify parent domain (Squarespace) about the token
-      window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token }, "*");
-  
-      // Navigate to dashboard after successful login
+      // Navigate to the dashboard
       if (response.status === 200) {
         navigate("/dashboard/myWebsites");
       }
@@ -93,8 +87,6 @@ const navigate = useNavigate();
       setLoading(false);
     }
   };
-  
-  
   
 
   return (
