@@ -1,38 +1,5 @@
 (async function () {
     console.log("✅ SquareCraft Plugin Loaded");
-    window.addEventListener("message", (event) => {
-        console.log("Message received:", event);
-    
-        // Strictly allow messages from http://localhost:5173 only
-        const allowedOrigin = "http://localhost:5173";
-    
-        if (event.origin === allowedOrigin) {
-            // Validate the message type and payload
-            if (event.data?.type === "squarCraft_user" && event.data.payload) {
-                const userData = event.data.payload;
-    
-                if (userData?.squarCraft_auth_token) {
-                    console.log("✅ Valid user data received from React:", userData);
-    
-                    // Set token in cookies for Squarespace with secure settings
-                    const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString(); // 1 hour expiry
-                    document.cookie = `squarCraft_auth_token=${userData.squarCraft_auth_token}; path=/; domain=.squarespace.com; secure; samesite=none; expires=${expires}`;
-                    console.log("✅ Token set in Squarespace cookies:", document.cookie);
-                } else {
-                    console.error("❌ Invalid user data received:", userData);
-                }
-            } else {
-                console.error("❌ Invalid message structure received:", event.data);
-            }
-        } else {
-            // Reject messages from unknown origins and log a warning
-            console.warn("❌ Received message from an unknown or untrusted origin:", event.origin);
-    
-      
-        }
-    });
-    
-        
   
     const adminHeader = document.querySelector('.admin-header');
     if (adminHeader) {
@@ -63,13 +30,21 @@
     }
   
     // Fetch the token from cookies
-    const squarCraft_auth_token = getCookie("squarCraft_auth_token");
-    console.log("Token retrieved from cookies:", squarCraft_auth_token);
+    // const squarCraft_auth_token = getCookie("squarCraft_auth_token");
+    // console.log("Token retrieved from cookies:", squarCraft_auth_token);
   
+    // if (!squarCraft_auth_token) {
+    //   console.error("No user token found in cookies. Unauthorized.");
+    //   return;
+    // }
+    const squarCraft_auth_token = getCookie("squarCraft_auth_token");
     if (!squarCraft_auth_token) {
-      console.error("No user token found in cookies. Unauthorized.");
+      console.error(
+        "No token found in cookies. Ensure the cookie is set during registration/login."
+      );
       return;
     }
+    console.log("Token retrieved from cookies:", squarCraft_auth_token);
   
     try {
       const response = await fetch("http://localhost:8000/api/v1/modifications", {
@@ -200,4 +175,3 @@
   
     document.addEventListener("click", handleElementSelect);
   })();
-  

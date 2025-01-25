@@ -62,23 +62,18 @@ const RegisterSchema = () => {
     validateField("password", password);
     validateField("confirmPassword", confirmPassword);
     if (Object.values(errors || {}).some((error) => error)) return;
-
-
-
     try {
       setLoading(true);
-
       const response = await axios.post("http://localhost:8000/api/v1/register", {
         name,
         email,
         password,
         confirmPassword
-      }, {
-        withCredentials: true,
+      },  {
+        withCredentials: true, // Include cookies in the request
       });
       console.log(response)
       const squarCraft_auth_token = response?.data?.squarCraft_auth_token;
-
       if (response.status === 201) {
         const registerUserData = {
           name:response.data.user.name,
@@ -89,14 +84,19 @@ const RegisterSchema = () => {
         }
         console.log("registered user data" , registerUserData)
         registerUser(registerUserData);
-        console.log("Registration successful!",response);
+        console.log("Registration successful!");
         navigate("/dashboard/myWebsites")
         console.log("squarCraft_auth_token", squarCraft_auth_token)
         localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-        sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-        document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
-        document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24}; domain=.squarespace.com; secure; samesite=none`;
-        window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token: squarCraft_auth_token }, "*");
+      sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+      // Set the token in cookies for Squarespace
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24 * 30}; domain=.squarespace.com; secure; samesite=None`;
+      console.log("Token successfully set for Squarespace cookies:", document.cookie);
+        // document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
+        // document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24}; domain=.squarespace.com; secure; samesite=strict`;
+  
+        console.log("Token successfully set for Squarespace cookies:", document.cookie);
+        window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token }, "*");
       }
     } catch (error) {
       setErrors((prev) => ({
