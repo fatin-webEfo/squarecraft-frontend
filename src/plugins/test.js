@@ -16,7 +16,8 @@
       fontSize: "16px",
     };
   
-    const storedUser = localStorage.getItem("squarCraft_user");
+    const storedUser = localStorage.getItem("squarCraft_auth_token");
+    console.log("Stored user token:", storedUser);
     if (!storedUser) {
       console.error("No user token found. Unauthorized.");
       return;
