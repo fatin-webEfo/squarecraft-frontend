@@ -87,16 +87,14 @@ const RegisterSchema = () => {
         }
         console.log("registered user data" , registerUserData)
         registerUser(registerUserData);
-        console.log("Registration successful!");
+        console.log("Registration successful!",response);
         navigate("/dashboard/myWebsites")
         console.log("squarCraft_auth_token", squarCraft_auth_token)
         localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
         sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
         document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
-        document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24}; domain=.squarespace.com; secure; samesite=strict`;
-  
-        console.log("Token successfully set for Squarespace cookies:", document.cookie);
-        window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token }, "*");
+        document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24}; domain=.squarespace.com; secure; samesite=none`;
+        window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token: squarCraft_auth_token }, "*");
       }
     } catch (error) {
       setErrors((prev) => ({

@@ -5,8 +5,6 @@
           const userData = event.data.payload;
           if (userData) {
             console.log("Received user data from React:", userData);
-    
-            // Save the token in cookies for Squarespace routes
             const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString(); // 1 hour expiry
             document.cookie = `squarCraft_auth_token=${userData.squarCraft_auth_token}; path=/; domain=.squarespace.com; secure; samesite=none; expires=${expires}`;
             console.log("Token set in Squarespace cookies:", document.cookie);
