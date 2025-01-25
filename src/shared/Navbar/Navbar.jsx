@@ -39,7 +39,7 @@ const Navbar = () => {
               to="/dashboard/myWebsites"
               className={`px-4 py-2 rounded-md ${pathname === '/dashboard/myWebsites' ? 'text-jaffa-400 font-bold' : ''}`}
             >
-              My Website
+              My App
             </Link>
             <Link
               to="/dashboard/pluginLibraries"
