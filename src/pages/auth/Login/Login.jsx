@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -11,9 +11,12 @@ import useTitle from "../../../hooks/useTitle";
 import tik from "../../../../public/images/auth/login/tik.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import ButtonLoader from "../../../hooks/ButtonLoader/ButtonLoader";
+import { AuthContext } from "../../../context/AuthContext";
 
 const Login = () => {
   useTitle("Sign In | SquareCraft");
+    const { loginUser} = useContext(AuthContext);
+  
 const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,34 +44,58 @@ const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
+  
     try {
       setLoading(true);
+  
+      // Call the API for login
       const response = await axios.post("http://localhost:8000/api/v1/login", {
         email,
         password,
         rememberMe: isChecked,
       });
+  
+      const loginUserData = {
+        name: response?.data?.user?.name,
+        email: response?.data?.user?.email,
+        user_id: response?.data?.user?.id,
+        squarCraft_auth_token: response?.data?.squarCraft_auth_token,
+      };
+  
+      // Use AuthContext to set user
+      loginUser(loginUserData);
+  
       const squarCraft_auth_token = response.data.squarCraft_auth_token;
-      console.log("squarCraft_auth_token", squarCraft_auth_token)
+      console.log("squarCraft_auth_token", squarCraft_auth_token);
+  
+      // Save token locally in your plugin
       localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
-      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24}; domain=.yoursquarespace.com; secure; samesite=strict`;
-      // Send the squarCraft_auth_token to the Squarespace page
-      window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token: squarCraft_auth_token }, "*");
-
-      if(response.status===200){
+  
+      // Set cookies for Squarespace and its subdomains
+      const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString(); // Expires in 1 hour
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}; secure; samesite=none`;
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; domain=.squarespace.com; path=/; expires=${expires}; secure; samesite=none`;
+  
+      console.log("Token successfully set for Squarespace cookies:", document.cookie);
+  
+      // Notify parent domain (Squarespace) about the token
+      window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token }, "*");
+  
+      // Navigate to dashboard after successful login
+      if (response.status === 200) {
         navigate("/dashboard/myWebsites");
       }
-    
-      console.log("Login successful:", response.data);
     } catch (error) {
       setErrors({ api: error.response?.data?.message || "An error occurred." });
+      console.error("Error during login:", error.message);
     } finally {
       setLoading(false);
     }
   };
+  
+  
+  
 
   return (
     <div className="w-full flex items-center justify-center mt-[6.5rem] xl:mt-[10rem] xl:px-8">

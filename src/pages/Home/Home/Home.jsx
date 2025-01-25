@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import sampleVideo from "../../../../public/Statics/sampleVideo.mp4";
 const Home = () => {
+  const storedUser = localStorage.getItem("squarCraft_user");
+
     return (
         <div className="bg-white pt-16 pb-20 px-6 md:px-12">
             {/* Hero Section */}
@@ -27,7 +29,7 @@ const Home = () => {
                         transition={{ duration: 0.6, delay: 0.3 }}
                         className="mt-6 flex justify-center gap-4"
                     >
-                        <Link to="/auth/login">
+                        <Link to={`${storedUser ? "/dashboard/myWebsites" : "/auth/login"}`}>
                             <button className="px-6 py-3 bg-jaffa-400 hover:bg-orange-700 text-white text-lg font-medium rounded-xl transition-all shadow-md">
                                 Get Started
                             </button>
