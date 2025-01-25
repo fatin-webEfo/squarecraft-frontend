@@ -73,6 +73,8 @@ const RegisterSchema = () => {
         email,
         password,
         confirmPassword
+      }, {
+        withCredentials: true,
       });
       console.log(response)
       const squarCraft_auth_token = response?.data?.squarCraft_auth_token;
