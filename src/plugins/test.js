@@ -1,5 +1,6 @@
 (async function () {
     console.log("✅ SquareCraft Plugin Loaded");
+  
     const adminHeader = document.querySelector('.admin-header');
     if (adminHeader) {
       const logo = document.createElement('img');
@@ -16,23 +17,38 @@
       fontSize: "16px",
     };
   
-    const storedUser = localStorage.getItem("squarCraft_auth_token");
-    console.log("Stored user token:", storedUser);
-    if (!storedUser) {
-      console.error("No user token found. Unauthorized.");
+    // Function to get the token from cookies
+    function getCookie(name) {
+      const cookies = document.cookie.split("; ");
+      for (let i = 0; i < cookies.length; i++) {
+        const [key, value] = cookies[i].split("=");
+        if (key === name) {
+          return decodeURIComponent(value);
+        }
+      }
+      return null;
+    }
+  
+    // Fetch the token from cookies
+    const squarCraft_auth_token = getCookie("squarCraft_auth_token");
+    console.log("Token retrieved from cookies:", squarCraft_auth_token);
+  
+    if (!squarCraft_auth_token) {
+      console.error("No user token found in cookies. Unauthorized.");
       return;
     }
-    const userToken = JSON.parse(storedUser).squarCraft_auth_token;
   
     try {
       const response = await fetch("http://localhost:8000/api/v1/modifications", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `Bearer ${squarCraft_auth_token}`,
         },
       });
-      console.log("get method of modification",response)
+      console.log("GET request response:", response);
+  
       if (!response.ok) throw new Error("Failed to fetch saved styles");
+  
       const stylesData = await response.json();
       console.log("Fetched saved styles:", stylesData);
       applySavedStyles(stylesData);
@@ -82,7 +98,7 @@
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `Bearer ${squarCraft_auth_token}`,
         },
         body: JSON.stringify({
           elementSelector: selectedElement.tagName + "" + selectedElement.className,
@@ -118,20 +134,21 @@
   
     const panel = document.createElement("div");
     panel.id = "squarecraft-panel";
-    panel.className = "hidden fixed bottom-20 right-5 bg-white p-6 shadow-lg rounded-md w-72 z-50 border border-gray-200";
+    panel.className =
+      "hidden fixed bottom-20 right-5 bg-white p-6 shadow-lg rounded-md w-72 z-50 border border-gray-200";
     panel.innerHTML = `
-      <h3 class="text-lg font-semibold mb-4 text-gray-700">SquareCraft Editor</h3>
-      <label class="block mb-2 text-sm font-medium">Background Color:</label>
-      <input id="bg-color-input" type="color" class="w-full mb-4 p-2 border rounded" />
+        <h3 class="text-lg font-semibold mb-4 text-gray-700">SquareCraft Editor</h3>
+        <label class="block mb-2 text-sm font-medium">Background Color:</label>
+        <input id="bg-color-input" type="color" class="w-full mb-4 p-2 border rounded" />
   
-      <label class="block mb-2 text-sm font-medium">Text Color:</label>
-      <input id="text-color-input" type="color" class="w-full mb-4 p-2 border rounded" />
+        <label class="block mb-2 text-sm font-medium">Text Color:</label>
+        <input id="text-color-input" type="color" class="w-full mb-4 p-2 border rounded" />
   
-      <label class="block mb-2 text-sm font-medium">Font Size:</label>
-      <input id="font-size-input" type="number" class="w-full mb-4 p-2 border rounded" />
+        <label class="block mb-2 text-sm font-medium">Font Size:</label>
+        <input id="font-size-input" type="number" class="w-full mb-4 p-2 border rounded" />
   
-      <button id="apply-button" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Apply Changes</button>
-    `;
+        <button id="apply-button" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Apply Changes</button>
+      `;
     document.body.appendChild(panel);
   
     document.getElementById("bg-color-input").addEventListener("input", (e) => {

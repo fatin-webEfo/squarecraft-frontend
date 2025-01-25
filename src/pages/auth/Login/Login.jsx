@@ -55,7 +55,6 @@ const navigate = useNavigate();
         rememberMe: isChecked,
       });
   
-      // Extract user data and token from the response
       const loginUserData = {
         name: response?.data?.user?.name,
         email: response?.data?.user?.email,
@@ -67,8 +66,9 @@ const navigate = useNavigate();
       loginUser(loginUserData);
   
       const squarCraft_auth_token = response.data.squarCraft_auth_token;
+      console.log("squarCraft_auth_token", squarCraft_auth_token);
   
-      // Save token locally
+      // Save token locally in your plugin
       localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
   
@@ -77,10 +77,10 @@ const navigate = useNavigate();
       document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}; secure; samesite=none`;
       document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; domain=.squarespace.com; path=/; expires=${expires}; secure; samesite=none`;
   
-      // Notify parent domain about the token
-      window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token }, "*");
-  
       console.log("Token successfully set for Squarespace cookies:", document.cookie);
+  
+      // Notify parent domain (Squarespace) about the token
+      window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token }, "*");
   
       // Navigate to dashboard after successful login
       if (response.status === 200) {
@@ -93,6 +93,7 @@ const navigate = useNavigate();
       setLoading(false);
     }
   };
+  
   
   
 
