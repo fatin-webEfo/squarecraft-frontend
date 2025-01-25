@@ -5,7 +5,7 @@ import emailIcon from "../../../../public/images/auth/login/email.svg";
 import lockIcon from "../../../../public/images/auth/login/lock.svg";
 import userIcon from "../../../../public/images/auth/login/user.svg";
 import google from "../../../../public/images/auth/login/google.svg";
-import squarespace from "../../../../public/images/auth/login/squarespace.svg";
+import squarespace from "../../../../public/images/auth/login/squareSpace.svg";
 import eyeIcon from "../../../../public/images/auth/login/eye.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import { useNavigate } from "react-router";
@@ -76,11 +76,11 @@ const RegisterSchema = () => {
       const squarCraft_auth_token = response?.data?.squarCraft_auth_token;
       if (response.status === 201) {
         const registerUserData = {
-          name:response.data.user.name,
-          email: response.data.user.email,
-          squarCraft_auth_token: response.data.squarCraft_auth_token,
-          user_id: response.data.user.id,
-          phone: response.data.user.phone || "",
+          name:response?.data?.user.name,
+          email: response?.data?.user.email,
+          squarCraft_auth_token: response?.data?.squarCraft_auth_token,
+          user_id: response?.data?.user.id,
+          phone: response?.data?.user.phone || "",
         }
         console.log("registered user data" , registerUserData)
         registerUser(registerUserData);
