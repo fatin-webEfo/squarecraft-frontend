@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
           type: "squarCraft_user",
           payload: userData,
         },
-        "*"
+        ".squarespace.com"
       );
     } else {
       localStorage.removeItem("squarCraft_user");

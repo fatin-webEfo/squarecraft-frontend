@@ -2,21 +2,27 @@
     console.log("✅ SquareCraft Plugin Loaded");
     window.addEventListener("message", (event) => {
         console.log("Message received:", event);
-
-        if (event.data.type === "squarCraft_user") {
-          const userData = event.data.payload;
-          if (userData) {
-            console.log("Received user data from React:", userData);
-            const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString(); // 1 hour expiry
-            document.cookie = `squarCraft_auth_token=${userData.squarCraft_auth_token}; path=/; domain=.squarespace.com; secure; samesite=none; expires=${expires}`;
-            console.log("Token set in Squarespace cookies:", document.cookie);
-          } else {
-            console.log("User logged out. Clearing token...");
-            document.cookie =
-              "squarCraft_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.squarespace.com;";
+      
+        // Verify the origin matches your React app's domain
+        if (event.origin === "http://localhost:5173") {
+          if (event.data.type === "squarCraft_user") {
+            const userData = event.data.payload;
+            if (userData) {
+              console.log("Received user data from React:", userData);
+              const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString(); // 1 hour expiry
+              document.cookie = `squarCraft_auth_token=${userData.squarCraft_auth_token}; path=/; domain=.squarespace.com; secure; samesite=none; expires=${expires}`;
+              console.log("Token set in Squarespace cookies:", document.cookie);
+            } else {
+              console.log("User logged out. Clearing token...");
+              document.cookie =
+                "squarCraft_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.squarespace.com;";
+            }
           }
+        } else {
+          console.warn("Received message from an unknown origin:", event.origin);
         }
       });
+        
   
     const adminHeader = document.querySelector('.admin-header');
     if (adminHeader) {
