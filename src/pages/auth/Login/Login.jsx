@@ -44,50 +44,41 @@ const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-  
+
     try {
       setLoading(true);
-  
-      // Call the login API
       const response = await axios.post("http://localhost:8000/api/v1/login", {
         email,
         password,
         rememberMe: isChecked,
       });
-  
-      // Extract user data and token
       const loginUserData = {
-        name: response?.data?.user?.name,
+       name: response?.data?.user?.name,
         email: response?.data?.user?.email,
         user_id: response?.data?.user?.id,
-        squarCraft_auth_token: response?.data?.squarCraft_auth_token,
-      };
-  
-      // Use AuthContext's loginUser function to set the user globally
+        squarCraft_auth_token: response?.data?.squarCraft_auth_token
+      }
       loginUser(loginUserData);
-  
+      console.log("Login from client to rpvoder" , loginUserData)
       const squarCraft_auth_token = response.data.squarCraft_auth_token;
-  
-      // Save the token locally and set cookies
+      console.log("squarCraft_auth_token", squarCraft_auth_token)
       localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-      const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString(); // 1 hour
-      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; domain=.squarespace.com; expires=${expires}; secure; samesite=None`;
-  
-      console.log("Token successfully set for Squarespace cookies:", document.cookie);
-  
-      // Navigate to the dashboard
-      if (response.status === 200) {
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24}; domain=.squarespace.com; secure; samesite=none`;
+      window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token: squarCraft_auth_token }, "*");
+
+      if(response.status===200){
         navigate("/dashboard/myWebsites");
       }
+    
+      console.log("Login successful:", response.data);
     } catch (error) {
       setErrors({ api: error.response?.data?.message || "An error occurred." });
-      console.error("Error during login:", error.message);
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="w-full flex items-center justify-center mt-[6.5rem] xl:mt-[10rem] xl:px-8">
