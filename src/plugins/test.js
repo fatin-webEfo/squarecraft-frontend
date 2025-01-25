@@ -1,118 +1,199 @@
-(function() {
-    console.log('test.js is coming..');
+(async function () {
+    const isBaseDomain = window.location.pathname === "/";
+    console.log("isBaseDomain:", isBaseDomain);
+    console.log("Current pathname:", window.location.pathname);
 
-    // Function to initialize the widget
-    function initializeWidget() {
-        // Create a basic widget template
-        const widget = document.createElement('div');
-        widget.style.position = 'fixed';
-        widget.style.top = '10px';
-        widget.style.right = '10px';
-        widget.style.width = '200px';
-        widget.style.height = '100px';
-        widget.style.backgroundColor = 'white';
-        widget.style.border = '1px solid #ccc';
-        widget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-        widget.style.zIndex = '1000';
-        widget.style.display = 'none'; // Initially hidden
+    console.log("Plugin Loaded: Configuring the widget...");
 
-        // Create a color picker
-        const colorPicker = document.createElement('input');
-        colorPicker.type = 'color';
-        colorPicker.value = '#ffffff'; // Default color
-        widget.appendChild(colorPicker);
-        console.log('Color picker created.');
+    // Create the widget UI
+    const widget = document.createElement("div");
+    widget.id = "style-widget";
+    widget.style.cssText = `
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: white;
+      border: 1px solid #ddd;
+      padding: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      display: none; /* Initially hidden */
+      z-index: 9999;
+      font-family: Arial, sans-serif;
+    `;
 
-        // Create a save button
-        const saveButton = document.createElement('button');
-        saveButton.innerText = 'Save Changes';
-        widget.appendChild(saveButton);
-        console.log('Save button created.');
+    widget.innerHTML = `
+      <h4>Style Editor</h4>
+      <label>
+        Element Selector:
+        <input id="element-selector" type="text" placeholder=".className or #id" />
+      </label>
+      <br />
+      <label>
+        CSS Property:
+        <input id="css-property" type="text" placeholder="e.g., color" />
+      </label>
+      <br />
+      <label>
+        Value:
+        <input id="css-value" type="text" placeholder="e.g., red" />
+      </label>
+      <br />
+      <button id="apply-style">Apply</button>
+      <button id="publish-style">Publish</button>
+      <div id="progress-bar-container" style="display:none; margin-top:10px;">
+        <div id="progress-bar" style="width: 0%; height: 10px; background-color: green;"></div>
+      </div>
+    `;
 
-        // Append widget to body
-        document.body.appendChild(widget);
-        console.log('Widget appended to the body.');
+    document.body.appendChild(widget);
+    console.log("Widget UI created.");
 
-        // Make the widget draggable
-        widget.onmousedown = function(event) {
-            let shiftX = event.clientX - widget.getBoundingClientRect().left;
-            let shiftY = event.clientY - widget.getBoundingClientRect().top;
+    let selectedElement = null;
+    document.body.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-            function moveAt(pageX, pageY) {
-                widget.style.left = pageX - shiftX + 'px';
-                widget.style.top = pageY - shiftY + 'px';
+        // Prevent widget selection itself
+        if (e.target.closest("#style-widget")) return;
+
+        selectedElement = e.target;
+
+        console.log("Element clicked:", selectedElement);
+
+        // Check if the selected element is the content we want (e.g., <h1> tag)
+        let contentElement = selectedElement.closest("h1, p, div"); // Change this selector as needed
+        if (contentElement) {
+            // If the element is a block element that you want to edit, show its content
+            document.getElementById("element-selector").value =
+                getSelector(contentElement);
+            widget.style.display = "block";
+            console.log("Widget is now visible with simple element.");
+        }
+    });
+
+    // Function to get a unique selector for an element
+    function getSelector(el) {
+        if (el.id) return `#${el.id}`;
+        if (el.className) return `.${el.className.split(" ").join(".")}`;
+        return el.tagName.toLowerCase();
+    }
+
+    // Apply styles to the selected element
+    const applyStyleButton = document.getElementById("apply-style");
+    applyStyleButton.addEventListener("click", () => {
+        const selector = document.getElementById("element-selector").value.trim();
+        const property = document.getElementById("css-property").value.trim();
+        const value = document.getElementById("css-value").value.trim();
+
+        console.log("Apply style clicked. Values:", { selector, property, value });
+
+        if (selector && property && value) {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach((el) => {
+                el.style[property] = value;
+                console.log(
+                    `Applied style ${property}: ${value} to elements matching ${selector}`
+                );
+            });
+            alert("Style applied locally.");
+        } else {
+            alert("Please fill in all fields.");
+        }
+    });
+
+    // Show progress bar while saving styles globally
+    function showProgressBar() {
+        const progressBarContainer = document.getElementById(
+            "progress-bar-container"
+        );
+        const progressBar = document.getElementById("progress-bar");
+
+        progressBarContainer.style.display = "block";
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 10;
+            progressBar.style.width = `${progress}%`;
+            if (progress >= 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    progressBarContainer.style.display = "none";
+                }, 500);
             }
+        }, 200);
+    }
 
-            function onMouseMove(event) {
-                moveAt(event.pageX, event.pageY);
-            }
+    // Save styles globally (persisted across routes)
+    const publishStyleButton = document.getElementById("publish-style");
+    publishStyleButton.addEventListener("click", async () => {
+        const selector = document.getElementById("element-selector").value.trim();
+        const property = document.getElementById("css-property").value.trim();
+        const value = document.getElementById("css-value").value.trim();
 
-            document.addEventListener('mousemove', onMouseMove);
-
-            widget.onmouseup = function() {
-                document.removeEventListener('mousemove', onMouseMove);
-                widget.onmouseup = null;
-                console.log('Mouse up - stop moving the widget.');
-            };
-        };
-
-        widget.ondragstart = function() {
-            return false;
-        };
-
-        // Show widget on element click
-        document.addEventListener('click', (event) => {
-            if (event.target.closest('.your-target-element')) { // Replace with your target element
-                widget.style.display = 'block';
-                console.log('Widget displayed.');
-            }
+        console.log("Publish style clicked. Values:", {
+            selector,
+            property,
+            value,
         });
 
-        // Load saved changes on page load
-        const savedColor = localStorage.getItem('bgColor');
-        const savedPositionX = localStorage.getItem('widgetPosX');
-        const savedPositionY = localStorage.getItem('widgetPosY');
+        if (selector && property && value) {
+            showProgressBar(); // Show progress bar
 
-        if (savedColor) {
-            document.body.style.backgroundColor = savedColor;
-            colorPicker.value = savedColor; // Set color picker to saved color
-            console.log(`Loaded saved background color: ${savedColor}`);
-        }
-
-        // Restore widget position
-        if (savedPositionX && savedPositionY) {
-            widget.style.left = savedPositionX + 'px';
-            widget.style.top = savedPositionY + 'px';
-            console.log(`Widget position restored: (${savedPositionX}, ${savedPositionY})`);
-        }
-
-        // Save changes to localStorage
-        saveButton.addEventListener('click', () => {
             try {
-                const bgColor = colorPicker.value;
-                document.body.style.backgroundColor = bgColor; // Apply change
-                localStorage.setItem('bgColor', bgColor); // Save to localStorage
-                console.log(`Background color changed to: ${bgColor}`);
+                const response = await fetch("http://localhost:8000/api/v1/modifications", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        pageId: "alkfja234", // Example pageId; replace as needed
+                        modifications: {
+                            [property]: value,
+                        },
+                        userId: "6790aa9c823ae33a79a3141e", // Example userId; replace as needed
+                    }),
+                });
+                const result = await response.json();
 
-                // Save the position of the widget
-                localStorage.setItem('widgetPosX', widget.offsetLeft);
-                localStorage.setItem('widgetPosY', widget.offsetTop);
-                console.log(`Widget position saved: (${widget.offsetLeft}, ${widget.offsetTop})`);
+                console.log("Saving style to server...", result);
+
+                if (response.ok) {
+                    console.log("Style saved globally.");
+                    alert("Style saved globally!");
+                } else {
+                    throw new Error(result.message || "Failed to save style.");
+                }
             } catch (error) {
-                console.error('Error saving background color or widget position:', error);
+                console.error("Error saving style:", error);
+                alert("An error occurred while saving style.");
             }
-        });
-    }
+        } else {
+            alert("Please fill in all fields.");
+        }
+    });
 
-    // Function to check for Squarespace object and initialize widget when ready
-    function waitForSquarespace() {
-        const checkInterval = setInterval(() => {
-            if (typeof squarespace !== 'undefined' && squarespace.on) {
-                clearInterval(checkInterval);
-                squarespace.on('ready', initializeWidget);
+    // Fetch and apply saved styles globally on all routes
+    try {
+        const response = await fetch("http://localhost:8000/api/v1/modifications");
+        const result = await response.json();
+
+        console.log("Fetching saved styles...", result);
+
+        if (!response.ok) throw new Error(result.message || "Failed to fetch saved styles.");
+
+        const savedStyles = result.modification;
+
+        if (savedStyles && savedStyles.modifications) {
+            const modifications = savedStyles.modifications;
+            for (const [property, value] of Object.entries(modifications)) {
+                const elements = document.querySelectorAll("*"); // Apply globally or change the selector as needed
+                elements.forEach((el) => {
+                    el.style[property] = value;
+                    console.log(`Applied saved style ${property}: ${value}`);
+                });
             }
-        }, 100); // Check every 100ms
-    }
+        }
 
-    waitForSquarespace();
+        console.log("Saved styles applied globally.");
+    } catch (error) {
+        console.error("Error fetching saved styles:", error);
+    }
 })();

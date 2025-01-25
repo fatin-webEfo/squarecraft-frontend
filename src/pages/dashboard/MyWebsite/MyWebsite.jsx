@@ -67,7 +67,7 @@ const MyWebsite = () => {
                     transition={{ duration: 0.5, delay: 0.3 }}
                     className="mt-3.5 flex justify-center"
                 >
-                    <div className="flex items-center justify-between gap-5 border shadow-sm shadow-gray-300 py-2 pl-5 pr-2.5 rounded-2xl">
+                    <div className="flex items-center justify-between gap-5 border shadow-sm shadow-gray-300 py-2 pl-5 lg:w-[28rem] pr-2.5 rounded-2xl">
                         <div>
                             <input
                                 type="text"
@@ -84,7 +84,7 @@ const MyWebsite = () => {
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => copyToClipboard(plugin.id)}
-                                    className={`px-6 py-3 rounded-2xl text-white shadow-md text-sm transition duration-300 ease-in-out transform hover:scale-105 ${plugin.copied ? "bg-green-600" : "bg-jaffa-400 hover:bg-orange-700"
+                                    className={`px-6 py-3 rounded-2xl text-white shadow-md text-center mx-auto text-sm transition duration-300 ease-in-out transform hover:scale-105 ${plugin.copied ? "bg-green-600" : "bg-jaffa-400 hover:bg-orange-700"
                                         }`}
                                 >
                                     {plugin.copied ? "Copied!" : "Copy Installation Code"}
