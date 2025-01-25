@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -11,9 +11,12 @@ import useTitle from "../../../hooks/useTitle";
 import tik from "../../../../public/images/auth/login/tik.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import ButtonLoader from "../../../hooks/ButtonLoader/ButtonLoader";
+import { AuthContext } from "../../../context/AuthContext";
 
 const Login = () => {
   useTitle("Sign In | SquareCraft");
+    const { loginUser} = useContext(AuthContext);
+  
 const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,13 +52,20 @@ const navigate = useNavigate();
         password,
         rememberMe: isChecked,
       });
+      const loginUserData = {
+       name: response?.data?.user?.name,
+        email: response?.data?.user?.email,
+        user_id: response?.data?.user?.id,
+        squarCraft_auth_token: response?.data?.squarCraft_auth_token
+      }
+      loginUser(loginUserData);
+      console.log("Login from client to rpvoder" , loginUserData)
       const squarCraft_auth_token = response.data.squarCraft_auth_token;
       console.log("squarCraft_auth_token", squarCraft_auth_token)
       localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
       document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24}; domain=.yoursquarespace.com; secure; samesite=strict`;
-      // Send the squarCraft_auth_token to the Squarespace page
       window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token: squarCraft_auth_token }, "*");
 
       if(response.status===200){

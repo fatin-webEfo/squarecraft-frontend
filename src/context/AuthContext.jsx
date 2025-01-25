@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, createContext, useEffect, useMemo, useCallback, Fragment } from "react";
 
 export const AuthContext = createContext();
@@ -8,7 +9,6 @@ const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Memoized helper function to update user state and persist in localStorage
   const setUser = useCallback((userData) => {
     if (userData) {
       localStorage.setItem("squarCraft_user", JSON.stringify(userData));
@@ -55,13 +55,37 @@ const AuthProvider = ({ children }) => {
     }
   }, [setUser]);
 
+  const logoutUser = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post("http://localhost:8000/api/v1/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
+        },
+      });
+      console.log(response.data.message);
+      setUser(null);
+      localStorage.removeItem("squarCraft_auth_token");
+      sessionStorage.removeItem("squarCraft_auth_token");
+      document.cookie = "squarCraft_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "squarCraft_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.yoursquarespace.com; secure; samesite=strict;";
+      setError(null);
+    } catch (err) {
+      console.error("Logout Error:", err.message);
+      setError("Failed to log out. Please try again.");
+    } finally {
+      setLoading(false);
+    } 
+  }, [setUser]);
+
   const contextValue = useMemo(() => ({
     user,
     registerUser,
     loginUser,
     error,
-    loading
-  }), [user, registerUser, loginUser, error, loading]);
+    loading,
+    logoutUser,
+  }), [user, registerUser, loginUser, error, loading,logoutUser]);
 
   return (
     <AuthContext.Provider value={contextValue}>
