@@ -2,26 +2,36 @@
     console.log("✅ SquareCraft Plugin Loaded");
     window.addEventListener("message", (event) => {
         console.log("Message received:", event);
-      
-        // Verify the origin matches your React app's domain
-        if (event.origin === "http://localhost:5173") {
-          if (event.data.type === "squarCraft_user") {
-            const userData = event.data.payload;
-            if (userData) {
-              console.log("Received user data from React:", userData);
-              const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString(); // 1 hour expiry
-              document.cookie = `squarCraft_auth_token=${userData.squarCraft_auth_token}; path=/; domain=.squarespace.com; secure; samesite=none; expires=${expires}`;
-              console.log("Token set in Squarespace cookies:", document.cookie);
+    
+        // Strictly allow messages from http://localhost:5173 only
+        const allowedOrigin = "http://localhost:5173";
+    
+        if (event.origin === allowedOrigin) {
+            // Validate the message type and payload
+            if (event.data?.type === "squarCraft_user" && event.data.payload) {
+                const userData = event.data.payload;
+    
+                if (userData?.squarCraft_auth_token) {
+                    console.log("✅ Valid user data received from React:", userData);
+    
+                    // Set token in cookies for Squarespace with secure settings
+                    const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString(); // 1 hour expiry
+                    document.cookie = `squarCraft_auth_token=${userData.squarCraft_auth_token}; path=/; domain=.squarespace.com; secure; samesite=none; expires=${expires}`;
+                    console.log("✅ Token set in Squarespace cookies:", document.cookie);
+                } else {
+                    console.error("❌ Invalid user data received:", userData);
+                }
             } else {
-              console.log("User logged out. Clearing token...");
-              document.cookie =
-                "squarCraft_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.squarespace.com;";
+                console.error("❌ Invalid message structure received:", event.data);
             }
-          }
         } else {
-          console.warn("Received message from an unknown origin:", event.origin);
+            // Reject messages from unknown origins and log a warning
+            console.warn("❌ Received message from an unknown or untrusted origin:", event.origin);
+    
+      
         }
-      });
+    });
+    
         
   
     const adminHeader = document.querySelector('.admin-header');
