@@ -1,199 +1,152 @@
 (async function () {
-    const isBaseDomain = window.location.pathname === "/";
-    console.log("isBaseDomain:", isBaseDomain);
-    console.log("Current pathname:", window.location.pathname);
-
-    console.log("Plugin Loaded: Configuring the widget...");
-
-    // Create the widget UI
-    const widget = document.createElement("div");
-    widget.id = "style-widget";
-    widget.style.cssText = `
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: white;
-      border: 1px solid #ddd;
-      padding: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      display: none; /* Initially hidden */
-      z-index: 9999;
-      font-family: Arial, sans-serif;
-    `;
-
-    widget.innerHTML = `
-      <h4>Style Editor</h4>
-      <label>
-        Element Selector:
-        <input id="element-selector" type="text" placeholder=".className or #id" />
-      </label>
-      <br />
-      <label>
-        CSS Property:
-        <input id="css-property" type="text" placeholder="e.g., color" />
-      </label>
-      <br />
-      <label>
-        Value:
-        <input id="css-value" type="text" placeholder="e.g., red" />
-      </label>
-      <br />
-      <button id="apply-style">Apply</button>
-      <button id="publish-style">Publish</button>
-      <div id="progress-bar-container" style="display:none; margin-top:10px;">
-        <div id="progress-bar" style="width: 0%; height: 10px; background-color: green;"></div>
-      </div>
-    `;
-
-    document.body.appendChild(widget);
-    console.log("Widget UI created.");
-
+    console.log("✅ SquareCraft Plugin Loaded");
+    const adminHeader = document.querySelector('.admin-header');
+    if (adminHeader) {
+      const logo = document.createElement('img');
+      logo.src = 'https://webefo.com/wp-content/uploads/2023/09/cropped-Webefo-Favicon.png';
+      logo.alt = 'Plugin Logo';
+      logo.style.cssText = 'height: 40px;';
+      adminHeader.prepend(logo);
+    }
+  
     let selectedElement = null;
-    document.body.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Prevent widget selection itself
-        if (e.target.closest("#style-widget")) return;
-
-        selectedElement = e.target;
-
-        console.log("Element clicked:", selectedElement);
-
-        // Check if the selected element is the content we want (e.g., <h1> tag)
-        let contentElement = selectedElement.closest("h1, p, div"); // Change this selector as needed
-        if (contentElement) {
-            // If the element is a block element that you want to edit, show its content
-            document.getElementById("element-selector").value =
-                getSelector(contentElement);
-            widget.style.display = "block";
-            console.log("Widget is now visible with simple element.");
-        }
-    });
-
-    // Function to get a unique selector for an element
-    function getSelector(el) {
-        if (el.id) return `#${el.id}`;
-        if (el.className) return `.${el.className.split(" ").join(".")}`;
-        return el.tagName.toLowerCase();
+    let styles = {
+      backgroundColor: "#ffffff",
+      color: "#000000",
+      fontSize: "16px",
+    };
+  
+    const storedUser = localStorage.getItem("squarCraft_user");
+    if (!storedUser) {
+      console.error("No user token found. Unauthorized.");
+      return;
     }
-
-    // Apply styles to the selected element
-    const applyStyleButton = document.getElementById("apply-style");
-    applyStyleButton.addEventListener("click", () => {
-        const selector = document.getElementById("element-selector").value.trim();
-        const property = document.getElementById("css-property").value.trim();
-        const value = document.getElementById("css-value").value.trim();
-
-        console.log("Apply style clicked. Values:", { selector, property, value });
-
-        if (selector && property && value) {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach((el) => {
-                el.style[property] = value;
-                console.log(
-                    `Applied style ${property}: ${value} to elements matching ${selector}`
-                );
-            });
-            alert("Style applied locally.");
-        } else {
-            alert("Please fill in all fields.");
-        }
-    });
-
-    // Show progress bar while saving styles globally
-    function showProgressBar() {
-        const progressBarContainer = document.getElementById(
-            "progress-bar-container"
-        );
-        const progressBar = document.getElementById("progress-bar");
-
-        progressBarContainer.style.display = "block";
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 10;
-            progressBar.style.width = `${progress}%`;
-            if (progress >= 100) {
-                clearInterval(interval);
-                setTimeout(() => {
-                    progressBarContainer.style.display = "none";
-                }, 500);
-            }
-        }, 200);
-    }
-
-    // Save styles globally (persisted across routes)
-    const publishStyleButton = document.getElementById("publish-style");
-    publishStyleButton.addEventListener("click", async () => {
-        const selector = document.getElementById("element-selector").value.trim();
-        const property = document.getElementById("css-property").value.trim();
-        const value = document.getElementById("css-value").value.trim();
-
-        console.log("Publish style clicked. Values:", {
-            selector,
-            property,
-            value,
-        });
-
-        if (selector && property && value) {
-            showProgressBar(); // Show progress bar
-
-            try {
-                const response = await fetch("http://localhost:8000/api/v1/modifications", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        pageId: "alkfja234", // Example pageId; replace as needed
-                        modifications: {
-                            [property]: value,
-                        },
-                        userId: "6790aa9c823ae33a79a3141e", // Example userId; replace as needed
-                    }),
-                });
-                const result = await response.json();
-
-                console.log("Saving style to server...", result);
-
-                if (response.ok) {
-                    console.log("Style saved globally.");
-                    alert("Style saved globally!");
-                } else {
-                    throw new Error(result.message || "Failed to save style.");
-                }
-            } catch (error) {
-                console.error("Error saving style:", error);
-                alert("An error occurred while saving style.");
-            }
-        } else {
-            alert("Please fill in all fields.");
-        }
-    });
-
-    // Fetch and apply saved styles globally on all routes
+    const userToken = JSON.parse(storedUser).squarCraft_auth_token;
+  
     try {
-        const response = await fetch("http://localhost:8000/api/v1/modifications");
-        const result = await response.json();
-
-        console.log("Fetching saved styles...", result);
-
-        if (!response.ok) throw new Error(result.message || "Failed to fetch saved styles.");
-
-        const savedStyles = result.modification;
-
-        if (savedStyles && savedStyles.modifications) {
-            const modifications = savedStyles.modifications;
-            for (const [property, value] of Object.entries(modifications)) {
-                const elements = document.querySelectorAll("*"); // Apply globally or change the selector as needed
-                elements.forEach((el) => {
-                    el.style[property] = value;
-                    console.log(`Applied saved style ${property}: ${value}`);
-                });
-            }
-        }
-
-        console.log("Saved styles applied globally.");
+      const response = await fetch("http://localhost:8000/api/v1/modifications", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      console.log("get method of modification",response)
+      if (!response.ok) throw new Error("Failed to fetch saved styles");
+      const stylesData = await response.json();
+      console.log("Fetched saved styles:", stylesData);
+      applySavedStyles(stylesData);
     } catch (error) {
-        console.error("Error fetching saved styles:", error);
+      console.error("Error fetching saved styles:", error);
     }
-})();
+  
+    function applySavedStyles(stylesData) {
+      Object.keys(stylesData).forEach((selector) => {
+        const element = document.querySelector(selector);
+        if (element) {
+          const style = stylesData[selector];
+          element.style.backgroundColor = style.backgroundColor;
+          element.style.color = style.color;
+          element.style.fontSize = style.fontSize;
+        }
+      });
+    }
+  
+    function handleElementSelect(event) {
+      if (
+        event.target.id !== "squarecraft-widget" &&
+        event.target.id !== "squarecraft-panel"
+      ) {
+        selectedElement = event.target;
+        console.log("🎯 Selected:", selectedElement);
+  
+        const computedStyle = window.getComputedStyle(selectedElement);
+        styles = {
+          backgroundColor: computedStyle.backgroundColor,
+          color: computedStyle.color,
+          fontSize: parseInt(computedStyle.fontSize, 10) + "px",
+        };
+  
+        updatePanelInputs();
+      }
+    }
+  
+    function handleApplyChanges() {
+      if (!selectedElement) return;
+  
+      selectedElement.style.backgroundColor = styles.backgroundColor;
+      selectedElement.style.color = styles.color;
+      selectedElement.style.fontSize = styles.fontSize;
+  
+      fetch("http://localhost:8000/api/v1/modifications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify({
+          elementSelector: selectedElement.tagName + "" + selectedElement.className,
+          styles,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("Failed to save styles");
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Styles saved to backend:", data);
+        })
+        .catch((error) => {
+          console.error("Error saving styles:", error);
+        });
+    }
+  
+    function updatePanelInputs() {
+      document.getElementById("bg-color-input").value = styles.backgroundColor;
+      document.getElementById("text-color-input").value = styles.color;
+      document.getElementById("font-size-input").value = parseInt(styles.fontSize, 10);
+    }
+  
+    const widget = document.createElement("div");
+    widget.id = "squarecraft-widget";
+    widget.className =
+      "fixed bottom-5 right-5 w-12 h-12 bg-orange-500 text-white flex items-center justify-center rounded-full shadow-lg cursor-pointer hover:bg-orange-600";
+    widget.innerHTML = "⚙️";
+    widget.onclick = () =>
+      document.getElementById("squarecraft-panel").classList.toggle("hidden");
+    document.body.appendChild(widget);
+  
+    const panel = document.createElement("div");
+    panel.id = "squarecraft-panel";
+    panel.className = "hidden fixed bottom-20 right-5 bg-white p-6 shadow-lg rounded-md w-72 z-50 border border-gray-200";
+    panel.innerHTML = `
+      <h3 class="text-lg font-semibold mb-4 text-gray-700">SquareCraft Editor</h3>
+      <label class="block mb-2 text-sm font-medium">Background Color:</label>
+      <input id="bg-color-input" type="color" class="w-full mb-4 p-2 border rounded" />
+  
+      <label class="block mb-2 text-sm font-medium">Text Color:</label>
+      <input id="text-color-input" type="color" class="w-full mb-4 p-2 border rounded" />
+  
+      <label class="block mb-2 text-sm font-medium">Font Size:</label>
+      <input id="font-size-input" type="number" class="w-full mb-4 p-2 border rounded" />
+  
+      <button id="apply-button" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Apply Changes</button>
+    `;
+    document.body.appendChild(panel);
+  
+    document.getElementById("bg-color-input").addEventListener("input", (e) => {
+      styles.backgroundColor = e.target.value;
+    });
+  
+    document.getElementById("text-color-input").addEventListener("input", (e) => {
+      styles.color = e.target.value;
+    });
+  
+    document.getElementById("font-size-input").addEventListener("input", (e) => {
+      styles.fontSize = e.target.value + "px";
+    });
+  
+    document.getElementById("apply-button").addEventListener("click", handleApplyChanges);
+  
+    document.addEventListener("click", handleElementSelect);
+  })();
+  
