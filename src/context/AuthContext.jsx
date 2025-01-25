@@ -1,4 +1,4 @@
-import { useState, createContext, useEffect } from "react";
+import { useState, createContext, useEffect, useMemo, useCallback, Fragment } from "react";
 
 export const AuthContext = createContext();
 
@@ -8,15 +8,15 @@ const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Helper function to update user state and persist in localStorage
-  const setUser = (userData) => {
+  // Memoized helper function to update user state and persist in localStorage
+  const setUser = useCallback((userData) => {
     if (userData) {
       localStorage.setItem("squarCraft_user", JSON.stringify(userData));
     } else {
       localStorage.removeItem("squarCraft_user");
     }
     setUserState(userData);
-  };
+  }, []);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("squarCraft_user");
@@ -25,7 +25,7 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const registerUser = async (userData) => {
+  const registerUser = useCallback(async (userData) => {
     setLoading(true);
     try {
       if (!userData || !userData.name || !userData.email || !userData.squarCraft_auth_token) {
@@ -38,11 +38,34 @@ const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setUser]);
+
+  const loginUser = useCallback(async (userData) => {
+    setLoading(true);
+    try {
+      if (!userData || !userData.email || !userData.squarCraft_auth_token) {
+        throw new Error("Invalid user data provided.");
+      }
+      setUser(userData); // Store user in state and localStorage
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [setUser]);
+
+  const contextValue = useMemo(() => ({
+    user,
+    registerUser,
+    loginUser,
+    error,
+    loading
+  }), [user, registerUser, loginUser, error, loading]);
 
   return (
-    <AuthContext.Provider value={{ user, registerUser, error, loading }}>
-      {children}
+    <AuthContext.Provider value={contextValue}>
+      <Fragment>{children}</Fragment>
     </AuthContext.Provider>
   );
 };
