@@ -37,6 +37,147 @@
       console.error("No user token found in cookies. Unauthorized.");
       return;
     }
+<<<<<<< HEAD
+
+    // Save styles globally (persisted across routes)
+    const publishStyleButton = document.getElementById("publish-style");
+    publishStyleButton.addEventListener("click", async () => {
+        const selector = document.getElementById("element-selector").value.trim();
+        const property = document.getElementById("css-property").value.trim();
+        const value = document.getElementById("css-value").value.trim();
+
+        console.log("Publish style clicked. Values:", {
+            selector,
+            property,
+            value,
+        });
+
+        const token = localStorage.getItem("squarCraft_auth_token"); // Replace 'authToken' with the actual key used to store the token
+            console.log("token found", token);
+            if (!token) {
+                alert("User is not authenticated. Please log in.");
+                return;
+            }
+
+        if (selector && property && value) {
+            showProgressBar(); // Show progress bar
+            // Get token from local storage
+            
+
+            // try {
+            //     const response = await axios.post("http://localhost:8000/api/v1/modifications", {
+            //         method: "POST",
+            //         headers: { "Content-Type": "application/json",  "Authorization": `Bearer ${token}` },
+            //         body: JSON.stringify({
+            //             pageId: "alkfja234", // Example pageId; replace as needed
+            //             modifications: {
+            //                 [property]: value,
+            //             },
+            //             userId: "6790aa9c823ae33a79a3141e", // Example userId; replace as needed
+            //         }),
+            //     });
+            //     const result = await response.json();
+
+            //     console.log("Saving style to server...", result);
+
+            //     if (response.ok) {
+            //         console.log("Style saved globally.");
+            //         alert("Style saved globally!");
+            //     } else {
+            //         throw new Error(result.message || "Failed to save style.");
+            //     }
+            // } catch (error) {
+            //     console.error("Error saving style:", error);
+            //     alert("An error occurred while saving style.");
+            // }
+            try {
+                const response = await fetch("http://localhost:8000/api/v1/modifications", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer token`, // Replace with actual token
+                    },
+                    body: JSON.stringify({
+                        pageId: "6794a9639818e399ec6ae11c", // Replace with dynamic pageId
+                        modifications: { [property]: value },
+                        userId: "6794773d006930e0ea42adf9", // Replace with dynamic userId
+                    }),
+                });
+
+                if (response.ok) {
+                    alert("Style saved globally!");
+                } else {
+                    const result = await response.json();
+                    throw new Error(result.message || "Failed to save style.");
+                }
+            } catch (error) {
+                console.error("Error saving style:", error);
+                alert("An error occurred while saving style.");
+            }
+        } else {
+            alert("Please fill in all fields.");
+        }
+    });
+
+    // Fetch and apply saved styles globally on all routes
+    // try {
+    //     const response = await fetch("http://localhost:8000/api/v1/modifications", {
+
+    //     });
+    //     const result = await response.json();
+
+    //     console.log("Fetching saved styles...", result);
+
+    //     if (!response.ok) throw new Error(result.message || "Failed to fetch saved styles.");
+
+    //     const savedStyles = result.modification;
+
+    //     if (savedStyles && savedStyles.modifications) {
+    //         const modifications = savedStyles.modifications;
+    //         for (const [property, value] of Object.entries(modifications)) {
+    //             const elements = document.querySelectorAll("*"); // Apply globally or change the selector as needed
+    //             elements.forEach((el) => {
+    //                 el.style[property] = value;
+    //                 console.log(`Applied saved style ${property}: ${value}`);
+    //             });
+    //         }
+    //     }
+
+    //     console.log("Saved styles applied globally.");
+    // } catch (error) {
+    //     console.error("Error fetching saved styles:", error);
+    // }
+     const token = localStorage.getItem("squarCraft_auth_token"); // Replace 'authToken' with the actual key used to store the token
+     console.log(token);
+    if (!token) {
+        alert("User is not authenticated. Please log in.");
+        return;
+    }
+    try {
+        const response = await fetch(
+            "http://localhost:8000/api/v1/get-modifications?pageId=6794a9639818e399ec6ae11c&userId=6794773d006930e0ea42adf9",
+            {
+                headers: {
+                    "Authorization": `Bearer token`, // Replace with actual token
+                },
+            }
+        );
+
+        if (!response.ok) throw new Error("Failed to fetch saved styles.");
+
+        const result = await response.json();
+
+        const savedStyles = result.modifications;
+        if (savedStyles) {
+            for (const [property, value] of Object.entries(savedStyles)) {
+                const elements = document.querySelectorAll("*"); // Apply globally or update the selector
+                elements.forEach((el) => {
+                    el.style[property] = value;
+                });
+            }
+        }
+        console.log("Saved styles applied globally.");
+=======
   
     try {
       const response = await fetch("http://localhost:8000/api/v1/modifications", {
@@ -52,6 +193,7 @@
       const stylesData = await response.json();
       console.log("Fetched saved styles:", stylesData);
       applySavedStyles(stylesData);
+>>>>>>> origin/temp-develop
     } catch (error) {
       console.error("Error fetching saved styles:", error);
     }
