@@ -1,6 +1,8 @@
 (async function () {
     console.log("✅ SquareCraft Plugin Loaded");
     window.addEventListener("message", (event) => {
+        console.log("Message received:", event);
+
         if (event.data.type === "squarCraft_user") {
           const userData = event.data.payload;
           if (userData) {

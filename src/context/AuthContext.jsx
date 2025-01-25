@@ -130,6 +130,7 @@ const logoutUser = useCallback(async () => {
     }),
     [user, registerUser, loginUser, logoutUser, error, loading]
   );
+  console.log("contextValue", contextValue);
 
   return (
     <AuthContext.Provider value={contextValue}>
