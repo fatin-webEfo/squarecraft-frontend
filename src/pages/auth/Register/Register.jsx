@@ -92,7 +92,7 @@ const RegisterSchema = () => {
         localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
         sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
         document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
-        document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; domain=.squarespace.com; secure; samesite=strict; max-age=${60 * 60 * 24}`; 
+        document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24}; domain=.yoursquarespace.com; secure; samesite=strict`;
 
       }
     } catch (error) {
