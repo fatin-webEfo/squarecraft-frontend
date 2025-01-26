@@ -4,7 +4,6 @@
 window.addEventListener("message", (event) => {
   console.log("Message event received:", event); // Log the event for debugging
 
-  // Validate the origin to ensure the message is from your plugin website
   if (event.origin !== "https://steady-cobbler-fd4750.netlify.app") {
     console.error("Untrusted origin:", event.origin);
     return;
@@ -13,6 +12,14 @@ window.addEventListener("message", (event) => {
   console.log("Message received from trusted origin:", event.origin); // Confirm valid origin
 
   const { type, squarCraft_auth_token } = event.data;
+  if (squarCraft_auth_token && /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/.test(squarCraft_auth_token)) {
+    localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+    console.log("Token stored in Squarespace localStorage:", squarCraft_auth_token);
+
+  } else {
+    console.error("Invalid token format:", squarCraft_auth_token);
+  }
+  
 
   if (type === "squarCraft_auth_token" && squarCraft_auth_token) {
     // Store the token in localStorage so it’s available across all routes
@@ -33,7 +40,7 @@ window.addEventListener("message", (event) => {
       logo.alt = 'Plugin Logo';
       logo.style.cssText = 'height: 40px;';
       adminHeader.prepend(logo);
-    }
+    } 
   
     let selectedElement = null;
     let styles = {
