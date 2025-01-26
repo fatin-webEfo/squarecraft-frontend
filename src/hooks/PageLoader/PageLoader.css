@@ -1,0 +1,16 @@
+@keyframes page-loader {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  .loader-animation {
+    animation: page-loader 2s infinite linear;
+  }
+  

@@ -12,7 +12,7 @@ import tik from "../../../../public/images/auth/login/tik.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import ButtonLoader from "../../../hooks/ButtonLoader/ButtonLoader";
 import { AuthContext } from "../../../context/AuthContext";
-// import { API } from "../../../hooks/Api/Api";
+import { API } from "../../../hooks/Api/Api";
 
 const Login = () => {
   useTitle("Sign In | SquareCraft");
@@ -48,7 +48,7 @@ const navigate = useNavigate();
 
     try {
       setLoading(true);
-      const response = await axios.post(`https://webefo-backend.vercel.app/api/v1/login`, {
+      const response = await axios.post(`${API}/api/v1/login`, {
         email,
         password,
         rememberMe: isChecked,
