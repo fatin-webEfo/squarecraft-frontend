@@ -1,8 +1,36 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import sampleVideo from "../../../../public/Statics/sampleVideo.mp4";
+import { useRef } from "react";
 const Home = () => {
   const storedUser = localStorage.getItem("squarCraft_user");
+  const textRef = useRef(null);
+
+  const handleMouseMove = (e) => {
+    const rect = textRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left; // Cursor X relative to the element
+    const y = e.clientY - rect.top;  // Cursor Y relative to the element
+    const centerX = rect.width / 2; // Center of the element (X-axis)
+    const centerY = rect.height / 2; // Center of the element (Y-axis)
+
+    const rotateX = ((y - centerY) / centerY) * 15; // RotateX based on Y
+    const rotateY = ((x - centerX) / centerX) * -15; // RotateY based on X
+
+    textRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    textRef.current.style.textShadow = `
+      ${-rotateY * 1.5}px ${rotateX * 1.5}px 10px rgba(0, 0, 0, 0.2),
+      ${-rotateY * 2}px ${rotateX * 2}px 20px rgba(0, 0, 0, 0.15)
+    `;
+  };
+
+  const handleMouseLeave = () => {
+    textRef.current.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+    textRef.current.style.textShadow = `
+      2px 2px 3px rgba(0, 0, 0, 0.3),
+      4px 4px 6px rgba(0, 0, 0, 0.2),
+      6px 6px 8px rgba(0, 0, 0, 0.1)
+    `;
+  };
 
     return (
         <div className="bg-white pt-16 pb-20 px-6 md:px-12">
@@ -17,10 +45,16 @@ const Home = () => {
                     <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
                         Elevate Your Squarespace Website
                     </h1>
-                    <p className="mt-8 text-md text-gray-600 max-w-3xl mx-auto gradient-text">
-                        Customize your website like never before with <span style={{ fontWeight: 'bold' }}>SquareCraft</span>.
-                        Easily install and modify your Squarespace site without coding!
-                    </p>
+                    <p
+      ref={textRef}
+      className="gradient-text mt-8 text-md text-gray-600 max-w-3xl mx-auto"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      Customize your website like never before with <span>SquareCraft</span>.
+      Easily install and modify your Squarespace site without coding!
+    </p>
+
 
 
                     <motion.div

@@ -71,7 +71,7 @@ const navigate = useNavigate();
       axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
   
       // Optionally, set a cookie for Squarespace (if required)
-      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60}; domain=.squarespace.com; Secure; SameSite=None`;
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60 * 1000}; domain=.squarespace.com; Secure; SameSite=None`;
       axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
 
       console.log("Token successfully set for Squarespace cookies:", document.cookie);
