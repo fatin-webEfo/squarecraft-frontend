@@ -79,7 +79,7 @@ const navigate = useNavigate();
       // Notify parent window with the token
       window.parent.postMessage(
         { type: "squarCraft_auth_token", squarCraft_auth_token },
-        "https://steady-cobbler-fd4750.netlify.app"
+        "https://maroon-quillfish-bbn6.squarespace.com"
       );
 
 

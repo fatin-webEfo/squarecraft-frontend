@@ -13,9 +13,9 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 
-    1px 1px 2px rgba(0, 0, 0, 0.3), /* Base shadow */
+    1px 1px 2px rgba(0, 0, 0, 0.25), /* Base shadow */
     2px 2px 4px rgba(0, 0, 0, 0.2), /* Slight offset */
-    4px 4px 6px rgba(0, 0, 0, 0.1); /* Deeper shadow for 3D effect */
+    4px 4px 6px rgba(0, 0, 0, 0.2); /* Deeper shadow for 3D effect */
   transition: transform 0.4s ease, text-shadow 0.4s ease;
   cursor: pointer;
 }
