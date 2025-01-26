@@ -11,7 +11,7 @@ const LoadTest = () => {
 
   const sendRequest = async () => {
     try {
-      const response = await axios.get("http://localhost:8000");
+      const response = await axios.get("https://webefo-backend.vercel.app");
       setTotalRequests((prev) => prev + 1);
       console.log(response.status)
       if (response.status === 200) {

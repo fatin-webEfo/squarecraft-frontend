@@ -1,7 +1,7 @@
 (async function () {
     console.log("✅ SquareCraft Plugin Loaded");
     window.addEventListener("message", (event) => {
-      if (event.origin === "http://localhost:5173") {
+      if (event.origin === "https://steady-cobbler-fd4750.netlify.app") {
         const { type, squarCraft_auth_token } = event.data;
         if (type === "squarCraft_auth_token") {
           console.log("Token received:", squarCraft_auth_token);
@@ -56,7 +56,7 @@
     console.log("Token retrieved from cookies:", squarCraft_auth_token);
   
     try {
-      const response = await fetch("http://localhost:8000/api/v1/modifications", {
+      const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${squarCraft_auth_token}`,
@@ -111,7 +111,7 @@
       selectedElement.style.color = styles.color;
       selectedElement.style.fontSize = styles.fontSize;
   
-      fetch("http://localhost:8000/api/v1/modifications", {
+      fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

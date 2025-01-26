@@ -21,7 +21,7 @@ console.log("🎯 user:", storedUser);
     const userToken = JSON.parse(storedUser).squarCraft_auth_token;
 
     axios
-      .get("http://localhost:8000/api/v1/modifications", {
+      .get("https://webefo-backend.vercel.app/api/v1/modifications", {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
@@ -81,7 +81,7 @@ console.log("🎯 user:", storedUser);
 
     axios
       .post(
-        "http://localhost:8000/api/v1/modifications",
+        "https://webefo-backend.vercel.app/api/v1/modifications",
         {
           elementSelector: selectedElement.tagName + "" + selectedElement.className,
           styles,

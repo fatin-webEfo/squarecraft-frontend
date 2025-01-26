@@ -39,7 +39,7 @@
     }
   
     try {
-      const response = await fetch("http://localhost:8000/api/v1/modifications", {
+      const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${squarCraft_auth_token}`,
@@ -94,7 +94,7 @@
       selectedElement.style.color = styles.color;
       selectedElement.style.fontSize = styles.fontSize;
   
-      fetch("http://localhost:8000/api/v1/modifications", {
+      fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
