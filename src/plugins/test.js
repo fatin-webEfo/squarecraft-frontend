@@ -1,34 +1,38 @@
 (async function () {
-    console.log("✅ SquareCraft Plugin Loaded");
-    // Listener Script for Squarespace
-window.addEventListener("message", (event) => {
-  console.log("Message event received:", event); // Log the event for debugging
+  console.log("✅ SquareCraft Plugin Loaded");
 
-  if (event.origin !== "https://steady-cobbler-fd4750.netlify.app") {
-    console.error("Untrusted origin:", event.origin);
-    return;
+  // Listener for messages from the provider
+  window.addEventListener("message", (event) => {
+    console.log("Message event received:", event);
+
+    // Validate the origin
+    if (event.origin !== "https://steady-cobbler-fd4750.netlify.app") {
+      console.error("Untrusted origin:", event.origin);
+      return;
+    }
+
+    const { type, payload } = event.data;
+
+    if (type === "squarCraft_user") {
+      if (payload) {
+        // Store user data in localStorage
+        localStorage.setItem("squarCraft_user", JSON.stringify(payload));
+        console.log("User data stored in localStorage:", payload);
+      } else {
+        // Clear user data on logout
+        localStorage.removeItem("squarCraft_user");
+        console.log("User data cleared from localStorage.");
+      }
+    } else {
+      console.error("Unknown message type received:", type);
+    }
+  });
+
+  // Optional: Retrieve user data from localStorage for debugging
+  const storedUser = localStorage.getItem("squarCraft_user");
+  if (storedUser) {
+    console.log("Stored user data:", JSON.parse(storedUser));
   }
-
-  console.log("Message received from trusted origin:", event.origin); // Confirm valid origin
-
-  const { type, squarCraft_auth_token } = event.data;
-  if (squarCraft_auth_token && /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/.test(squarCraft_auth_token)) {
-    localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-    console.log("Token stored in Squarespace localStorage:", squarCraft_auth_token);
-
-  } else {
-    console.error("Invalid token format:", squarCraft_auth_token);
-  }
-  
-
-  if (type === "squarCraft_auth_token" && squarCraft_auth_token) {
-    // Store the token in localStorage so it’s available across all routes
-    localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-    console.log("Token stored in Squarespace localStorage:", squarCraft_auth_token);
-  } else {
-    console.error("Message received but data is invalid:", event.data);
-  }
-});
 
     
     
