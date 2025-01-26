@@ -9,12 +9,14 @@ const UpdateProfile = () => {
   const { user, loading, error, setUserState } = useContext(AuthContext);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  const [profilePhotoPreview, setProfilePhotoPreview] = useState(user?.profileImage || blankuser);
+  const [profilePhotoPreview, setProfilePhotoPreview] = useState(
+    user?.profileImage || blankuser
+  );
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
-    phoneNumber: "",
+    phoneNumber: user?.phoneNumber || "",
     password: "",
     confirmPassword: "",
   });
@@ -31,10 +33,10 @@ const UpdateProfile = () => {
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setProfilePhoto(file); // Set the file to send to the backend
+      setProfilePhoto(file);
       const reader = new FileReader();
       reader.onload = (event) => {
-        setProfilePhotoPreview(event.target.result); // Preview the uploaded image
+        setProfilePhotoPreview(event.target.result);
       };
       reader.readAsDataURL(file);
     }
@@ -49,25 +51,7 @@ const UpdateProfile = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Basic Validation
-    if (!formData.name) {
-      alert("Name is required.");
-      setIsSubmitting(false);
-      return;
-    }
-    if (!/^\d{10}$/.test(formData.phoneNumber)) {
-      alert("Phone number must be a valid 10-digit number.");
-      setIsSubmitting(false);
-      return;
-    }
-    if (formData.password && formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match.");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
-      // Prepare FormData for `multipart/form-data`
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
       formDataToSend.append("email", formData.email);
@@ -105,9 +89,8 @@ const UpdateProfile = () => {
     return <div>Loading...</div>;
   }
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div>Error: {error}</div>;
   }
-
   return (
     <div className="bg-white py-10">
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
