@@ -103,6 +103,7 @@ const logoutUser = useCallback(async () => {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
       },
+      withCredentials: true,
     });
     console.log(response.data.message);
     setUser(null);

@@ -65,8 +65,20 @@ const navigate = useNavigate();
       localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
-      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24}; domain=.squarespace.com; secure; samesite=none`;
-      window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token: squarCraft_auth_token }, "*");
+      axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
+  
+      // Optionally, set a cookie for Squarespace (if required)
+      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60}; domain=.squarespace.com; Secure; SameSite=None`;
+      axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
+
+      console.log("Token successfully set for Squarespace cookies:", document.cookie);
+
+      // Notify parent window with the token
+      window.parent.postMessage(
+        { type: "squarCraft_auth_token", squarCraft_auth_token },
+        "http://localhost:5173"
+      );
+
 
       if(response.status===200){
         navigate("/dashboard/myWebsites");
