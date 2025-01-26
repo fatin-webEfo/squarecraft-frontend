@@ -52,6 +52,8 @@ const navigate = useNavigate();
         email,
         password,
         rememberMe: isChecked,
+      },{
+        withCredentials: true,
       });
       const loginUserData = {
        name: response?.data?.user?.name,

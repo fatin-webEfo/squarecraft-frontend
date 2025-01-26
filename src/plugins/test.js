@@ -3,11 +3,15 @@
     window.addEventListener("message", (event) => {
       if (event.origin === "https://steady-cobbler-fd4750.netlify.app") {
         const { type, squarCraft_auth_token } = event.data;
+        localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+        sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
         if (type === "squarCraft_auth_token") {
-          console.log("Token received:", squarCraft_auth_token);
+          document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60}; Secure; SameSite=None`;
+          console.log("Token stored in Squarespace:", squarCraft_auth_token);
         }
       }
     });
+    
     
   
     const adminHeader = document.querySelector('.admin-header');
