@@ -3,12 +3,22 @@ import eye from "../../../../../public/images/auth/login/eye.svg";
 import blankuser from "../../../../../public/images/navbar/blankuser.png";
 import edit from "../../../../../public/images/navbar/edit.png";
 import { AuthContext } from "../../../../context/AuthContext";
+import axios from "axios";
 
 const UpdateProfile = () => {
-    const { user, loading, error } = useContext(AuthContext);
+  const { user, loading, error, setUserState } = useContext(AuthContext);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  const [profilePhoto, setProfilePhoto] = useState(blankuser);
+  const [profilePhotoPreview, setProfilePhotoPreview] = useState(user?.profileImage || blankuser);
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [formData, setFormData] = useState({
+    name: user?.name || "",
+    email: user?.email || "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -21,34 +31,94 @@ const UpdateProfile = () => {
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setProfilePhoto(file); // Set the file to send to the backend
       const reader = new FileReader();
       reader.onload = (event) => {
-        setProfilePhoto(event.target.result);
+        setProfilePhotoPreview(event.target.result); // Preview the uploaded image
       };
       reader.readAsDataURL(file);
     }
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Basic Validation
+    if (!formData.name) {
+      alert("Name is required.");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!/^\d{10}$/.test(formData.phoneNumber)) {
+      alert("Phone number must be a valid 10-digit number.");
+      setIsSubmitting(false);
+      return;
+    }
+    if (formData.password && formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      // Prepare FormData for `multipart/form-data`
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("phoneNumber", formData.phoneNumber);
+      formDataToSend.append("password", formData.password);
+      formDataToSend.append("confirmPassword", formData.confirmPassword);
+      if (profilePhoto) {
+        formDataToSend.append("profileImage", profilePhoto);
+      }
+
+      const response = await axios.patch(
+        `https://webefo-backend.vercel.app/api/v1/profile/${user?.user_id}`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log("Profile updated:", response);
+      setUserState(response.data.user); // Update user context with the latest data
+      alert("Profile updated successfully!");
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      alert(err.response?.data?.message || "Failed to update profile. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
   if (error) {
     return <div>Error: {error.message}</div>;
   }
+
   return (
     <div className="bg-white py-10">
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
-         <div className="mx-auto">
-        <p className="text-[26px] font-semibold text-center mx-auto">Update Your Profile</p>
-        
-         {
-            user?.emailVerified === false && (<>
+        <div className="mx-auto">
+          <p className="text-[26px] font-semibold text-center mx-auto">Update Your Profile</p>
+          {user?.emailVerified === false && (
             <p className="text-[#FF0000] text-center mt-2 text-xs border rounded-xl px-4 py-1 border-red-200 bg-red-50">
               Please verify your email to update your profile
             </p>
-            </>)
-          }
-        
-         </div>
+          )}
+        </div>
       </div>
       <div className="border-b border-dashed border-gray-300 max-w-7xl mx-auto w-full mt-6"></div>
       <div className="mt-8">
@@ -56,13 +126,13 @@ const UpdateProfile = () => {
           <div className="flex justify-center mb-8 relative">
             <div className="relative group">
               <img
-                src={profilePhoto}
+                src={profilePhotoPreview}
                 alt="Profile"
-                className="w-36 h-36  object-cover object-top "
+                className="w-36 h-36 object-cover object-top"
               />
               <label
                 htmlFor="upload-photo"
-                className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md flex items-center justify-center cursor-pointer  transition-all"
+                className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md flex items-center justify-center cursor-pointer transition-all"
               >
                 <img src={edit} alt="Edit Icon" className="w-4 h-4" />
               </label>
@@ -76,14 +146,17 @@ const UpdateProfile = () => {
             </div>
           </div>
 
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-800">
                 Your Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                placeholder={user?.name}
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Enter your name"
                 className="mt-2 block w-full rounded-md border-[#E7E7E7] border bg-white px-4 py-2.5 text-sm focus:outline-[#f7decd]"
               />
             </div>
@@ -103,6 +176,9 @@ const UpdateProfile = () => {
                 </select>
                 <input
                   type="text"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
                   placeholder="Your phone number"
                   className="pl-20 block w-full rounded-md border-[#E7E7E7] border bg-white px-4 py-2.5 text-sm focus:outline-[#f7decd]"
                 />
@@ -115,19 +191,23 @@ const UpdateProfile = () => {
               </label>
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 autoComplete="off"
-                placeholder={user?.email}
+                placeholder="Enter your email"
                 className="mt-2 block w-full rounded-md border-[#E7E7E7] border bg-white px-4 py-2.5 text-sm focus:outline-[#f7decd]"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-800">
-                Change Password
-              </label>
+              <label className="block text-sm font-medium text-gray-800">Change Password</label>
               <div className="relative mt-2">
                 <input
                   type={passwordVisible ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder="Change your password"
                   className="block w-full rounded-md border-[#E7E7E7] border bg-white px-4 py-2.5 text-sm focus:outline-[#f7decd]"
                 />
@@ -144,12 +224,13 @@ const UpdateProfile = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-800">
-                Confirm Password
-              </label>
+              <label className="block text-sm font-medium text-gray-800">Confirm Password</label>
               <div className="relative mt-2">
                 <input
                   type={confirmPasswordVisible ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
                   placeholder="Confirm password"
                   className="block w-full rounded-md border-[#E7E7E7] border bg-white px-4 py-2.5 text-sm focus:outline-[#f7decd]"
                 />
@@ -169,8 +250,9 @@ const UpdateProfile = () => {
               <button
                 type="submit"
                 className="bg-orange-500 px-10 text-[#000230] flex items-end text-sm justify-end text-center ml-auto font-medium py-2.5 rounded hover:bg-orange-600 transition"
+                disabled={isSubmitting}
               >
-                Update Information
+                {isSubmitting ? "Updating..." : "Update Information"}
               </button>
             </div>
           </form>
