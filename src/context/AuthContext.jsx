@@ -13,27 +13,37 @@ const AuthProvider = ({ children }) => {
   const setUser = useCallback((userData) => {
     if (userData) {
       localStorage.setItem("squarCraft_user", JSON.stringify(userData));
-      // Post user data to vanilla JS
+      
+      // Send user data to the plugin using postMessage
       window.parent.postMessage(
-        {
-          type: "squarCraft_user",
-          payload: userData,
-        },
-        "*"
+        { type: "squarCraft_user", payload: userData },
+        "https://steady-cobbler-fd4750.netlify.app" // Replace with your plugin domain
       );
     } else {
       localStorage.removeItem("squarCraft_user");
-      // Notify vanilla JS about logout
+      
+      // Notify plugin of logout
       window.parent.postMessage(
-        {
-          type: "squarCraft_user",
-          payload: null,
-        },
-        "*"
+        { type: "squarCraft_user", payload: null },
+        "https://steady-cobbler-fd4750.netlify.app" // Replace with your plugin domain
       );
     }
     setUserState(userData);
   }, []);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("squarCraft_user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUserState(parsedUser);
+
+      // Send stored user data to the plugin on initialization
+      window.parent.postMessage(
+        { type: "squarCraft_user", payload: parsedUser },
+        "https://steady-cobbler-fd4750.netlify.app"
+      );
+    }
+  }, [setUser]);  
 
   useEffect(() => {
     const storedUser = localStorage.getItem("squarCraft_user");
