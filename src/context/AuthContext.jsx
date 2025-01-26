@@ -33,21 +33,35 @@ const AuthProvider = ({ children }) => {
   const fetchProfile = useCallback(async (userId) => {
     try {
       setLoading(true);
-      const response = await axios.get(`https://webefo-backend.vercel.app/api/v1/profile/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
-        },
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `https://webefo-backend.vercel.app/api/v1/profile/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
+          },
+          withCredentials: true,
+        }
+      );
       console.log("Fetched profile:", response.data);
-      setUser(response.data.user); // Update context with the latest user data
+      setUser(response.data.user); // Update user context with the latest user data
     } catch (err) {
       console.error("Error fetching profile:", err);
-      setError(err.response?.data?.message || "Failed to fetch profile.");
+  
+      // Fallback to only user data if profile is not found
+      if (err.response?.status === 404) {
+        console.warn("Profile not found, but user exists. Defaulting to user data.");
+        const storedUser = localStorage.getItem("squarCraft_user");
+        if (storedUser) {
+          setUser(JSON.parse(storedUser)); // Use stored user data
+        }
+      } else {
+        setError(err.response?.data?.message || "Failed to fetch profile.");
+      }
     } finally {
       setLoading(false);
     }
   }, [setUser]);
+  
 
   useEffect(() => {
     const storedUser = localStorage.getItem("squarCraft_user");
