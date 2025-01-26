@@ -13,44 +13,48 @@ const AuthProvider = ({ children }) => {
   const setUser = useCallback((userData) => {
     if (userData) {
       localStorage.setItem("squarCraft_user", JSON.stringify(userData));
-      
-      // Send user data to the plugin using postMessage
+
       window.parent.postMessage(
         { type: "squarCraft_user", payload: userData },
-        "https://steady-cobbler-fd4750.netlify.app" // Replace with your plugin domain
+        "https://steady-cobbler-fd4750.netlify.app"
       );
     } else {
       localStorage.removeItem("squarCraft_user");
-      
-      // Notify plugin of logout
+
       window.parent.postMessage(
         { type: "squarCraft_user", payload: null },
-        "https://steady-cobbler-fd4750.netlify.app" // Replace with your plugin domain
+        "https://steady-cobbler-fd4750.netlify.app"
       );
     }
     setUserState(userData);
   }, []);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("squarCraft_user");
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUserState(parsedUser);
-
-      // Send stored user data to the plugin on initialization
-      window.parent.postMessage(
-        { type: "squarCraft_user", payload: parsedUser },
-        "https://steady-cobbler-fd4750.netlify.app"
-      );
+  // Fetch updated profile data
+  const fetchProfile = useCallback(async (userId) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`https://webefo-backend.vercel.app/api/v1/profile/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
+        },
+        withCredentials: true,
+      });
+      console.log("Fetched profile:", response.data);
+      setUser(response.data.user); // Update context with the latest user data
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+      setError(err.response?.data?.message || "Failed to fetch profile.");
+    } finally {
+      setLoading(false);
     }
-  }, [setUser]);  
+  }, [setUser]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("squarCraft_user");
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUserState(parsedUser);
-      // Post existing user data to vanilla JS on initialization
+
       window.parent.postMessage(
         {
           type: "squarCraft_user",
@@ -58,8 +62,13 @@ const AuthProvider = ({ children }) => {
         },
         "*"
       );
+
+      // Fetch the latest profile data on initial load
+      if (parsedUser?.user_id) {
+        fetchProfile(parsedUser.user_id);
+      }
     }
-  }, [setUser]);
+  }, [fetchProfile]);
 
   const registerUser = useCallback(
     async (userData) => {
@@ -88,11 +97,7 @@ const AuthProvider = ({ children }) => {
     async (userData) => {
       setLoading(true);
       try {
-        if (
-          !userData ||
-          !userData.email ||
-          !userData.squarCraft_auth_token
-        ) {
+        if (!userData || !userData.email || !userData.squarCraft_auth_token) {
           throw new Error("Invalid user data provided.");
         }
         setUser(userData);
@@ -106,29 +111,34 @@ const AuthProvider = ({ children }) => {
     [setUser]
   );
 
-const logoutUser = useCallback(async () => {
-  setLoading(true);
-  try {
-    const response = await axios.post("https://webefo-backend.vercel.app/api/v1/logout", {}, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
-      },
-      withCredentials: true,
-    });
-    console.log(response.data.message);
-    setUser(null);
-    localStorage.removeItem("squarCraft_auth_token");
-    sessionStorage.removeItem("squarCraft_auth_token");
-    document.cookie = "squarCraft_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "squarCraft_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.yoursquarespace.com; secure; samesite=strict;";
-    setError(null);
-  } catch (err) {
-    console.error("Logout Error:", err.message);
-    setError("Failed to log out. Please try again.");
-  } finally {
-    setLoading(false);
-  } 
-}, [setUser]);
+  const logoutUser = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "https://webefo-backend.vercel.app/api/v1/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
+          },
+          withCredentials: true,
+        }
+      );
+      console.log(response.data.message);
+      setUser(null);
+      localStorage.removeItem("squarCraft_auth_token");
+      sessionStorage.removeItem("squarCraft_auth_token");
+      document.cookie = "squarCraft_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie =
+        "squarCraft_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.yoursquarespace.com; secure; samesite=strict;";
+      setError(null);
+    } catch (err) {
+      console.error("Logout Error:", err.message);
+      setError("Failed to log out. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [setUser]);
 
   const contextValue = useMemo(
     () => ({
@@ -136,11 +146,14 @@ const logoutUser = useCallback(async () => {
       registerUser,
       loginUser,
       logoutUser,
+      setUserState,
+      fetchProfile, // Add fetchProfile to the context
       error,
       loading,
     }),
-    [user, registerUser, loginUser, logoutUser, error, loading]
+    [user, registerUser, loginUser, logoutUser, fetchProfile, error, loading]
   );
+
   console.log("contextValue", contextValue);
 
   return (
@@ -151,7 +164,3 @@ const logoutUser = useCallback(async () => {
 };
 
 export default AuthProvider;
-
-
-
-

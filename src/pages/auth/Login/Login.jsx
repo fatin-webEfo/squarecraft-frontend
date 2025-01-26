@@ -79,13 +79,6 @@ const navigate = useNavigate();
 
       console.log("Token successfully set for Squarespace cookies:", document.cookie);
 
-      // Notify parent window with the token
-      window?.parent?.postMessage(
-        { type: "squarCraft_auth_token", squarCraft_auth_token },
-        "https://steady-cobbler-fd4750.netlify.app"
-      );
-
-
       if(response.status===200){
         navigate("/dashboard/myWebsites");
       }
