@@ -12,6 +12,7 @@ import tik from "../../../../public/images/auth/login/tik.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import ButtonLoader from "../../../hooks/ButtonLoader/ButtonLoader";
 import { AuthContext } from "../../../context/AuthContext";
+import { API } from "../../../hooks/Api/Api";
 
 const Login = () => {
   useTitle("Sign In | SquareCraft");
@@ -47,7 +48,7 @@ const navigate = useNavigate();
 
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:8000/api/v1/login", {
+      const response = await axios.post(`${API}/api/v1/login`, {
         email,
         password,
         rememberMe: isChecked,
@@ -76,7 +77,7 @@ const navigate = useNavigate();
       // Notify parent window with the token
       window.parent.postMessage(
         { type: "squarCraft_auth_token", squarCraft_auth_token },
-        "http://localhost:5173"
+        "https://steady-cobbler-fd4750.netlify.app"
       );
 
 

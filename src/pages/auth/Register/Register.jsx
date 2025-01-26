@@ -10,6 +10,7 @@ import eyeIcon from "../../../../public/images/auth/login/eye.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../../../context/AuthContext";
+import { API } from "../../../hooks/Api/Api";
 
 const RegisterSchema = () => {
   useTitle("Sign Up | SquareCraft");
@@ -72,7 +73,7 @@ const RegisterSchema = () => {
   
       // API request to register
       const response = await axios.post(
-        "http://localhost:8000/api/v1/register",
+        `${API}/api/v1/register`,
         { name, email, password, confirmPassword },
         { withCredentials: true } // Allows cookies to be sent/received
       );

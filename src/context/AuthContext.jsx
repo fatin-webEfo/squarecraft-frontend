@@ -99,7 +99,7 @@ const AuthProvider = ({ children }) => {
 const logoutUser = useCallback(async () => {
   setLoading(true);
   try {
-    const response = await axios.post("http://localhost:8000/api/v1/logout", {}, {
+    const response = await axios.post("https://webefo-backend.vercel.app/api/v1/logout", {}, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
       },

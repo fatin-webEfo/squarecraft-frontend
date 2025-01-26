@@ -7,6 +7,7 @@ import downArrow from "../../../public/images/navbar/downArrow.svg"
 import { useContext, useState } from 'react';
 import ProfileDropDown from '../ProfileDropDown/ProfileDropDown';
 import blankuser from "../../../public/images/navbar/blankuser.png";
+// import menu from "../../../public/images/navbar/menu.png";
 
 import { AuthContext } from '../../context/AuthContext';
 

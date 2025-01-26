@@ -11,4 +11,4 @@ Copy and paste the following script into your Squarespace Code Injection section
 ```
 
 
-<b><h2>Pugin website</h2></b>   https://charming-dragon-fe5e7c.netlify.app
+<b><h2>Pugin website</h2></b>   https://steady-cobbler-fd4750.netlify.app/
