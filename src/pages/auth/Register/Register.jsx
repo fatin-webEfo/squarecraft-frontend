@@ -5,7 +5,7 @@ import emailIcon from "../../../../public/images/auth/login/email.svg";
 import lockIcon from "../../../../public/images/auth/login/lock.svg";
 import userIcon from "../../../../public/images/auth/login/user.svg";
 import google from "../../../../public/images/auth/login/google.svg";
-import squarespace from "../../../../public/images/auth/login/squarespace.svg";
+import squarespace from "../../../../public/images/auth/login/squareSpace.svg";
 import eyeIcon from "../../../../public/images/auth/login/eye.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import { useNavigate } from "react-router";
