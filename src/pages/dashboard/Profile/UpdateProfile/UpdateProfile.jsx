@@ -37,7 +37,18 @@ const UpdateProfile = () => {
   return (
     <div className="bg-white py-10">
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
-        <p className="text-[26px] font-semibold">Update Your Profile</p>
+         <div className="mx-auto">
+        <p className="text-[26px] font-semibold text-center mx-auto">Update Your Profile</p>
+        
+         {
+            user?.emailVerified === false && (<>
+            <p className="text-[#FF0000] text-center mt-2 text-xs border rounded-xl px-4 py-1 border-red-200 bg-red-50">
+              Please verify your email to update your profile
+            </p>
+            </>)
+          }
+        
+         </div>
       </div>
       <div className="border-b border-dashed border-gray-300 max-w-7xl mx-auto w-full mt-6"></div>
       <div className="mt-8">

@@ -59,8 +59,11 @@ const navigate = useNavigate();
        name: response?.data?.user?.name,
         email: response?.data?.user?.email,
         user_id: response?.data?.user?.id,
-        squarCraft_auth_token: response?.data?.squarCraft_auth_token
+        squarCraft_auth_token: response?.data?.squarCraft_auth_token,
+        emailVerified:response?.data?.emailVerified,
+        phone:response?.data?.user?.phone || "",
       }
+      console.log(response)
       loginUser(loginUserData);
       console.log("Login from client to rpvoder" , loginUserData)
       const squarCraft_auth_token = response.data.squarCraft_auth_token;
@@ -77,9 +80,9 @@ const navigate = useNavigate();
       console.log("Token successfully set for Squarespace cookies:", document.cookie);
 
       // Notify parent window with the token
-      window.parent.postMessage(
+      window?.parent?.postMessage(
         { type: "squarCraft_auth_token", squarCraft_auth_token },
-        "https://maroon-quillfish-bbn6.squarespace.com"
+        "*"
       );
 
 

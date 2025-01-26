@@ -88,6 +88,7 @@ const RegisterSchema = () => {
           squarCraft_auth_token: response?.data?.squarCraft_auth_token,
           user_id: response?.data?.user?.id,
           phone: response?.data?.user?.phone || "",
+          verified:response?.data?.user?.verified,
         };
   
         console.log("Registered user data:", registerUserData);
