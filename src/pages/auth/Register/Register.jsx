@@ -5,7 +5,7 @@ import emailIcon from "../../../../public/images/auth/login/email.svg";
 import lockIcon from "../../../../public/images/auth/login/lock.svg";
 import userIcon from "../../../../public/images/auth/login/user.svg";
 import google from "../../../../public/images/auth/login/google.svg";
-import squarespace from "../../../../public/images/auth/login/squareSpace.svg";
+import squarespace from "../../../../public/images/auth/login/squarespace.svg";
 import eyeIcon from "../../../../public/images/auth/login/eye.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import { useNavigate } from "react-router";
@@ -56,57 +56,80 @@ const RegisterSchema = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
+  
     // Final validation check before submission
     validateField("name", name);
     validateField("email", email);
     validateField("password", password);
     validateField("confirmPassword", confirmPassword);
-    if (Object.values(errors || {}).some((error) => error)) return;
+  
+    if (Object.values(errors ?? {}).some((error) => error)) {
+      return;
+    }
+  
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:8000/api/v1/register", {
-        name,
-        email,
-        password,
-        confirmPassword
-      },  {
-        withCredentials: true, // Include cookies in the request
-      });
-      console.log(response)
-      const squarCraft_auth_token = response?.data?.squarCraft_auth_token;
-      if (response.status === 201) {
-        const registerUserData = {
-          name:response?.data?.user.name,
-          email: response?.data?.user.email,
-          squarCraft_auth_token: response?.data?.squarCraft_auth_token,
-          user_id: response?.data?.user.id,
-          phone: response?.data?.user.phone || "",
-        }
-        console.log("registered user data" , registerUserData)
-        registerUser(registerUserData);
-        console.log("Registration successful!");
-        navigate("/dashboard/myWebsites")
-        console.log("squarCraft_auth_token", squarCraft_auth_token)
-        localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-      sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-      // Set the token in cookies for Squarespace
-      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24 * 30}; domain=.squarespace.com; secure; samesite=None`;
-      console.log("Token successfully set for Squarespace cookies:", document.cookie);
-        // document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
-        // document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60 * 24}; domain=.squarespace.com; secure; samesite=strict`;
   
+      // API request to register
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/register",
+        { name, email, password, confirmPassword },
+        { withCredentials: true } // Allows cookies to be sent/received
+      );
+  
+      // Extract token safely
+      const squarCraft_auth_token = response?.data?.squarCraft_auth_token;
+  
+      if (response?.status === 201) {
+        const registerUserData = {
+          name: response?.data?.user?.name,
+          email: response?.data?.user?.email,
+          squarCraft_auth_token: response?.data?.squarCraft_auth_token,
+          user_id: response?.data?.user?.id,
+          phone: response?.data?.user?.phone || "",
+        };
+  
+        console.log("Registered user data:", registerUserData);
+  
+        // Save user details using your context method
+        registerUser(registerUserData);
+  
+        // Log success
+        console.log("Registration successful!");
+  
+        // Store token in localStorage and sessionStorage
+        localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+        sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+  
+        // Set Authorization header with Bearer token for all requests
+        axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
+  
+        // Optionally, set a cookie for Squarespace (if required)
+        document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60 * 1000}; domain=https://maroon-quillfish-bbn6.squarespace.com; secure; samesite=None`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
+
         console.log("Token successfully set for Squarespace cookies:", document.cookie);
-        window.parent.postMessage({ type: "squarCraft_auth_token", squarCraft_auth_token }, "*");
+  
+        // Notify parent window with the token
+        window.parent.postMessage(
+          { type: "squarCraft_auth_token", squarCraft_auth_token },
+          "https://www.squarespace.com"
+        );
+  
+        // Navigate to dashboard
+        navigate("/dashboard/myWebsites");
       }
     } catch (error) {
+      // Handle errors gracefully
       setErrors((prev) => ({
         ...prev,
-        submit: error.response?.data?.message || "An error occurred.",
+        submit: error?.response?.data?.message || "An error occurred.",
       }));
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="w-full flex items-center justify-center mt-[6.5rem] xl:mt-[10rem] xl:px-4 sm:px-8">

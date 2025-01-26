@@ -1,5 +1,14 @@
 (async function () {
     console.log("✅ SquareCraft Plugin Loaded");
+    window.addEventListener("message", (event) => {
+      if (event.origin === "http://localhost:5173") {
+        const { type, squarCraft_auth_token } = event.data;
+        if (type === "squarCraft_auth_token") {
+          console.log("Token received:", squarCraft_auth_token);
+        }
+      }
+    });
+    
   
     const adminHeader = document.querySelector('.admin-header');
     if (adminHeader) {
