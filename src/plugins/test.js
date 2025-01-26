@@ -1,16 +1,28 @@
 (async function () {
     console.log("✅ SquareCraft Plugin Loaded");
-    window.addEventListener("message", (event) => {
-      if (event.origin === "https://steady-cobbler-fd4750.netlify.app") {
-        const { type, squarCraft_auth_token } = event.data;
-        localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-        sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-        if (type === "squarCraft_auth_token") {
-          document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60}; Secure; SameSite=None`;
-          console.log("Token stored in Squarespace:", squarCraft_auth_token);
-        }
-      }
-    });
+    // Listener Script for Squarespace
+window.addEventListener("message", (event) => {
+  console.log("Message event received:", event); // Log the event for debugging
+
+  // Validate the origin to ensure the message is from your plugin website
+  if (event.origin !== "https://steady-cobbler-fd4750.netlify.app") {
+    console.error("Untrusted origin:", event.origin);
+    return;
+  }
+
+  console.log("Message received from trusted origin:", event.origin); // Confirm valid origin
+
+  const { type, squarCraft_auth_token } = event.data;
+
+  if (type === "squarCraft_auth_token" && squarCraft_auth_token) {
+    // Store the token in localStorage so it’s available across all routes
+    localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+    console.log("Token stored in Squarespace localStorage:", squarCraft_auth_token);
+  } else {
+    console.error("Message received but data is invalid:", event.data);
+  }
+});
+
     
     
   
