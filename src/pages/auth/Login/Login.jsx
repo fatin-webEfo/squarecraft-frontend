@@ -53,7 +53,7 @@ const navigate = useNavigate();
         password,
         rememberMe: isChecked,
       },{
-        withCredentials: true,
+        // withCredentials: true,
       });
       const loginUserData = {
        name: response?.data?.user?.name,
