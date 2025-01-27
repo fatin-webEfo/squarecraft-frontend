@@ -7,6 +7,7 @@ import axios from "axios";
 
 const UpdateProfile = () => {
   const { user, loading, error, setUserState } = useContext(AuthContext);
+  console.log("User:", user);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [profilePhotoPreview, setProfilePhotoPreview] = useState(
@@ -63,7 +64,7 @@ const UpdateProfile = () => {
       }
 
       const response = await axios.patch(
-        `https://webefo-backend.vercel.app/api/v1/profile/${user?.user_id}`,
+        `https://webefo-backend.vercel.app/api/v1/profile/${user?.user_id ? user.user_id : user?._id}`,
         formDataToSend,
         {
           headers: {
