@@ -4,9 +4,10 @@
   style.textContent = `
     #parent-widget {
       position: absolute;
-      top: 100px;
-      left: 100px;
+      top: 20px;
+      left: 20px;
       cursor: grab;
+      z-index: 9999;
       font-family: Arial, sans-serif;
     }
 
@@ -146,26 +147,31 @@
     </div>
   `;
 
-  // Append widget to body
+  // Append widget to the body
   document.body.appendChild(widget);
 
   // Dragging functionality
   let offset = { x: 0, y: 0 };
+  let isDragging = false;
 
   widget.addEventListener("mousedown", function (e) {
-    if (e.target.tagName !== "DIV" || e.target.classList.contains("no-drag")) {
+    if (e.target.tagName === "P" || e.target.tagName === "IMG" || e.target.closest(".no-drag")) {
       return; // Prevent dragging on non-empty sections
     }
 
     const rect = widget.getBoundingClientRect();
     offset = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    isDragging = true;
 
     const handleMouseMove = (event) => {
-      widget.style.left = `${event.clientX - offset.x}px`;
-      widget.style.top = `${event.clientY - offset.y}px`;
+      if (isDragging) {
+        widget.style.left = `${event.clientX - offset.x}px`;
+        widget.style.top = `${event.clientY - offset.y}px`;
+      }
     };
 
     const handleMouseUp = () => {
+      isDragging = false;
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
