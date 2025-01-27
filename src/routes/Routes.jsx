@@ -15,6 +15,7 @@ const ForgotPassOtp = lazy(() => import(/* webpackPrefetch: true */ '../pages/au
 const ForgotPassEnterNewPass = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/ForgotPassword/ForgotPassEnterNewPass/ForgotPassEnterNewPass'));
 const ForgotPassSuccess = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/ForgotPassword/ForgotPassSuccess/ForgotPassSuccess'));
 import LoadTest from '../components/LoadTest/LoadTest';
+import ParentWidget from '../pages/PluginTest/ParentWidget/ParentWidget';
 const Home = lazy(() => import(/* webpackPrefetch: true */ '../pages/Home/Home/Home'));
 
 
@@ -98,6 +99,11 @@ const routes = [
         element: <LazyWrapper> <UpdateProfile /> </LazyWrapper>,
       },
 
+
+      {
+        path:"/pluginWidgets",
+        element:<ParentWidget/>
+      }
 
     ],
   },

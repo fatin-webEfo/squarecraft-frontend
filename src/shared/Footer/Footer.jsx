@@ -19,6 +19,7 @@ const Footer = () => {
     '/auth/forgot-pass-email-otp',
     '/auth/forgot-pass-set-new-pass',
     '/auth/forgot-pass-pass-updated',
+    '/pluginWidgets'
   ];
 
   const shouldHideFooter = hiddenPaths.includes(location.pathname);

@@ -5,13 +5,14 @@ import Footer from "./shared/Footer/Footer";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./context/AuthContext";
 import PageLoader from "./hooks/PageLoader/PageLoader";
+import logo from "../public/images/auth/login/SquareCraft-logo-withText.svg"
+import Image from "./hooks/Image/Image";
 
 function App() {
-  const { user, loading, error } = useContext(AuthContext);
+  const { loading, error } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation(); // Detects route changes
 
-  // Show loader initially and when the route changes
   useEffect(() => {
     setIsLoading(true);
     const timeout = setTimeout(() => {
@@ -21,13 +22,7 @@ function App() {
     return () => clearTimeout(timeout); // Cleanup timeout on route change
   }, [location]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-xl font-semibold">Loading...</p>
-      </div>
-    );
-  }
+
 
   if (error) {
     return (
@@ -40,12 +35,19 @@ function App() {
 
   return (
     <>
-      {/* Show the page loader while loading */}
       <PageLoader isLoading={isLoading} />
       <Navbar />
-      <div className="mt-28">
-        <Outlet />
+     {
+      loading ? (
+      <> 
+      <div className="fixed inset-0 flex flex-col items-center justify-center bg-gray-50 space-y-6 p-6 z-50">
+      <Image className="animate-pulse" src={logo}></Image>
       </div>
+      </>) :
+      (<> <div className="mt-28">
+        <Outlet />
+      </div></>)
+     }
       <Footer />
     </>
   );
