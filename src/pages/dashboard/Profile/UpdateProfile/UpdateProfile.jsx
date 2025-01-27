@@ -4,10 +4,11 @@ import blankuser from "../../../../../public/images/navbar/blankuser.png";
 import edit from "../../../../../public/images/navbar/edit.png";
 import { AuthContext } from "../../../../context/AuthContext";
 import axios from "axios";
+import PhoneInput from "react-phone-input-2";
+import 'react-phone-input-2/lib/style.css'
 
 const UpdateProfile = () => {
   const { user, loading, error, setUserState } = useContext(AuthContext);
-  console.log("User:", user);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [profilePhotoPreview, setProfilePhotoPreview] = useState(
@@ -48,43 +49,57 @@ const UpdateProfile = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.name);
-      formDataToSend.append("email", formData.email);
-      formDataToSend.append("phoneNumber", formData.phoneNumber);
-      formDataToSend.append("password", formData.password);
-      formDataToSend.append("confirmPassword", formData.confirmPassword);
-      if (profilePhoto) {
-        formDataToSend.append("profileImage", profilePhoto);
-      }
+  try {
+    const formDataToSend = new FormData();
 
-      const response = await axios.patch(
-        `https://webefo-backend.vercel.app/api/v1/profile/${user?.user_id ? user.user_id : user?._id}`,
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
-          },
-          withCredentials: true,
-        }
-      );
+    // Ensure confirmPassword matches password if not explicitly provided
+    const updatedConfirmPassword = formData.confirmPassword || formData.password;
 
-      console.log("Profile updated:", response);
-      setUserState(response.data.user); // Update user context with the latest data
-      alert("Profile updated successfully!");
-    } catch (err) {
-      console.error("Error updating profile:", err);
-      alert(err.response?.data?.message || "Failed to update profile. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+    // Append form data
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("phoneNumber", formData.phoneNumber);
+    formDataToSend.append("password", formData.password);
+    formDataToSend.append("confirmPassword", updatedConfirmPassword);
+
+    // Handle profile photo
+    if (profilePhoto) {
+      formDataToSend.append("profileImage", profilePhoto);
     }
-  };
+
+    // Debugging
+    console.log("FormData being sent:");
+    for (let [key, value] of formDataToSend.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
+    const response = await axios.patch(
+      `https://webefo-backend.vercel.app/api/v1/profile/${user?.user_id || user?.userId}`,
+      formDataToSend,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
+        },
+        withCredentials: true,
+      }
+    );
+
+    console.log("Profile updated:", response);
+    setUserState(response.data.user); // Update user context with the latest data
+    alert("Profile updated successfully!");
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    alert(err.response?.data?.message || "Failed to update profile. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -149,23 +164,34 @@ const UpdateProfile = () => {
               <label className="block text-sm font-medium text-gray-800">
                 Your Phone Number <span className="text-red-500">*</span>
               </label>
-              <div className="relative mt-2">
-                <select
-                  className="absolute inset-y-0 left-0 pl-3 pr-1 h-full bg-transparent border-none text-sm text-gray-600 focus:outline-none"
-                  defaultValue="+880"
-                >
-                  <option value="+880">+880</option>
-                  <option value="+1">+1</option>
-                  <option value="+91">+91</option>
-                </select>
-                <input
-                  type="text"
-                  name="phoneNumber"
+              <div className="mt-2 w-full">
+                <PhoneInput
                   value={formData.phoneNumber}
-                  onChange={handleChange}
-                  placeholder="Your phone number"
-                  className="pl-20 block w-full rounded-md border-[#E7E7E7] border bg-white px-4 py-2.5 text-sm focus:outline-[#f7decd]"
+                  onChange={(value) => setFormData((prevData) => ({ ...prevData, phoneNumber: value }))}
+                  inputStyle={{
+                    width: "100%", // Make the input field full width
+                    height: "42px", // Adjust height for better alignment
+                    border: "1px solid #E7E7E7",
+                    borderRadius: "6px",
+                    paddingLeft: "55px", // Ensure space for country code dropdown
+                    paddingRight: "16px",
+                    fontSize: "14px",
+                  }}
+                  buttonStyle={{
+                    backgroundColor: "#fff",
+                    border: "1px solid #E7E7E7", // Add border between the dropdown and input
+                    borderRadius: "6px 0 0 6px", // Match border radius
+                    padding: "0 4px",
+                  }}
+                  dropdownStyle={{
+                    width: "auto",
+                  }}
+                  inputProps={{
+                    name: "phoneNumber",
+                    required: true,
+                  }}
                 />
+
               </div>
             </div>
 
@@ -193,6 +219,8 @@ const UpdateProfile = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Change your password"
+                  autoComplete="off"
+                  autoSave="off"
                   className="block w-full rounded-md border-[#E7E7E7] border bg-white px-4 py-2.5 text-sm focus:outline-[#f7decd]"
                 />
                 <div

@@ -29,7 +29,6 @@ const AuthProvider = ({ children }) => {
     setUserState(userData);
   }, []);
 
-  // Fetch updated profile data
   const fetchProfile = useCallback(async (userId) => {
     try {
       setLoading(true);
@@ -43,11 +42,10 @@ const AuthProvider = ({ children }) => {
         }
       );
       console.log("Get method of authcontext",response.data);
-      setUser(response.data.user); // Update user context with the latest user data
+      setUser(response.data.profile); 
     } catch (err) {
       console.error("Error fetching profile:", err);
   
-      // Fallback to only user data if profile is not found
       if (err.response?.status === 404) {
         console.warn("Profile not found, but user exists. Defaulting to user data.");
         const storedUser = localStorage.getItem("squarCraft_user");
@@ -77,9 +75,8 @@ const AuthProvider = ({ children }) => {
         "*"
       );
 
-      // Fetch the latest profile data on initial load
-      if (parsedUser?.user_id ? parsedUser.user_id : parsedUser?._id) {
-        fetchProfile(parsedUser.user_id ? parsedUser.user_id : parsedUser._id);
+      if (parsedUser?.user_id ? parsedUser.user_id : parsedUser?.userId) {
+        fetchProfile(parsedUser.user_id ? parsedUser.user_id : parsedUser.userId);
       }
     }
   }, [fetchProfile]);
@@ -161,7 +158,7 @@ const AuthProvider = ({ children }) => {
       loginUser,
       logoutUser,
       setUserState,
-      fetchProfile, // Add fetchProfile to the context
+      fetchProfile, 
       error,
       loading,
     }),

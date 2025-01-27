@@ -1,213 +1,167 @@
   (async function () {
     console.log("✅ SquareCraft Plugin Loaded");
 
-    // Listener for messages from the provider
-    window.addEventListener("message", (event) => {
-      console.log("Message event received:", event);
+  document.addEventListener("DOMContentLoaded", function () {
+    // Add styles dynamically
+    const style = document.createElement("style");
+    style.textContent = `
+      .widget-container {
+        width: 380px;
+        font-weight: 300;
+        background-color: #2c2c2c;
+        color: white;
+        font-size: 14px;
+        padding: 16px;
+        margin: auto;
+        border-radius: 18px;
+        border: 1.5px solid #3D3D3D;
+        position: relative;
+      }
+      .widget-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .widget-logo {
+        width: 144px;
+      }
+      .auto-save-container {
+        background-color: #3D3D3D;
+        border-radius: 9999px;
+        padding: 4px 8px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+      }
+      .widget-divider {
+        width: 100%;
+        height: 1px;
+        border-top: 1px dotted #494949;
+        margin-top: 20px;
+      }
+      .widget-tabs {
+        display: flex;
+        justify-content: flex-start;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .widget-tab {
+        cursor: pointer;
+        padding: 0 14px;
+      }
+      .progress-bar-container {
+        background-color: #494949;
+        height: 2px;
+        width: 100%;
+        margin-top: 12px;
+        position: relative;
+      }
+      .progress-bar {
+        background-color: #EF7C2F;
+        height: 2px;
+        width: 64px;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .widget-section {
+        background-color: #3D3D3D;
+        border-radius: 15px;
+        margin-top: 16px;
+        padding: 16px;
+      }
+      .toggle-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .toggle-button {
+        background-color: #EF7C2F;
+        border-radius: 22px;
+        height: 15px;
+        width: 26px;
+        padding: 1px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+      .toggle-circle {
+        background-color: #F2F2F2;
+        border-radius: 6px;
+        height: 13px;
+        width: 13px;
+      }
+    `;
+    document.head.appendChild(style);
 
-      // Validate the origin
-      if (event.origin !== "https://steady-cobbler-fd4750.netlify.app") {
-        console.error("Untrusted origin:", event.origin);
-        return;
+    // Create the widget
+    const widget = document.createElement("div");
+    widget.id = "parent-widget";
+    widget.style.position = "absolute";
+    widget.style.top = "100px";
+    widget.style.left = "100px";
+    widget.style.cursor = "grab";
+
+    widget.innerHTML = `
+      <div class="widget-container">
+        <div class="widget-header">
+          <img src="widgetLogo.jpg" class="widget-logo" alt="Logo">
+          <div class="auto-save-container">
+            <p>Auto save</p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0C13.9706 0 18 4.02944 18 9C18 13.9706 13.9706 18 9 18Z" fill="white" />
+            </svg>
+          </div>
+        </div>
+        <p class="widget-description">SquareCraft: Empowering Creativity for Your Squarespace Experience</p>
+        <div class="widget-divider"></div>
+        <div class="widget-tabs">
+          <p class="widget-tab">Design</p>
+          <p class="widget-tab">Advanced</p>
+          <p class="widget-tab">Presets</p>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar"></div>
+        </div>
+        <div class="widget-section">
+          <div class="toggle-container">
+            <div class="toggle-button">
+              <div class="toggle-circle"></div>
+            </div>
+            <p>Enable</p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Append widget to the body
+    document.body.appendChild(widget);
+
+    // Add draggable functionality
+    let offset = { x: 0, y: 0 };
+    widget.addEventListener("mousedown", (e) => {
+      if (e.target.tagName !== "DIV" || e.target.classList.contains("no-drag")) {
+        return; // Prevent dragging on non-empty sections
       }
 
-      const { type, payload } = event.data;
+      const rect = widget.getBoundingClientRect();
+      offset = { x: e.clientX - rect.left, y: e.clientY - rect.top };
 
-      if (type === "squarCraft_user") {
-        if (payload) {
-          // Store user data in localStorage
-          localStorage.setItem("squarCraft_user", JSON.stringify(payload));
-          console.log("User data stored in localStorage:", payload);
-        } else {
-          // Clear user data on logout
-          localStorage.removeItem("squarCraft_user");
-          console.log("User data cleared from localStorage.");
-        }
-      } else {
-        console.error("Unknown message type received:", type);
-      }
-    });
-
-    // Optional: Retrieve user data from localStorage for debugging
-    const storedUser = localStorage.getItem("squarCraft_user");
-    if (storedUser) {
-      console.log("Stored user data:", JSON.parse(storedUser));
-    }
-
-      
-      
-    
-      const adminHeader = document.querySelector('.admin-header');
-      if (adminHeader) {
-        const logo = document.createElement('img');
-        logo.src = 'https://webefo.com/wp-content/uploads/2023/09/cropped-Webefo-Favicon.png';
-        logo.alt = 'Plugin Logo';
-        logo.style.cssText = 'height: 40px;';
-        adminHeader.prepend(logo);
-      } 
-    
-      let selectedElement = null;
-      let styles = {
-        backgroundColor: "#ffffff",
-        color: "#000000",
-        fontSize: "16px",
+      const handleMouseMove = (event) => {
+        widget.style.left = `${event.clientX - offset.x}px`;
+        widget.style.top = `${event.clientY - offset.y}px`;
       };
-    
-      // Function to get the token from cookies
-      function getCookie(name) {
-        const cookies = document.cookie.split("; ");
-        for (let i = 0; i < cookies.length; i++) {
-          const [key, value] = cookies[i].split("=");
-          if (key === name) {
-            return decodeURIComponent(value);
-          }
-        }
-        return null;
-      }
-    
-      // Fetch the token from cookies
-      // const squarCraft_auth_token = getCookie("squarCraft_auth_token");
-      // console.log("Token retrieved from cookies:", squarCraft_auth_token);
-    
-      // if (!squarCraft_auth_token) {
-      //   console.error("No user token found in cookies. Unauthorized.");
-      //   return;
-      // }
-      const squarCraft_auth_token = getCookie("squarCraft_auth_token");
-      if (!squarCraft_auth_token) {
-        console.error(
-          "No token found in cookies. Ensure the cookie is set during registration/login."
-        );
-        return;
-      }
-      console.log("Token retrieved from cookies:", squarCraft_auth_token);
-    
-      try {
-        const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${squarCraft_auth_token}`,
-          },
-        });
-        console.log("GET request response:", response);
-    
-        if (!response.ok) throw new Error("Failed to fetch saved styles");
-    
-        const stylesData = await response.json();
-        console.log("Fetched saved styles:", stylesData);
-        applySavedStyles(stylesData);
-      } catch (error) {
-        console.error("Error fetching saved styles:", error);
-      }
-    
-      function applySavedStyles(stylesData) {
-        Object.keys(stylesData).forEach((selector) => {
-          const element = document.querySelector(selector);
-          if (element) {
-            const style = stylesData[selector];
-            element.style.backgroundColor = style.backgroundColor;
-            element.style.color = style.color;
-            element.style.fontSize = style.fontSize;
-          }
-        });
-      }
-    
-      function handleElementSelect(event) {
-        if (
-          event.target.id !== "squarecraft-widget" &&
-          event.target.id !== "squarecraft-panel"
-        ) {
-          selectedElement = event.target;
-          console.log("🎯 Selected:", selectedElement);
-    
-          const computedStyle = window.getComputedStyle(selectedElement);
-          styles = {
-            backgroundColor: computedStyle.backgroundColor,
-            color: computedStyle.color,
-            fontSize: parseInt(computedStyle.fontSize, 10) + "px",
-          };
-    
-          updatePanelInputs();
-        }
-      }
-    
-      function handleApplyChanges() {
-        if (!selectedElement) return;
-    
-        selectedElement.style.backgroundColor = styles.backgroundColor;
-        selectedElement.style.color = styles.color;
-        selectedElement.style.fontSize = styles.fontSize;
-    
-        fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${squarCraft_auth_token}`,
-          },
-          body: JSON.stringify({
-            elementSelector: selectedElement.tagName + "" + selectedElement.className,
-            styles,
-          }),
-        })
-          .then((response) => {
-            if (!response.ok) throw new Error("Failed to save styles");
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Styles saved to backend:", data);
-          })
-          .catch((error) => {
-            console.error("Error saving styles:", error);
-          });
-      }
-    
-      function updatePanelInputs() {
-        document.getElementById("bg-color-input").value = styles.backgroundColor;
-        document.getElementById("text-color-input").value = styles.color;
-        document.getElementById("font-size-input").value = parseInt(styles.fontSize, 10);
-      }
-    
-      const widget = document.createElement("div");
-      widget.id = "squarecraft-widget";
-      widget.className =
-        "fixed bottom-5 right-5 w-12 h-12 bg-orange-500 text-white flex items-center justify-center rounded-full shadow-lg cursor-pointer hover:bg-orange-600";
-      widget.innerHTML = "⚙️";
-      widget.onclick = () =>
-        document.getElementById("squarecraft-panel").classList.toggle("hidden");
-      document.body.appendChild(widget);
-    
-      const panel = document.createElement("div");
-      panel.id = "squarecraft-panel";
-      panel.className =
-        "hidden fixed bottom-20 right-5 bg-white p-6 shadow-lg rounded-md w-72 z-50 border border-gray-200";
-      panel.innerHTML = `
-          <h3 class="text-lg font-semibold mb-4 text-gray-700">SquareCraft Editor</h3>
-          <label class="block mb-2 text-sm font-medium">Background Color:</label>
-          <input id="bg-color-input" type="color" class="w-full mb-4 p-2 border rounded" />
-    
-          <label class="block mb-2 text-sm font-medium">Text Color:</label>
-          <input id="text-color-input" type="color" class="w-full mb-4 p-2 border rounded" />
-    
-          <label class="block mb-2 text-sm font-medium">Font Size:</label>
-          <input id="font-size-input" type="number" class="w-full mb-4 p-2 border rounded" />
-    
-          <button id="apply-button" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Apply Changes</button>
-        `;
-      document.body.appendChild(panel);
-    
-      document.getElementById("bg-color-input").addEventListener("input", (e) => {
-        styles.backgroundColor = e.target.value;
-      });
-    
-      document.getElementById("text-color-input").addEventListener("input", (e) => {
-        styles.color = e.target.value;
-      });
-    
-      document.getElementById("font-size-input").addEventListener("input", (e) => {
-        styles.fontSize = e.target.value + "px";
-      });
-    
-      document.getElementById("apply-button").addEventListener("click", handleApplyChanges);
-    
-      document.addEventListener("click", handleElementSelect);
+
+      const handleMouseUp = () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    });
+  });
+
     })();
