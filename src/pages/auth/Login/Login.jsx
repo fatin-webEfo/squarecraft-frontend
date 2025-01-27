@@ -63,11 +63,8 @@ const navigate = useNavigate();
         emailVerified:response?.data?.emailVerified,
         phone:response?.data?.user?.phone || "",
       }
-      console.log(response)
       loginUser(loginUserData);
-      console.log("Login from client to rpvoder" , loginUserData)
       const squarCraft_auth_token = response.data.squarCraft_auth_token;
-      console.log("squarCraft_auth_token", squarCraft_auth_token)
       localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
@@ -77,13 +74,11 @@ const navigate = useNavigate();
       document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60 * 1000}; domain=.squarespace.com; Secure; SameSite=None`;
       axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
 
-      console.log("Token successfully set for Squarespace cookies:", document.cookie);
 
       if(response.status===200){
         navigate("/dashboard/myWebsites");
       }
     
-      console.log("Login successful:", response.data);
     } catch (error) {
       setErrors({ api: error.response?.data?.message || "An error occurred." });
     } finally {

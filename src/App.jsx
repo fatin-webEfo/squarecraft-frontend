@@ -37,7 +37,6 @@ function App() {
     );
   }
 
-  console.log("User:", user);
 
   return (
     <>
