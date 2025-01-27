@@ -91,13 +91,8 @@ const RegisterSchema = () => {
           verified:response?.data?.user?.verified,
         };
   
-        console.log("Registered user data:", registerUserData);
-  
         // Save user details using your context method
         registerUser(registerUserData);
-  
-        // Log success
-        console.log("Registration successful!");
   
         // Store token in localStorage and sessionStorage
         localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
@@ -109,8 +104,6 @@ const RegisterSchema = () => {
         // Optionally, set a cookie for Squarespace (if required)
         document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60 * 1000}; domain=https://maroon-quillfish-bbn6.squarespace.com; secure; samesite=None`;
         axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
-
-        console.log("Token successfully set for Squarespace cookies:", document.cookie);
   
         // Notify parent window with the token
         window.parent.postMessage(

@@ -13,12 +13,10 @@ const LoadTest = () => {
     try {
       const response = await axios.get("https://webefo-backend.vercel.app");
       setTotalRequests((prev) => prev + 1);
-      console.log(response.status)
       if (response.status === 200) {
         setStatus200Count((prev) => prev + 1);
       } else {
         setNon200Count((prev) => prev + 1);
-        console.log(`Non-200 response: ${response.status}`);
       }
     } catch (error) {
       console.error("Request failed:", error);

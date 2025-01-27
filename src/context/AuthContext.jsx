@@ -42,7 +42,7 @@ const AuthProvider = ({ children }) => {
           withCredentials: true,
         }
       );
-      console.log("Fetched profile:", response.data);
+      console.log("Get method of authcontext",response.data);
       setUser(response.data.user); // Update user context with the latest user data
     } catch (err) {
       console.error("Error fetching profile:", err);
@@ -78,8 +78,8 @@ const AuthProvider = ({ children }) => {
       );
 
       // Fetch the latest profile data on initial load
-      if (parsedUser?.user_id) {
-        fetchProfile(parsedUser.user_id);
+      if (parsedUser?.user_id ? parsedUser.user_id : parsedUser?._id) {
+        fetchProfile(parsedUser.user_id ? parsedUser.user_id : parsedUser._id);
       }
     }
   }, [fetchProfile]);
@@ -128,6 +128,7 @@ const AuthProvider = ({ children }) => {
   const logoutUser = useCallback(async () => {
     setLoading(true);
     try {
+      // eslint-disable-next-line no-unused-vars
       const response = await axios.post(
         "https://webefo-backend.vercel.app/api/v1/logout",
         {},
@@ -138,7 +139,6 @@ const AuthProvider = ({ children }) => {
           withCredentials: true,
         }
       );
-      console.log(response.data.message);
       setUser(null);
       localStorage.removeItem("squarCraft_auth_token");
       sessionStorage.removeItem("squarCraft_auth_token");

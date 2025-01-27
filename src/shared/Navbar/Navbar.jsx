@@ -13,8 +13,6 @@ import { AuthContext } from '../../context/AuthContext';
 
 const Navbar = () => {
     const { user, loading, error } = useContext(AuthContext);
-   
-    console.log("User", user)
   const location = useLocation();
   const pathname = location.pathname;
   const [profileDropdown, setProfileDropdown] = useState(false);
