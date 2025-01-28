@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import ParentWidget from "./ParentWidget";
+import ParentWidget from "../pages/PluginTest/ParentWidget/ParentWidget.jsx";
 
 // Function to add Tailwind CSS dynamically
 const addTailwindCSS = () => {
