@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import ParentWidget from "../pages/PluginTest/ParentWidget/ParentWidget";
+import ParentWidget from "../pages/PluginTest/ParentWidget/ParentWidget.jsx";
 
 const renderWidget = () => {
   let widgetContainer = document.getElementById("squarecraft-widget");
