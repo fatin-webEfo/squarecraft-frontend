@@ -1,180 +1,206 @@
-/* Vanilla CSS equivalent */
-:root {
-    --bg-color: #2c2c2c;
-    --border-color: #3d3d3d;
-    --highlight-color: #ef7c2f;
-    --text-color: white;
-    --secondary-bg-color: #494949;
+/* Container Properties */
+.w-380px {
+    width: 100px !important;
   }
   
-  #squarecraft-widget-container {
-    position: absolute;
-    top: 100px;
-    left: 100px;
-    cursor: grab;
-    padding-top: 7rem;
+  .font-light {
+    font-weight: 300 !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget {
-    width: 380px;
-    font-weight: 300;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-size: 0.875rem;
-    padding: 1rem;
-    margin: auto;
-    border-radius: 18px;
-    border: 1.5px solid var(--border-color);
+  .bg-color-2c2c2c {
+    background-color: #2c2c2c !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .widget-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+  .text-color-white {
+    color: white !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .widget-header img {
-    width: 9rem;
+  .text-sm {
+    font-size: 0.875rem !important; /* 14px */
   }
   
-  #squarecraft-widget-container #squarecraft-widget .widget-header .auto-save {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    background-color: var(--border-color);
-    border-radius: 9999px;
-    cursor: pointer;
+  .p-4 {
+    padding: 1rem !important; /* 16px */
   }
   
-  #squarecraft-widget-container #squarecraft-widget .widget-header .auto-save p {
-    margin: 0;
+  .mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .widget-header .auto-save svg {
-    width: 18px;
-    height: 18px;
+  .border {
+    border-width: 1px !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget p {
-    margin-top: 1.5rem;
-    opacity: 0.7;
+  .rounded-full {
+    border-radius: 9999px !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .divider {
-    width: 100%;
-    height: 1px;
-    border-top: 1px dotted var(--secondary-bg-color);
-    margin-top: 1.25rem;
+  .bg-color-3d3d3d {
+    background-color: #3d3d3d !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .tabs {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1rem;
+  .cursor-pointer {
+    cursor: pointer !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .tabs p {
-    padding: 0.875rem;
-    cursor: pointer;
+  .flex {
+    display: flex !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .tabs .active-tab {
-    background-color: var(--highlight-color);
-    height: 2px;
-    position: absolute;
-    width: 4rem;
-    top: 0;
-    left: 0;
+  .items-center {
+    align-items: center !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box {
-    background-color: var(--border-color);
-    border-radius: 15px;
-    padding: 1rem 1.5rem;
-    margin-top: 1rem;
+  .justify-between {
+    justify-content: space-between !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .content-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .gap-1 {
+    gap: 0.25rem !important; /* 4px */
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .content-header .enable-switch {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  .mt-6 {
+    margin-top: 1.5rem !important; /* 24px */
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .content-header .enable-switch .switch {
-    width: 26px;
-    height: 15px;
-    background-color: var(--highlight-color);
-    border-radius: 22px;
-    position: relative;
-    padding: 1px;
+  .opacity-70 {
+    opacity: 0.7 !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .content-header .enable-switch .switch .knob {
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 13px;
-    height: 13px;
-    background-color: #f2f2f2;
-    border-radius: 6px;
+  .w-full {
+    width: 100% !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .content-header .enable-switch p {
-    margin: 0;
+  .h-1px {
+    height: 1px !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .content-header .reset-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--secondary-bg-color);
-    padding: 2px 0.5rem;
-    border-radius: 9999px;
-    cursor: pointer;
+  .border-t {
+    border-top-width: 1px !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .content-header .reset-btn svg {
-    width: 10px;
-    height: 10px;
+  .border-dotted {
+    border-style: dotted !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 1rem;
+  .border-color-494949 {
+    border-color: #494949 !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .buttons .btn {
-    flex: 1;
-    text-align: center;
-    padding: 0.75rem;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
+  .mt-5 {
+    margin-top: 1.25rem !important; /* 20px */
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .buttons .btn.normal {
-    background-color: var(--highlight-color);
+  .px-3_5 {
+    padding-left: 0.875rem !important; /* 14px */
+    padding-right: 0.875rem !important; /* 14px */
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .buttons .btn.normal:hover {
-    background-color: #cf6e27;
+  .bg-color-494949 {
+    background-color: #494949 !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .buttons .btn.hover {
-    background-color: var(--secondary-bg-color);
+  .relative {
+    position: relative !important;
   }
   
-  #squarecraft-widget-container #squarecraft-widget .content-box .buttons .btn.hover:hover {
-    background-color: #3e3e3e;
+  .absolute {
+    position: absolute !important;
+  }
+  
+  .top-0 {
+    top: 0 !important;
+  }
+  
+  .left-0 {
+    left: 0 !important;
+  }
+  
+  .w-16 {
+    width: 4rem !important; /* 64px */
+  }
+  
+  .rounded-15px {
+    border-radius: 15px !important;
+  }
+  
+  .pt-28 {
+    padding-top: 7rem !important; /* 112px */
+  }
+  
+  .text-16px {
+    font-size: 16px !important;
+  }
+  
+  .rounded-md {
+    border-radius: 6px !important;
+  }
+  
+  .hover\:bg-color-d87838:hover {
+    background-color: #d87838 !important;
+  }
+  
+  .transition-all {
+    transition: all 0.3s ease !important;
+  }
+  
+  .duration-300 {
+    transition-duration: 300ms !important;
+  }
+  
+  /* Typography */
+  .text-ellipsis {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  .text-center {
+    text-align: center !important;
+  }
+  
+  .rounded-22px {
+    border-radius: 22px !important;
+  }
+  
+  .h-15px {
+    height: 15px !important;
+  }
+  
+  .h-2px {
+    height: 2px !important;
+  }
+  
+  .p-1px {
+    padding: 1px !important;
+  }
+  
+  .h-full {
+    height: 100% !important;
+  }
+  
+  .border-color-585858 {
+    border-color: #585858 !important;
+  }
+  
+  .bg-color-f2f2f2 {
+    background-color: #f2f2f2 !important;
+  }
+  
+  .w-26px {
+    width: 26px !important;
+  }
+  
+  .w-13px {
+    width: 13px !important;
+  }
+  
+  .cursor-grab {
+    cursor: grab !important;
+  }
+  
+  .cursor-grabbing {
+    cursor: grabbing !important;
   }
   
