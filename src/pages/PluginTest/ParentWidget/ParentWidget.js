@@ -37,7 +37,7 @@ document.head.appendChild(jqueryScript);
                   cursor: "grab","
                ref={widgetRef} onMouseDown={handleMouseDown}
               >
-                  <div style="background-color: #2c2c2c; width: 300px;"  class=" rounded-xl font-light  text-white text-sm  p-4 mx-auto"
+                  <div style="background-color: #2c2c2c; width: 300px; color: white;"  class=" rounded-xl font-light text-sm  p-4 mx-auto"
                       style="
                           borderRadius: "18px",
                           border: "1.5px solid var(--Black-900, #3D3D3D)",
