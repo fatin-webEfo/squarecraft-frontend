@@ -1,5 +1,45 @@
 (async function () {
     console.log("✅ SquareCraft Plugin Loaded");
+
+function setCookie(name, value, days) {
+    let expires = '';
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); // Convert days to milliseconds
+      expires = `; expires=${date.toUTCString()}`;
+    }
+    document.cookie = `${name}=${value || ''}${expires}; path=/`;
+  }
+  
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+  
+  function generateRandomToken(length = 16) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let token = '';
+    for (let i = 0; i < length; i++) {
+      token += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return token;
+  }
+  
+  const existingToken = getCookie('squareCraft_token');
+  if (!existingToken) {
+    const newToken = generateRandomToken();
+    setCookie('squareCraft_token', newToken, 7); // Set the cookie with a 7-day expiry
+    console.log('🔑 New token set in cookie:', newToken);
+  } else {
+    console.log('✅ Token already exists in cookie:', existingToken);
+  }
+  
+
+
+
+
   
     const widgetContainer = document.createElement("div");
     widgetContainer.id = "squarecraft-widget-container";
@@ -29,7 +69,7 @@
       <div style="background-color: #2c2c2c; width: 300px; color: white;" class="rounded-xl font-light text-sm p-4 mx-auto">
         <h3>Modify Font Size</h3>
         <div>
-          <input type="number" id="font-size-input" placeholder="Enter font size (px)" style="width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;" />
+          <input type="number" id="font-size-input" placeholder="Enter font size (px)" style="width: 40px; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;" />
           <button id="apply-font-size" style="padding: 10px 20px; background-color: #ef7c2f; color: white; border: none; border-radius: 5px; cursor: pointer;">Apply Font Size</button>
         </div>
       </div>
