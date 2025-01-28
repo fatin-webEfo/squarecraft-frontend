@@ -1,10 +1,10 @@
 const path = require("path");
 
 module.exports = {
-  entry: "./src/plugins/test.js", // Entry point for your code
+  entry: "./src/plugins/test.js",
   output: {
-    path: path.resolve(__dirname, "src"), // Output directory
-    filename: "squarecraft-widget.js", // Bundled output file
+    path: path.resolve(__dirname),
+    filename: "squarecraft-widget.js",
   },
   module: {
     rules: [
@@ -14,7 +14,7 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-react"],
+            presets: ["@babel/preset-env", "@babel/preset-react"],
           },
         },
       },
