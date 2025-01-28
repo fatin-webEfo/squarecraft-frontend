@@ -19,6 +19,14 @@
     link.type = "text/css";
     link.href = "https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.css"; 
     document.head.appendChild(link);
+
+    const jqueryScript = document.createElement("script");
+jqueryScript.src = "https://code.jquery.com/jquery-3.6.0.min.js"; // Use the desired version of jQuery
+jqueryScript.type = "text/javascript";
+jqueryScript.onload = function () {
+  console.log("✅ jQuery has been successfully loaded");
+};
+document.head.appendChild(jqueryScript);
     
 
     widgetContainer.innerHTML = `
@@ -29,7 +37,7 @@
                   cursor: "grab","
                ref={widgetRef} onMouseDown={handleMouseDown}
               >
-                  <div style="background-color:#2c2c2c; width: 340px";  class="w-380px rounded-xl font-light  text-white text-sm  p-4 mx-auto"
+                  <div style="background-color: #2c2c2c; width: 100px;"  class=" rounded-xl font-light  text-white text-sm  p-4 mx-auto"
                       style="
                           borderRadius: "18px",
                           border: "1.5px solid var(--Black-900, #3D3D3D)",
