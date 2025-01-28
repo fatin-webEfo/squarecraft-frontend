@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   entry: "./src/plugins/test.js", // Entry point for your code
   output: {
-    path: path.resolve(__dirname, "dist"), // Output directory
+    path: path.resolve(__dirname, "src"), // Output directory
     filename: "squarecraft-widget.js", // Bundled output file
   },
   module: {

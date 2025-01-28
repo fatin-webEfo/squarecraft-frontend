@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import  { useRef } from "react";
 import logo from "../../../../public/widget/photos/logo/widgetLogo.jpg"
 const ParentWidget = () => {
     const widgetRef = useRef(null);
