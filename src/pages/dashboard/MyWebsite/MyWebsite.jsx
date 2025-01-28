@@ -82,7 +82,7 @@ const MyWebsite = () => {
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => copyToClipboard(plugin.id)}
-                                    className={`w-full lg:w-[12rem] py-3 rounded-2xl text-white shadow-md text-center mx-auto text-sm transition duration-300 ease-in-out transform hover:scale-105 ${plugin.copied ? "bg-green-600" : "bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600"
+                                    className={`w-full lg:w-[12rem] py-3 rounded-2xl text-white shadow-md text-center mx-auto text-sm transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600 ${plugin.copied ? "bg-green-600" : "bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600"
                                         }`}
                                 >
                                     {plugin.copied ? "Copied!" : "Copy Installation Code"}
