@@ -24,42 +24,68 @@
     };
     document.head.appendChild(jqueryScript);
     // https://i.ibb.co.com/LXKK6swV/Group-29.jpg ---- brand icon after clicking the widget will be loaded
+    function addImageButton() {
+      // Step 1: Find the parent element with fs-unmask
+      const parentElement = document.querySelector('div.fs-unmask[data-block-focus-handler-id][data-block-toolbar="true"]');
 
-    const parentElement = document.querySelector('div.fs-unmask[data-block-focus-handler-id][data-block-toolbar="true"]');
+      if (parentElement) {
+          console.log("✅ Parent Element Found:", parentElement);
 
-    if (parentElement) {
-        console.log("✅ Parent Element Found:", parentElement);
+          // Step 2: Check if button already exists (to avoid duplicates)
+          if (!parentElement.querySelector(".custom-image-button")) {
+              // Step 3: Create the new image button
+              const imgButton = document.createElement("button");
+              imgButton.setAttribute("aria-label", "Custom Image Button");
+              imgButton.className = "custom-image-button"; // Add a class for styling
+              imgButton.style.border = "none";
+              imgButton.style.background = "transparent";
+              imgButton.style.cursor = "pointer";
+              imgButton.style.marginLeft = "8px"; // Adjust spacing if needed
 
-        // Step 2: Create the new image button
-        const imgButton = document.createElement("button");
-        imgButton.setAttribute("aria-label", "Custom Image Button");
-        imgButton.className = "custom-image-button"; // Add a class for styling
-        imgButton.style.border = "none";
-        imgButton.style.background = "transparent";
-        imgButton.style.cursor = "pointer";
-        imgButton.style.marginLeft = "8px"; // Adjust spacing if needed
+              // Step 4: Add an image inside the button
+              const img = document.createElement("img");
+              img.src = "https://i.ibb.co.com/LXKK6swV/Group-29.jpg"; // Replace with actual image URL
+              img.alt = "Custom Icon";
+              img.width = 22; // Set button image size
+              img.height = 22;
+              img.style.display = "block";
 
-        // Step 3: Add an image inside the button
-        const img = document.createElement("img");
-        img.src = "https://i.ibb.co.com/LXKK6swV/Group-29.jpg"; // Replace with actual image URL
-        img.alt = "Custom Icon";
-        img.width = 22; // Set button image size
-        img.height = 22;
-        img.style.display = "block";
+              imgButton.appendChild(img);
 
-        imgButton.appendChild(img);
+              // Step 5: Insert the button inside the parent element
+              parentElement.appendChild(imgButton);
+              console.log("✅ Image Button Successfully Added");
 
-        // Step 4: Insert the button inside the parent element
-        parentElement.appendChild(imgButton);
-        console.log("✅ Image Button Successfully Added");
+              // Step 6: Add Click Event to Button
+              imgButton.addEventListener("click", function () {
+                  alert("Image Button Clicked!");
+              });
+          }
+      } else {
+          console.warn("⚠️ Parent Element Not Found! Waiting for element...");
+          waitForFsUnmask();
+      }
+  }
 
-        // Step 5: Add Click Event to Button
-        imgButton.addEventListener("click", function () {
-            alert("Image Button Clicked!");
-        });
-    } else {
-        console.warn("⚠️ Parent Element Not Found!");
-    }
+  // MutationObserver to detect dynamic changes
+  function waitForFsUnmask() {
+      const observer = new MutationObserver((mutations, obs) => {
+          const parentElement = document.querySelector('div.fs-unmask[data-block-focus-handler-id][data-block-toolbar="true"]');
+          if (parentElement) {
+              addImageButton();
+              obs.disconnect(); // Stop observing once found
+          }
+      });
+
+      // Observe the entire body for changes
+      observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+      });
+  }
+
+  // Run the function
+  addImageButton();
     widgetContainer.innerHTML = `
      <div
     class="squareCraft-pt-28" style="   
