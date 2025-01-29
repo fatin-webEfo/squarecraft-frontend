@@ -1,74 +1,46 @@
 (async function () {
   console.log("✅ SquareCraft Plugin Loaded");
+
   document.addEventListener("DOMContentLoaded", function () {
-    const widgetTrigger = document.getElementById("squarecraft-widget-trigger");
+    // Create widget trigger (brand icon)
+    const widgetTrigger = document.createElement("img");
+    widgetTrigger.id = "squarecraft-widget-trigger";
+    widgetTrigger.src = "https://i.ibb.co.com/LXKK6swV/Group-29.jpg";
+    widgetTrigger.alt = "Widget Icon";
+    widgetTrigger.style = `
+        position: fixed;
+        border-radius: 100%;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: auto;
+        cursor: pointer;
+        z-index: 9999;
+    `;
+    document.body.appendChild(widgetTrigger);
+
+    // Create widget container (Initially Hidden)
     const widgetContainer = document.createElement("div");
     widgetContainer.id = "squarecraft-widget-container";
-    widgetContainer.style.position = "fixed";
-    widgetContainer.style.top = "100px";
-    widgetContainer.style.left = "100px";
-    widgetContainer.style.cursor = "grab";
-    widgetContainer.style.zIndex = "9999";
-    widgetContainer.style.display = "none"; // 👈 Initially Hidden
+    widgetContainer.style = `
+        position: fixed;
+        top: 100px;
+        left: 100px;
+        cursor: grab;
+        z-index: 9999;
+        display: none; /* Initially hidden */
+    `;
 
-    document.body.appendChild(widgetContainer);
-
-    if (widgetTrigger) {
-      widgetTrigger.addEventListener("click", function () {
-        widgetContainer.style.display = widgetContainer.style.display === "none" ? "block" : "none"; // 👈 Toggle widget
-        console.log("✅ Widget toggled.");
-      });
-    } else {
-      console.warn("⚠️ Widget trigger not found! Make sure #squarecraft-widget-trigger exists.");
-    }
-  });
-
-
-
-  const widgetContainer = document.createElement("div");
-  widgetContainer.id = "squarecraft-widget-container";
-  widgetContainer.style.position = "fixed";
-  widgetContainer.style.top = "100px";
-  widgetContainer.style.left = "100px";
-  widgetContainer.style.cursor = "grab";
-  widgetContainer.style.zIndex = "9999";
-
-  const link = document.createElement("link");
-  link.id = "squarecraft-styles";
-  link.rel = "stylesheet";
-  link.type = "text/css";
-  link.href = "https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.css"
-  document.head.appendChild(link);
-
-  const jqueryScript = document.createElement("script");
-  jqueryScript.src = "https://code.jquery.com/jquery-3.6.0.min.js";
-  jqueryScript.type = "text/javascript";
-  jqueryScript.onload = function () {
-    console.log("✅ jQuery has been successfully loaded");
-  };
-  document.head.appendChild(jqueryScript);
-  // https://i.ibb.co.com/LXKK6swV/Group-29.jpg ---- brand icon after clicking the widget will be loaded
-  widgetContainer.innerHTML = `
+    // Add widget content
+    widgetContainer.innerHTML = `
      <div
     class="squareCraft-pt-28" style="   
                  position: absolute;
                  top: 100px;
                  left: 100px;
-                 cursor: grab;
+                 cursor: grab; 
                  width:300px;">
-<img id="squarecraft-widget-trigger" 
-     src="https://i.ibb.co.com/LXKK6swV/Group-29.jpg" 
-     alt="Widget Icon"
-     style="
-        position: fixed;
-        border-radius: 100%;
-        bottom: 20px;
-        right: 20px;
-        width: 60px; 
-        height: auto;
-        cursor: pointer;
-        z-index: 9999;
-     "><div class="squareCraft-w-300px  squareCraft-font-light squareCraft-bg-color-2c2c2c squareCraft-text-color-white squareCraft-text-sm  squareCraft-p-4 mx-auto"
+<div class="squareCraft-w-300px  squareCraft-font-light squareCraft-bg-color-2c2c2c squareCraft-text-color-white squareCraft-text-sm  squareCraft-p-4 mx-auto"
                      style="
                      padding-bottom: 20px;
                          border-radius: 18px;
@@ -273,140 +245,112 @@
      
     </div>
     `;
+    document.body.appendChild(widgetContainer);
 
-  document.body.appendChild(widgetContainer);
+    // Toggle widget visibility on clicking the brand icon
+    widgetTrigger.addEventListener("click", () => {
+      widgetContainer.style.display = widgetContainer.style.display === "none" ? "block" : "none";
+      console.log("✅ Widget toggled.");
+    });
 
-  // Drag functionality for the widget
-  let offset = { x: 0, y: 0 };
-  widgetContainer.onmousedown = function (e) {
-    const rect = widgetContainer.getBoundingClientRect();
-    offset.x = e.clientX - rect.left;
-    offset.y = e.clientY - rect.top;
+    // Close button functionality
+    document.getElementById("close-widget").addEventListener("click", () => {
+      widgetContainer.style.display = "none";
+    });
 
-    const onMouseMove = (event) => {
-      widgetContainer.style.left = `${event.clientX - offset.x}px`;
-      widgetContainer.style.top = `${event.clientY - offset.y}px`;
+    // Drag functionality for the widget
+    let offset = { x: 0, y: 0 };
+    widgetContainer.onmousedown = function (e) {
+      const rect = widgetContainer.getBoundingClientRect();
+      offset.x = e.clientX - rect.left;
+      offset.y = e.clientY - rect.top;
+
+      const onMouseMove = (event) => {
+        widgetContainer.style.left = `${event.clientX - offset.x}px`;
+        widgetContainer.style.top = `${event.clientY - offset.y}px`;
+      };
+
+      const onMouseUp = () => {
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
+      };
+
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
     };
 
-    const onMouseUp = () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
+    // Add font size change event listener only if the button exists
+    const applyFontSizeBtn = document.getElementById("apply-font-size");
+    if (applyFontSizeBtn) {
+      applyFontSizeBtn.addEventListener("click", async () => {
+        const fontSize = document.getElementById("font-size-input").value;
 
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
-  };
-
-  let selectedElement = null;
-
-  // Add click event listener to the document
-  document.addEventListener("click", (event) => {
-    const target = event.target;
-    let selectedElement = null;
-
-    // Find the nearest parent div with an ID starting with "block-"
-    let parent = target;
-    while (parent && parent.tagName !== "HTML") {
-      if (parent.id && parent.id.startsWith("block-")) {
-        selectedElement = parent;
-        console.log("✅ Selected block element:", selectedElement);
-        alert(`Selected block with ID: ${selectedElement.id}`);
-        break;
-      }
-      parent = parent.parentElement;
-    }
-    let mainElement = target.closest("main"); // Find the closest <main> tag
-    if (mainElement) {
-      let articleElement = mainElement.querySelector("article[data-page-sections]"); // Find <article> inside <main>
-      if (articleElement) {
-        const pageSections = articleElement.getAttribute("data-page-sections");
-        console.log("✅ Found article inside <main> with data-page-sections:", pageSections);
-        alert(`Found article inside <main> with data-page-sections: ${pageSections}`);
-      } else {
-        console.warn("⚠️ No <article> with data-page-sections inside <main> found.");
-      }
-    } else {
-      console.warn("⚠️ No <main> tag found in the hierarchy.");
-    }
-
-  });
-
-
-  // Apply font size change
-  document.getElementById("apply-font-size").addEventListener("click", async () => {
-    const fontSize = document.getElementById("font-size-input").value;
-
-    if (!selectedElement) {
-      alert("No element selected. Please click on an element first.");
-      return;
-    }
-
-    if (!fontSize) {
-      alert("Please enter a valid font size.");
-      return;
-    }
-
-    // Apply the font size to the selected element
-    selectedElement.style.fontSize = `${fontSize}px`;
-
-    // Send the modification to the API
-    const payload = {
-      pageId: "alkfja234",
-      modifications: {
-        fontSize: `${fontSize}px`,
-      },
-      userId: "67962823ce065360d822548f",
-    };
-
-    try {
-      const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
-        console.log("Font size updated successfully:", payload);
-        alert("Font size updated successfully!");
-      } else {
-        console.error("Failed to update font size:", await response.text());
-        alert("Failed to update font size.");
-      }
-    } catch (error) {
-      console.error("Error while sending request:", error);
-      alert("Error while sending request.");
-    }
-  });
-
-  // Fetch existing modifications from the API
-  async function fetchModifications() {
-    try {
-      const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications?pageId=alkfja234", {
-        method: "GET",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Fetched modifications:", data);
-
-        // Apply modifications to elements
-        if (data.modifications && data.modifications.fontSize) {
-          const elements = document.querySelectorAll("[id^='block-']");
-          elements.forEach((element) => {
-            element.style.fontSize = data.modifications.fontSize;
-          });
-          alert(`Applied font size: ${data.modifications.fontSize} to all elements.`);
+        if (!fontSize) {
+          alert("Please enter a valid font size.");
+          return;
         }
-      } else {
-        console.error("Failed to fetch modifications:", await response.text());
-      }
-    } catch (error) {
-      console.error("Error fetching modifications:", error);
-    }
-  }
 
-  // Fetch modifications on load
-  fetchModifications();
+        // Apply the font size to the selected element
+        const selectedElement = document.querySelector("[id^='block-']");
+        if (selectedElement) {
+          selectedElement.style.fontSize = `${fontSize}px`;
+        }
+
+        // Send the modification to the API
+        const payload = {
+          pageId: "alkfja234",
+          modifications: { fontSize: `${fontSize}px` },
+          userId: "67962823ce065360d822548f",
+        };
+
+        try {
+          const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (response.ok) {
+            console.log("✅ Font size updated successfully:", payload);
+            alert("Font size updated successfully!");
+          } else {
+            console.error("❌ Failed to update font size:", await response.text());
+            alert("Failed to update font size.");
+          }
+        } catch (error) {
+          console.error("❌ Error while sending request:", error);
+          alert("Error while sending request.");
+        }
+      });
+    }
+
+    // Fetch modifications on load
+    async function fetchModifications() {
+      try {
+        const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications?pageId=alkfja234", {
+          method: "GET",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("✅ Fetched modifications:", data);
+
+          // Apply modifications to elements
+          if (data.modifications && data.modifications.fontSize) {
+            const elements = document.querySelectorAll("[id^='block-']");
+            elements.forEach((element) => {
+              element.style.fontSize = data.modifications.fontSize;
+            });
+            alert(`Applied font size: ${data.modifications.fontSize} to all elements.`);
+          }
+        } else {
+          console.error("❌ Failed to fetch modifications:", await response.text());
+        }
+      } catch (error) {
+        console.error("❌ Error fetching modifications:", error);
+      }
+    }
+
+    fetchModifications();
+  });
 })();
