@@ -24,52 +24,53 @@
     };
     document.head.appendChild(jqueryScript);
 
-    function findToolbarParent() {
-      console.log("⏳ Searching for Toolbar Parent...");
+    function findSquarespaceToolbar() {
+      console.log("🔍 Searching for Squarespace Toolbar...");
   
-      // Try to find the element normally
-      let toolbarParent = document.querySelector('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+      // Select the toolbar using attributes instead of dynamic class names
+      let toolbar = document.querySelector('[data-guidance-engine="guidance-engine-device-view-button-container"]');
   
-      // If not found, check Shadow DOM (Some Squarespace UI elements use Shadow DOM)
-      if (!toolbarParent) {
-          console.warn("⚠️ Toolbar Parent not found normally. Checking for Shadow DOM...");
+      if (!toolbar) {
+          console.warn("⚠️ Toolbar not found normally. Checking Shadow DOM...");
+  
+          // Search inside Shadow DOM elements
           document.querySelectorAll('*').forEach(el => {
               if (el.shadowRoot) {
                   const shadowElement = el.shadowRoot.querySelector('[data-guidance-engine="guidance-engine-device-view-button-container"]');
                   if (shadowElement) {
-                      console.log("✅ Found in Shadow DOM:", shadowElement);
-                      toolbarParent = shadowElement;
+                      console.log("✅ Toolbar found inside Shadow DOM:", shadowElement);
+                      toolbar = shadowElement;
                   }
               }
           });
       }
   
-      if (toolbarParent) {
-          console.log("🎯 Toolbar Parent Found:", toolbarParent);
-          return toolbarParent;
+      if (toolbar) {
+          console.log("🎯 Found Squarespace Toolbar:", toolbar);
+          return toolbar;
       } else {
-          console.warn("🚨 Toolbar Parent Not Found. Will retry...");
+          console.warn("🚨 Toolbar Not Found. Retrying...");
           return null;
       }
   }
   
-  // 🔍 Enhanced Observer with Timeout
-  function observeToolbarParent() {
-      console.log("🔍 Observing DOM for Toolbar Parent...");
+  // 🔍 Mutation Observer to Wait for Toolbar to Load
+  function observeToolbar() {
+      console.log("📡 Observing DOM for Toolbar...");
   
       let retries = 0;
-      const maxRetries = 10; // Avoid infinite loops
+      const maxRetries = 10;
   
       const observer = new MutationObserver(() => {
-          let toolbar = findToolbarParent();
-          if (toolbar && !toolbar.querySelector(".squarecraft-plugin-icon")) {
-              console.log("📌 Toolbar Parent Found via Observer! Injecting Icon...");
-              addPluginIconToToolbar(toolbar);
+          let toolbar = findSquarespaceToolbar();
+          if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
+              console.log("📌 Toolbar Found! Injecting Plugin Icon...");
+              injectPluginIcon(toolbar);
               observer.disconnect();
           } else {
               retries++;
               if (retries >= maxRetries) {
-                  console.error("❌ Toolbar Parent Not Found after multiple attempts. Stopping observer.");
+                  console.error("❌ Toolbar Not Found after multiple attempts. Stopping observer.");
                   observer.disconnect();
               } else {
                   console.warn(`🔄 Retrying... Attempt ${retries}/${maxRetries}`);
@@ -79,58 +80,61 @@
   
       observer.observe(document.body, { childList: true, subtree: true });
   
-      // Backup: Force retry after 5 seconds
+      // Backup: Force check after 5 seconds
       setTimeout(() => {
-          let toolbar = findToolbarParent();
+          let toolbar = findSquarespaceToolbar();
           if (toolbar) {
               console.log("✅ Found Toolbar via setTimeout!");
-              addPluginIconToToolbar(toolbar);
+              injectPluginIcon(toolbar);
               observer.disconnect();
           }
       }, 5000);
   }
   
-  // 🔧 Inject the Icon when the toolbar is found
-  function addPluginIconToToolbar(toolbarParent) {
-      if (!toolbarParent) {
-          console.error("❌ Cannot inject icon: Toolbar Parent is null.");
+  // 🎨 Inject SquareCraft Plugin Icon
+  function injectPluginIcon(toolbar) {
+      if (!toolbar) {
+          console.error("❌ Cannot inject icon: Toolbar is null.");
           return;
       }
   
-      if (!toolbarParent.querySelector(".squarecraft-plugin-icon")) {
+      // Avoid duplicate icons
+      if (!toolbar.querySelector("[data-squarecraft-icon]")) {
           console.log("🎨 Injecting SquareCraft Plugin Icon...");
   
           const pluginButton = document.createElement("button");
-          pluginButton.className = "squarecraft-plugin-icon";
+          pluginButton.setAttribute("data-squarecraft-icon", "true"); // Unique identifier
           pluginButton.style.border = "none";
           pluginButton.style.background = "transparent";
           pluginButton.style.cursor = "pointer";
           pluginButton.style.marginLeft = "10px";
   
-          // Add plugin icon image
+          // Add plugin icon
           const img = document.createElement("img");
-          img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Your plugin logo URL
+          img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Your plugin logo
           img.alt = "SquareCraft Plugin";
           img.width = 24;
           img.height = 24;
           img.style.display = "block";
   
           pluginButton.appendChild(img);
-          toolbarParent.appendChild(pluginButton);
+          toolbar.appendChild(pluginButton);
   
           console.log("🎉 SquareCraft Icon Successfully Added!");
   
-          // ✅ Add Click Event
+          // ✅ Click Event for Plugin
           pluginButton.addEventListener("click", function () {
               alert("SquareCraft Plugin Clicked!");
           });
       } else {
-          console.warn("⚠️ SquareCraft Plugin Icon Already Exists! Skipping...");
+          console.warn("⚠️ SquareCraft Plugin Icon Already Exists. Skipping...");
       }
   }
   
-  // 🚀 Run everything
-  observeToolbarParent();
+  // 🚀 Run Everything
+  observeToolbar();
+  
+  
   
   
   
@@ -173,17 +177,7 @@
       }
   }
 
-  function observeToolbar() {
-    const observer = new MutationObserver(() => {
-        const toolbar = document.querySelector(".sqs-block-toolbar");
-        if (toolbar) {
-            addImageButton();
-            observer.disconnect(); 
-        }
-    });
 
-    observer.observe(document.body, { childList: true, subtree: true });
-}
 
 
   addImageButton();
