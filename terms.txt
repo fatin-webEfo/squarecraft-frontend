@@ -1,0 +1,112 @@
+**Terms and Conditions**
+
+Effective Date: January 2025
+
+Welcome to SquareCraft. These Terms and Conditions ("Terms"), along with our Privacy Policy, set forth the terms under which SquareCraft ("we," "us," or "our") provides access to and use of our plugin, services, and tools (the "Services"). By accessing or using SquareCraft’s Services, you ("you" or "your") agree to be bound by these Terms.
+
+If you do not agree to these Terms, you must stop using the Services immediately. For questions or assistance, you can contact us at **info@webefo.com**.
+
+---
+
+### 1. **Our Services**
+
+SquareCraft provides tools and plugins to enhance your Squarespace website-building experience. This includes:
+
+- A no-code design extension and plugin for Squarespace.
+- Access to design features, advanced customizations, and templates.
+- Features such as live chat support, podcasts, and additional resources for creative growth.
+
+We do not control or have input into the content you create using our Services. Additionally, we do not control the operation of the Squarespace platform itself and are not responsible for any issues that arise from its use.
+
+---
+
+### 2. **Eligibility**
+
+To use our Services, you must:
+
+- Be at least 18 years old.
+- Use our Services only for legal purposes.
+- Comply with applicable laws and regulations.
+
+If you are registering as a business entity, you confirm that you have the authority to bind that entity to these Terms.
+
+---
+
+### 3. **Your Account**
+
+- You are responsible for maintaining the accuracy of your account information.
+- You must keep your login credentials secure and not share them with others.
+- Any unauthorized use of your account must be reported to us immediately.
+
+---
+
+### 4. **Fees**
+
+- Fees for using SquareCraft’s Services are listed on our website or communicated directly to you.
+- All payments are non-refundable.
+- We reserve the right to update our fees at any time, with changes applying to future renewals or purchases.
+
+---
+
+### 5. **Squarespace Integration**
+
+- SquareCraft operates as a plugin for Squarespace and requires an active Squarespace account.
+- You are solely responsible for complying with Squarespace’s Terms of Service.
+- Changes made by Squarespace to its platform may impact the functionality of SquareCraft. We will make reasonable efforts to adapt to such changes but cannot guarantee uninterrupted service.
+
+---
+
+### 6. **Intellectual Property Rights**
+
+- All intellectual property related to SquareCraft’s Services, software, and tools, including modifications, templates, and designs, is owned by SquareCraft or our licensors.
+- You may not copy, reverse engineer, or commercialize our intellectual property without prior written consent.
+- Any feedback or suggestions provided by you may be used by us to improve our Services without compensation or obligation to you.
+
+---
+
+### 7. **Data and Privacy**
+
+- By using our Services, you consent to the collection and use of your data as outlined in our Privacy Policy.
+- You are responsible for ensuring that you have the necessary rights or permissions to provide any third-party data to SquareCraft.
+
+---
+
+### 8. **Modifications**
+
+- SquareCraft may amend these Terms from time to time. Updates will be posted on our website and become effective immediately unless otherwise stated.
+- Continued use of the Services constitutes acceptance of the revised Terms.
+
+---
+
+### 9. **Liability**
+
+- SquareCraft is provided on an "as is" basis. To the maximum extent permitted by law, we disclaim all warranties, including implied warranties of merchantability or fitness for a particular purpose.
+- Our liability for any claims related to the Services is limited to NZ$100 or the fees paid by you in the 12 months prior to the claim, whichever is greater.
+
+---
+
+### 10. **Termination**
+
+- You may terminate your account at any time by contacting us or using account settings. No refunds will be issued upon termination.
+- We reserve the right to suspend or terminate your account if you violate these Terms or engage in unlawful behavior.
+
+---
+
+### 11. **Governing Law**
+
+These Terms are governed by the laws of New Zealand. Any disputes will be resolved under the jurisdiction of the courts of New Zealand.
+
+---
+
+### 12. **Contact Us**
+
+For any questions or concerns about these Terms, you can reach us at:
+
+**Email:** info@webefo.com
+
+**Address:** SquareCraft Ltd., [Insert Address, City, New Zealand]
+
+---
+
+Thank you for choosing SquareCraft. Empower your Squarespace creativity with our tools and services!
+
