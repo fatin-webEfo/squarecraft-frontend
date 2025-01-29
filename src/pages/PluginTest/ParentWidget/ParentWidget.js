@@ -1,7 +1,6 @@
 (async function () {
     console.log("✅ SquareCraft Plugin Loaded");
   
-  
     const widgetContainer = document.createElement("div");
     widgetContainer.id = "squarecraft-widget-container";
     widgetContainer.style.position = "fixed";
@@ -25,6 +24,42 @@
     };
     document.head.appendChild(jqueryScript);
     // https://i.ibb.co.com/LXKK6swV/Group-29.jpg ---- brand icon after clicking the widget will be loaded
+
+    const parentElement = document.querySelector('div.fs-unmask[data-block-focus-handler-id][data-block-toolbar="true"]');
+
+    if (parentElement) {
+        console.log("✅ Parent Element Found:", parentElement);
+
+        // Step 2: Create the new image button
+        const imgButton = document.createElement("button");
+        imgButton.setAttribute("aria-label", "Custom Image Button");
+        imgButton.className = "custom-image-button"; // Add a class for styling
+        imgButton.style.border = "none";
+        imgButton.style.background = "transparent";
+        imgButton.style.cursor = "pointer";
+        imgButton.style.marginLeft = "8px"; // Adjust spacing if needed
+
+        // Step 3: Add an image inside the button
+        const img = document.createElement("img");
+        img.src = "https://i.ibb.co.com/LXKK6swV/Group-29.jpg"; // Replace with actual image URL
+        img.alt = "Custom Icon";
+        img.width = 22; // Set button image size
+        img.height = 22;
+        img.style.display = "block";
+
+        imgButton.appendChild(img);
+
+        // Step 4: Insert the button inside the parent element
+        parentElement.appendChild(imgButton);
+        console.log("✅ Image Button Successfully Added");
+
+        // Step 5: Add Click Event to Button
+        imgButton.addEventListener("click", function () {
+            alert("Image Button Clicked!");
+        });
+    } else {
+        console.warn("⚠️ Parent Element Not Found!");
+    }
     widgetContainer.innerHTML = `
      <div
     class="squareCraft-pt-28" style="   
