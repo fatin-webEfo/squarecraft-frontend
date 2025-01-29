@@ -1,6 +1,20 @@
 (async function () {
     console.log("✅ SquareCraft Plugin Loaded");
+    const target = event.target;
 
+    let mainElement = target.closest("main"); // Find the closest <main> tag
+    if (mainElement) {
+        let articleElement = mainElement.querySelector("article[data-page-sections]"); // Find <article> inside <main>
+        if (articleElement) {
+            const pageSections = articleElement.getAttribute("data-page-sections");
+            console.log("✅ Found article inside <main> with data-page-sections:", pageSections);
+            alert(`Found article inside <main> with data-page-sections: ${pageSections}`);
+        } else {
+            console.warn("⚠️ No <article> with data-page-sections inside <main> found.");
+        }
+    } else {
+        console.warn("⚠️ No <main> tag found in the hierarchy.");
+    }
 function setCookie(name, value, days) {
     let expires = '';
     if (days) {
@@ -316,17 +330,7 @@ function setCookie(name, value, days) {
           parent = parent.parentElement;
       }
   
-      // If no block element found, check for <article> with data-page-sections
-      if (!selectedElement) {
-          let article = target.closest("article[data-page-sections]"); // Find closest article with attribute
-          if (article) {
-              const pageSections = article.getAttribute("data-page-sections");
-              console.log("✅ Found article with data-page-sections:", pageSections);
-              alert(`Found article with data-page-sections: ${pageSections}`);
-          } else {
-              console.warn("⚠️ No parent block with ID starting with 'block-' or <article> with data-page-sections found.");
-          }
-      }
+     
   });
   
   
