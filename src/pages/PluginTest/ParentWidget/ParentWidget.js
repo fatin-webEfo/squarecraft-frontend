@@ -24,71 +24,114 @@
     };
     document.head.appendChild(jqueryScript);
 
-    function addPluginIconToToolbar() {
-      console.log("⏳ Checking for Stable Toolbar Parent...");
+    function findToolbarParent() {
+      console.log("⏳ Searching for Toolbar Parent...");
   
-      // Use stable attribute-based selector
-      const parentToolbar = document.querySelector('[data-guidance-engine="guidance-engine-device-view-button-container"]');
-      
-      if (parentToolbar) {
-          console.log("✅ Stable Toolbar Parent Found:", parentToolbar);
+      // Try to find the element normally
+      let toolbarParent = document.querySelector('[data-guidance-engine="guidance-engine-device-view-button-container"]');
   
-          // Prevent duplicate buttons
-          if (!parentToolbar.querySelector(".squarecraft-plugin-icon")) {
-              console.log("🎨 Injecting SquareCraft Plugin Icon...");
+      // If not found, check Shadow DOM (Some Squarespace UI elements use Shadow DOM)
+      if (!toolbarParent) {
+          console.warn("⚠️ Toolbar Parent not found normally. Checking for Shadow DOM...");
+          document.querySelectorAll('*').forEach(el => {
+              if (el.shadowRoot) {
+                  const shadowElement = el.shadowRoot.querySelector('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+                  if (shadowElement) {
+                      console.log("✅ Found in Shadow DOM:", shadowElement);
+                      toolbarParent = shadowElement;
+                  }
+              }
+          });
+      }
   
-              const pluginButton = document.createElement("button");
-              pluginButton.className = "squarecraft-plugin-icon";
-              pluginButton.style.border = "none";
-              pluginButton.style.background = "transparent";
-              pluginButton.style.cursor = "pointer";
-              pluginButton.style.marginLeft = "10px";
-  
-              // Add plugin icon image
-              const img = document.createElement("img");
-              img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Your plugin logo URL
-              img.alt = "SquareCraft Plugin";
-              img.width = 24;
-              img.height = 24;
-              img.style.display = "block";
-  
-              pluginButton.appendChild(img);
-              parentToolbar.appendChild(pluginButton);
-  
-              console.log("🎉 SquareCraft Icon Successfully Added!");
-  
-              // ✅ Add Click Event
-              pluginButton.addEventListener("click", function () {
-                  alert("SquareCraft Plugin Clicked!");
-              });
-          } else {
-              console.warn("⚠️ SquareCraft Plugin Icon Already Exists! Skipping...");
-          }
+      if (toolbarParent) {
+          console.log("🎯 Toolbar Parent Found:", toolbarParent);
+          return toolbarParent;
       } else {
-          console.warn("🚨 Toolbar Parent Not Found! Waiting...");
-          observeToolbarParent();
+          console.warn("🚨 Toolbar Parent Not Found. Will retry...");
+          return null;
       }
   }
   
-  // 🔍 Watch for dynamic loading of toolbar parent
+  // 🔍 Enhanced Observer with Timeout
   function observeToolbarParent() {
       console.log("🔍 Observing DOM for Toolbar Parent...");
+  
+      let retries = 0;
+      const maxRetries = 10; // Avoid infinite loops
+  
       const observer = new MutationObserver(() => {
-          const toolbar = document.querySelector('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+          let toolbar = findToolbarParent();
           if (toolbar && !toolbar.querySelector(".squarecraft-plugin-icon")) {
-              console.log("📌 Toolbar Parent Found via MutationObserver! Injecting Icon...");
-              addPluginIconToToolbar();
+              console.log("📌 Toolbar Parent Found via Observer! Injecting Icon...");
+              addPluginIconToToolbar(toolbar);
               observer.disconnect();
           } else {
-              console.warn("🔄 Toolbar Parent Still Not Found...");
+              retries++;
+              if (retries >= maxRetries) {
+                  console.error("❌ Toolbar Parent Not Found after multiple attempts. Stopping observer.");
+                  observer.disconnect();
+              } else {
+                  console.warn(`🔄 Retrying... Attempt ${retries}/${maxRetries}`);
+              }
           }
       });
   
       observer.observe(document.body, { childList: true, subtree: true });
+  
+      // Backup: Force retry after 5 seconds
+      setTimeout(() => {
+          let toolbar = findToolbarParent();
+          if (toolbar) {
+              console.log("✅ Found Toolbar via setTimeout!");
+              addPluginIconToToolbar(toolbar);
+              observer.disconnect();
+          }
+      }, 5000);
   }
   
-  // Run function to add the plugin icon
-  addPluginIconToToolbar();
+  // 🔧 Inject the Icon when the toolbar is found
+  function addPluginIconToToolbar(toolbarParent) {
+      if (!toolbarParent) {
+          console.error("❌ Cannot inject icon: Toolbar Parent is null.");
+          return;
+      }
+  
+      if (!toolbarParent.querySelector(".squarecraft-plugin-icon")) {
+          console.log("🎨 Injecting SquareCraft Plugin Icon...");
+  
+          const pluginButton = document.createElement("button");
+          pluginButton.className = "squarecraft-plugin-icon";
+          pluginButton.style.border = "none";
+          pluginButton.style.background = "transparent";
+          pluginButton.style.cursor = "pointer";
+          pluginButton.style.marginLeft = "10px";
+  
+          // Add plugin icon image
+          const img = document.createElement("img");
+          img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Your plugin logo URL
+          img.alt = "SquareCraft Plugin";
+          img.width = 24;
+          img.height = 24;
+          img.style.display = "block";
+  
+          pluginButton.appendChild(img);
+          toolbarParent.appendChild(pluginButton);
+  
+          console.log("🎉 SquareCraft Icon Successfully Added!");
+  
+          // ✅ Add Click Event
+          pluginButton.addEventListener("click", function () {
+              alert("SquareCraft Plugin Clicked!");
+          });
+      } else {
+          console.warn("⚠️ SquareCraft Plugin Icon Already Exists! Skipping...");
+      }
+  }
+  
+  // 🚀 Run everything
+  observeToolbarParent();
+  
   
   
     // https://i.ibb.co.com/LXKK6swV/Group-29.jpg ---- brand icon after clicking the widget will be loaded
