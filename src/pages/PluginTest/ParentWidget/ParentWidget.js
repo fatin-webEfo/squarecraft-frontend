@@ -25,67 +25,63 @@
     document.head.appendChild(jqueryScript);
     // https://i.ibb.co.com/LXKK6swV/Group-29.jpg ---- brand icon after clicking the widget will be loaded
     function addImageButton() {
-      // Step 1: Find the parent element with fs-unmask
-      const parentElement = document.querySelector('div.fs-unmask[data-block-focus-handler-id][data-block-toolbar="true"]');
+      const toolbar = document.querySelector(".sqs-block-toolbar");
 
-      if (parentElement) {
-          console.log("✅ Parent Element Found:", parentElement);
+      if (toolbar) {
+          console.log("✅ Squarespace Toolbar Found:", toolbar);
 
-          // Step 2: Check if button already exists (to avoid duplicates)
-          if (!parentElement.querySelector(".custom-image-button")) {
-              // Step 3: Create the new image button
+          // Prevent duplicate buttons
+          if (!toolbar.querySelector(".custom-image-button")) {
               const imgButton = document.createElement("button");
-              imgButton.setAttribute("aria-label", "Custom Image Button");
-              imgButton.className = "custom-image-button"; // Add a class for styling
+              imgButton.className = "custom-image-button";
               imgButton.style.border = "none";
               imgButton.style.background = "transparent";
               imgButton.style.cursor = "pointer";
-              imgButton.style.marginLeft = "8px"; // Adjust spacing if needed
+              imgButton.style.marginLeft = "8px";
 
-              // Step 4: Add an image inside the button
+              // Add an image inside the button
               const img = document.createElement("img");
-              img.src = "https://i.ibb.co.com/LXKK6swV/Group-29.jpg"; // Replace with actual image URL
-              img.alt = "Custom Icon";
-              img.width = 22; // Set button image size
+              img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Update if needed
+              img.alt = "Custom Plugin Icon";
+              img.width = 22;
               img.height = 22;
               img.style.display = "block";
 
               imgButton.appendChild(img);
+              toolbar.appendChild(imgButton);
 
-              // Step 5: Insert the button inside the parent element
-              parentElement.appendChild(imgButton);
-              console.log("✅ Image Button Successfully Added");
+              console.log("✅ Plugin Icon Successfully Added");
 
-              // Step 6: Add Click Event to Button
+              // ✅ Add Click Event
               imgButton.addEventListener("click", function () {
-                  alert("Image Button Clicked!");
+                  alert("SquareCraft Plugin Clicked!");
               });
           }
       } else {
-          console.warn("⚠️ Parent Element Not Found! Waiting for element...");
-          waitForFsUnmask();
+          console.warn("⚠️ Squarespace Toolbar Not Found! Waiting for element...");
+          observeToolbar();
       }
   }
 
-  // MutationObserver to detect dynamic changes
-  function waitForFsUnmask() {
-      const observer = new MutationObserver((mutations, obs) => {
-          const parentElement = document.querySelector('div.fs-unmask[data-block-focus-handler-id][data-block-toolbar="true"]');
-          if (parentElement) {
-              addImageButton();
-              obs.disconnect(); // Stop observing once found
-          }
-      });
+  // ✅ Function to observe dynamic changes in Squarespace's toolbar
+  function observeToolbar() {
+    const observer = new MutationObserver(() => {
+        const toolbar = document.querySelector(".sqs-block-toolbar");
+        if (toolbar) {
+            addImageButton();
+            observer.disconnect(); // Stop observing once found
+        }
+    });
 
-      // Observe the entire body for changes
-      observer.observe(document.body, {
-          childList: true,
-          subtree: true,
-      });
-  }
+    observer.observe(document.body, { childList: true, subtree: true });
+}
 
-  // Run the function
+
+  // ✅ Run the function to add the button
   addImageButton();
+
+
+
     widgetContainer.innerHTML = `
      <div
     class="squareCraft-pt-28" style="   
