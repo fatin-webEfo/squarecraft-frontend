@@ -53,7 +53,7 @@ function setCookie(name, value, days) {
     link.id = "squarecraft-styles";
     link.rel = "stylesheet";
     link.type = "text/css";
-    link.href ="./ParentWidget.css"
+    link.href ="https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.css"
     document.head.appendChild(link);
   
     const jqueryScript = document.createElement("script");
