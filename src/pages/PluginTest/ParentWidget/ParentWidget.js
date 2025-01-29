@@ -134,49 +134,69 @@
   // 🚀 Run Everything
   observeToolbar();
   
+  function findElementDeep(selector) {
+    function searchWithin(node) {
+        if (!node) return null;
+
+        // Standard querySelector search
+        let found = node.querySelector(selector);
+        if (found) return found;
+
+        // Check Shadow DOM in child elements
+        for (const child of node.children) {
+            if (child.shadowRoot) {
+                let shadowMatch = searchWithin(child.shadowRoot);
+                if (shadowMatch) return shadowMatch;
+            }
+        }
+        return null;
+    }
+    return searchWithin(document.body);
+}
+
   
   
   
-  
-    // https://i.ibb.co.com/LXKK6swV/Group-29.jpg ---- brand icon after clicking the widget will be loaded
-    function addImageButton() {
-      const toolbar = document.querySelector(".sqs-block-toolbar");
+function addImageButton() {
+  const toolbar = findElementDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
 
-      if (toolbar) {
-          console.log("✅ Squarespace Toolbar Found:", toolbar);
-
-          if (!toolbar.querySelector(".custom-image-button")) {
-              const imgButton = document.createElement("button");
-              imgButton.className = "custom-image-button";
-              imgButton.style.border = "none";
-              imgButton.style.background = "transparent";
-              imgButton.style.cursor = "pointer";
-              imgButton.style.marginLeft = "8px";
-
-              // Add an image inside the button
-              const img = document.createElement("img");
-              img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Update if needed
-              img.alt = "Custom Plugin Icon";
-              img.width = 22;
-              img.height = 22;
-              img.style.display = "block";
-
-              imgButton.appendChild(img);
-              toolbar.appendChild(imgButton);
-
-              console.log("✅ Plugin Icon Successfully Added");
-
-              // ✅ Add Click Event
-              imgButton.addEventListener("click", function () {
-                  alert("SquareCraft Plugin Clicked!");
-              });
-          }
-      } else {
-          console.warn("⚠️ Squarespace Toolbar Not Found! Waiting for element...");
-          observeToolbar();
-      }
+  if (!toolbar) {
+      console.warn("⚠️ Squarespace Toolbar Not Found! Waiting for element...");
+      observeToolbar();
+      return;
   }
 
+  console.log("✅ Squarespace Toolbar Found:", toolbar);
+
+  if (!toolbar.querySelector("[data-squarecraft-icon]")) {
+      const imgButton = document.createElement("button");
+      imgButton.setAttribute("data-squarecraft-icon", "true"); // Unique identifier
+      imgButton.style.border = "none";
+      imgButton.style.background = "transparent";
+      imgButton.style.cursor = "pointer";
+      imgButton.style.marginLeft = "8px";
+
+      // Add an image inside the button
+      const img = document.createElement("img");
+      img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Update if needed
+      img.alt = "Custom Plugin Icon";
+      img.width = 22;
+      img.height = 22;
+      img.style.display = "block";
+
+      imgButton.appendChild(img);
+      toolbar.appendChild(imgButton);
+
+      console.log("✅ Plugin Icon Successfully Added");
+
+      // ✅ Add Click Event
+      imgButton.addEventListener("click", function () {
+          alert("SquareCraft Plugin Clicked!");
+      });
+  } else {
+      console.warn("⚠️ SquareCraft Plugin Icon Already Exists. Skipping...");
+  }
+}
 
 
 
