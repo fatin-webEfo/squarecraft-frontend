@@ -23,6 +23,62 @@
       console.log("✅ jQuery has been successfully loaded");
     };
     document.head.appendChild(jqueryScript);
+
+    function addPluginIconToViewportToolbar() {
+      const viewportToolbar = document.querySelector(".sqs-layout-controls");
+  
+      if (viewportToolbar) {
+          console.log("✅ Viewport Toolbar Found:", viewportToolbar);
+  
+          // Prevent duplicate buttons
+          if (!viewportToolbar.querySelector(".squarecraft-plugin-icon")) {
+              // Create button
+              const pluginButton = document.createElement("button");
+              pluginButton.className = "squarecraft-plugin-icon";
+              pluginButton.style.border = "none";
+              pluginButton.style.background = "transparent";
+              pluginButton.style.cursor = "pointer";
+              pluginButton.style.marginLeft = "8px";
+  
+              // Add plugin icon image
+              const img = document.createElement("img");
+              img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Your plugin logo URL
+              img.alt = "SquareCraft Plugin";
+              img.width = 24; // Adjust based on Squarespace icons
+              img.height = 24;
+              img.style.display = "block";
+  
+              pluginButton.appendChild(img);
+              viewportToolbar.appendChild(pluginButton);
+  
+              console.log("✅ SquareCraft Icon Added to Viewport Toolbar");
+  
+              // Click event (Modify as needed)
+              pluginButton.addEventListener("click", function () {
+                  alert("SquareCraft Plugin Clicked!");
+              });
+          }
+      } else {
+          console.warn("⚠️ Viewport Toolbar Not Found! Waiting...");
+          observeViewportToolbar();
+      }
+  }
+  
+  // ✅ Observe the toolbar in case it's dynamically loaded
+  function observeViewportToolbar() {
+      const observer = new MutationObserver(() => {
+          if (document.querySelector(".sqs-layout-controls")) {
+              addPluginIconToViewportToolbar();
+              observer.disconnect(); // Stop observing once found
+          }
+      });
+  
+      observer.observe(document.body, { childList: true, subtree: true });
+  }
+  
+  // Run function to add the plugin icon
+  addPluginIconToViewportToolbar();
+  
     // https://i.ibb.co.com/LXKK6swV/Group-29.jpg ---- brand icon after clicking the widget will be loaded
     function addImageButton() {
       const toolbar = document.querySelector(".sqs-block-toolbar");
@@ -30,7 +86,6 @@
       if (toolbar) {
           console.log("✅ Squarespace Toolbar Found:", toolbar);
 
-          // Prevent duplicate buttons
           if (!toolbar.querySelector(".custom-image-button")) {
               const imgButton = document.createElement("button");
               imgButton.className = "custom-image-button";
@@ -63,13 +118,12 @@
       }
   }
 
-  // ✅ Function to observe dynamic changes in Squarespace's toolbar
   function observeToolbar() {
     const observer = new MutationObserver(() => {
         const toolbar = document.querySelector(".sqs-block-toolbar");
         if (toolbar) {
             addImageButton();
-            observer.disconnect(); // Stop observing once found
+            observer.disconnect(); 
         }
     });
 
@@ -77,7 +131,6 @@
 }
 
 
-  // ✅ Run the function to add the button
   addImageButton();
 
 
