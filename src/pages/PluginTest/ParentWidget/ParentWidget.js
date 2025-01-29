@@ -36,10 +36,6 @@ function setCookie(name, value, days) {
     console.log('✅ Token already exists in cookie:', existingToken);
   }
   
-
-
-
-
   
     const widgetContainer = document.createElement("div");
     widgetContainer.id = "squarecraft-widget-container";
@@ -99,7 +95,7 @@ function setCookie(name, value, days) {
                          <div class="squareCraft-absolute squareCraft-bg-color-EF7C2F squareCraft-h-2px squareCraft-top-0 squareCraft-left-0 squareCraft-w-16"></div>
                      </div>
      
-                     <div class="squareCraft-mt-4 squareCraft-pb-3 squareCraft-rounded-15px squareCraft-bg-color-3d3d3d ">
+                     <div class="squareCraft-mt-4 squareCraft-pb-2 squareCraft-rounded-15px squareCraft-bg-color-3d3d3d ">
                          <div class="squareCraft-flex squareCraft-items-center squareCraft-px-3 squareCraft-pt-2 squareCraft-justify-between ">
                              <div class="squareCraft-flex squareCraft-items-center squareCraft-gap-2">
                                  <svg xmlns="http://www.w3.org/2000/svg" class="" width="16" height="19" viewBox="0 0 16 19" fill="none">
@@ -306,23 +302,33 @@ function setCookie(name, value, days) {
     // Add click event listener to the document
     document.addEventListener("click", (event) => {
       const target = event.target;
-  
-      // Traverse up to the nearest parent div with ID starting with "block-"
+      let selectedElement = null;
+    
+      // Find the nearest parent div with an ID starting with "block-"
       let parent = target;
       while (parent && parent.tagName !== "HTML") {
-        if (parent.id && parent.id.startsWith("block-")) {
-          selectedElement = parent;
-          console.log("Selected element:", selectedElement);
-          alert(`Selected block with ID: ${selectedElement.id}`);
-          break;
-        }
-        parent = parent.parentElement;
+          if (parent.id && parent.id.startsWith("block-")) {
+              selectedElement = parent;
+              console.log("✅ Selected block element:", selectedElement);
+              alert(`Selected block with ID: ${selectedElement.id}`);
+              break;
+          }
+          parent = parent.parentElement;
       }
   
+      // If no block element found, check for <article> with data-page-sections
       if (!selectedElement) {
-        console.warn("No parent block with ID starting with 'block-' found.");
+          let article = target.closest("article[data-page-sections]"); // Find closest article with attribute
+          if (article) {
+              const pageSections = article.getAttribute("data-page-sections");
+              console.log("✅ Found article with data-page-sections:", pageSections);
+              alert(`Found article with data-page-sections: ${pageSections}`);
+          } else {
+              console.warn("⚠️ No parent block with ID starting with 'block-' or <article> with data-page-sections found.");
+          }
       }
-    });
+  });
+  
   
     // Apply font size change
     document.getElementById("apply-font-size").addEventListener("click", async () => {
