@@ -24,125 +24,12 @@
     };
     document.head.appendChild(jqueryScript);
 
-    function findSquarespaceToolbar() {
-      console.log("🔍 Searching for Squarespace Toolbar...");
-  
-      // Select the toolbar using attributes instead of dynamic class names
-      let toolbar = document.querySelector('[data-guidance-engine="guidance-engine-device-view-button-container"]');
-  
-      if (!toolbar) {
-          console.warn("⚠️ Toolbar not found normally. Checking Shadow DOM...");
-  
-          // Search inside Shadow DOM elements
-          document.querySelectorAll('*').forEach(el => {
-              if (el.shadowRoot) {
-                  const shadowElement = el.shadowRoot.querySelector('[data-guidance-engine="guidance-engine-device-view-button-container"]');
-                  if (shadowElement) {
-                      console.log("✅ Toolbar found inside Shadow DOM:", shadowElement);
-                      toolbar = shadowElement;
-                  }
-              }
-          });
-      }
-  
-      if (toolbar) {
-          console.log("🎯 Found Squarespace Toolbar:", toolbar);
-          return toolbar;
-      } else {
-          console.warn("🚨 Toolbar Not Found. Retrying...");
-          return null;
-      }
-  }
-  
-  // 🔍 Mutation Observer to Wait for Toolbar to Load
-  function observeToolbar() {
-      console.log("📡 Observing DOM for Toolbar...");
-  
-      let retries = 0;
-      const maxRetries = 10;
-  
-      const observer = new MutationObserver(() => {
-          let toolbar = findSquarespaceToolbar();
-          if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
-              console.log("📌 Toolbar Found! Injecting Plugin Icon...");
-              injectPluginIcon(toolbar);
-              observer.disconnect();
-          } else {
-              retries++;
-              if (retries >= maxRetries) {
-                  console.error("❌ Toolbar Not Found after multiple attempts. Stopping observer.");
-                  observer.disconnect();
-              } else {
-                  console.warn(`🔄 Retrying... Attempt ${retries}/${maxRetries}`);
-              }
-          }
-      });
-  
-      observer.observe(document.body, { childList: true, subtree: true });
-  
-      // Backup: Force check after 5 seconds
-      setTimeout(() => {
-          let toolbar = findSquarespaceToolbar();
-          if (toolbar) {
-              console.log("✅ Found Toolbar via setTimeout!");
-              injectPluginIcon(toolbar);
-              observer.disconnect();
-          }
-      }, 5000);
-  }
-  
-  // 🎨 Inject SquareCraft Plugin Icon
-  function injectPluginIcon(toolbar) {
-      if (!toolbar) {
-          console.error("❌ Cannot inject icon: Toolbar is null.");
-          return;
-      }
-  
-      // Avoid duplicate icons
-      if (!toolbar.querySelector("[data-squarecraft-icon]")) {
-          console.log("🎨 Injecting SquareCraft Plugin Icon...");
-  
-          const pluginButton = document.createElement("button");
-          pluginButton.setAttribute("data-squarecraft-icon", "true"); // Unique identifier
-          pluginButton.style.border = "none";
-          pluginButton.style.background = "transparent";
-          pluginButton.style.cursor = "pointer";
-          pluginButton.style.marginLeft = "10px";
-  
-          // Add plugin icon
-          const img = document.createElement("img");
-          img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Your plugin logo
-          img.alt = "SquareCraft Plugin";
-          img.width = 24;
-          img.height = 24;
-          img.style.display = "block";
-  
-          pluginButton.appendChild(img);
-          toolbar.appendChild(pluginButton);
-  
-          console.log("🎉 SquareCraft Icon Successfully Added!");
-  
-          // ✅ Click Event for Plugin
-          pluginButton.addEventListener("click", function () {
-              alert("SquareCraft Plugin Clicked!");
-          });
-      } else {
-          console.warn("⚠️ SquareCraft Plugin Icon Already Exists. Skipping...");
-      }
-  }
-  
-  // 🚀 Run Everything
-  observeToolbar();
-  
-  function findElementDeep(selector) {
+ 
+  function queryDeep(selector) {
     function searchWithin(node) {
         if (!node) return null;
-
-        // Standard querySelector search
         let found = node.querySelector(selector);
         if (found) return found;
-
-        // Check Shadow DOM in child elements
         for (const child of node.children) {
             if (child.shadowRoot) {
                 let shadowMatch = searchWithin(child.shadowRoot);
@@ -153,12 +40,80 @@
     }
     return searchWithin(document.body);
 }
+  // 🔍 Mutation Observer to Wait for Toolbar to Load
+  function observeToolbar() {
+    console.log("📡 Observing DOM for Toolbar...");
+    let observer = new MutationObserver(() => {
+        let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+        if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
+            console.log("📌 Toolbar Found! Injecting Plugin Icon...");
+            injectPluginIcon(toolbar);
+            observer.disconnect(); // Stop observing once found
+        }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+observeToolbar();
+
+  
+  // 🎨 Inject SquareCraft Plugin Icon
+  function injectPluginIcon(toolbar) {
+    if (!toolbar) {
+        console.error("❌ Cannot inject icon: Toolbar is null.");
+        return;
+    }
+    if (toolbar.querySelector("[data-squarecraft-icon]")) {
+        console.warn("⚠️ SquareCraft Plugin Icon Already Exists. Skipping...");
+        return;
+    }
+
+    console.log("🎨 Injecting SquareCraft Plugin Icon...");
+    const pluginButton = document.createElement("button");
+    pluginButton.setAttribute("data-squarecraft-icon", "true");
+    pluginButton.style.border = "none";
+    pluginButton.style.background = "transparent";
+    pluginButton.style.cursor = "pointer";
+    pluginButton.style.marginLeft = "10px";
+
+    const img = document.createElement("img");
+    img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Your plugin logo
+    img.alt = "SquareCraft Plugin";
+    img.width = 24;
+    img.height = 24;
+    img.style.display = "block";
+
+    pluginButton.appendChild(img);
+    toolbar.appendChild(pluginButton);
+
+    console.log("🎉 SquareCraft Icon Successfully Added!");
+
+    // ✅ Click Event for Plugin
+    pluginButton.addEventListener("click", function () {
+        alert("SquareCraft Plugin Clicked!");
+    });
+}
+
+  // 🚀 Run Everything
+  observeToolbar();
+  
+
+setInterval(() => {
+  let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+  if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
+      console.log("🔄 Re-injecting SquareCraft Icon...");
+      injectPluginIcon(toolbar);
+  }
+}, 3000); // Check every 3 seconds
+
+const toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+console.log("🔍 Found Toolbar:", toolbar);
+
 
   
   
   
 function addImageButton() {
-  const toolbar = findElementDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+  const toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
 
   if (!toolbar) {
       console.warn("⚠️ Squarespace Toolbar Not Found! Waiting for element...");
@@ -290,6 +245,18 @@ function addImageButton() {
                              <div>
                                 <div class="squareCraft-flex squareCraft-mt-2 squareCraft-gap-3">
                                     <input placeholder="1"  type="number" class="squareCraft-bg-494949 squareCraft-w-20 squareCraft-rounded-md squareCraft-py-1 squareCraft-input squareCraft-text-md squareCraft-px-2 " name="" id="">
+                                </div>
+
+                             </div>
+                              <div class="squareCraft-mt-2  squareCraft-flex squareCraft-items-center squareCraft-justify-between">
+                                <p class="squareCraft-opacity-65 squareCraft-margin-0">Background Color</p>
+                                <svg class="squareCraft-rotate-180" xmlns="http://www.w3.org/2000/svg" width="14" height="10" viewBox="0 0 14 10" fill="none">
+                                    <path d="M7 3C6.49368 3 6.00809 3.21071 5.65007 3.58579C5.29204 3.96086 5.09091 4.46957 5.09091 5C5.09091 5.53043 5.29204 6.03914 5.65007 6.41421C6.00809 6.78929 6.49368 7 7 7C7.50632 7 7.99191 6.78929 8.34993 6.41421C8.70796 6.03914 8.90909 5.53043 8.90909 5C8.90909 4.46957 8.70796 3.96086 8.34993 3.58579C7.99191 3.21071 7.50632 3 7 3ZM7 8.33333C6.15613 8.33333 5.34682 7.98214 4.75011 7.35702C4.15341 6.7319 3.81818 5.88406 3.81818 5C3.81818 4.11595 4.15341 3.2681 4.75011 2.64298C5.34682 2.01786 6.15613 1.66667 7 1.66667C7.84387 1.66667 8.65318 2.01786 9.24988 2.64298C9.84659 3.2681 10.1818 4.11595 10.1818 5C10.1818 5.88406 9.84659 6.7319 9.24988 7.35702C8.65318 7.98214 7.84387 8.33333 7 8.33333ZM7 0C3.81818 0 1.10091 2.07333 0 5C1.10091 7.92667 3.81818 10 7 10C10.1818 10 12.8991 7.92667 14 5C12.8991 2.07333 10.1818 0 7 0Z" fill="#6D6D6D" />
+                                </svg>
+                            </div>
+                            <div class="">
+                                <div class="squareCraft-flex squareCraft-mt-2 squareCraft-gap-3">
+                                    <input placeholder="1"  type="color" class="" name="" id="">
                                 </div>
 
                              </div>
@@ -445,36 +412,153 @@ function addImageButton() {
     let selectedElement = null;
   
     // Add click event listener to the document
-    document.addEventListener("click", (event) => {
-      const target = event.target;
-      let selectedElement = null;
-    
-      // Find the nearest parent div with an ID starting with "block-"
-      let parent = target;
-      while (parent && parent.tagName !== "HTML") {
-          if (parent.id && parent.id.startsWith("block-")) {
-              selectedElement = parent;
-              console.log("✅ Selected block element:", selectedElement);
-              console.log(`Selected block with ID: ${selectedElement.id}`);
-              break;
+    document.addEventListener("DOMContentLoaded", async function () {
+      console.log("✅ SquareCraft Plugin Loaded");
+  
+      // 🛠 Helper Function: Deep Query Selector (Handles Shadow DOM)
+      function queryDeep(selector) {
+          function searchWithin(node) {
+              if (!node) return null;
+              let found = node.querySelector(selector);
+              if (found) return found;
+              for (const child of node.children) {
+                  if (child.shadowRoot) {
+                      let shadowMatch = searchWithin(child.shadowRoot);
+                      if (shadowMatch) return shadowMatch;
+                  }
+              }
+              return null;
           }
-          parent = parent.parentElement;
+          return searchWithin(document.body);
       }
-      let mainElement = target.closest("main"); // Find the closest <main> tag
-    if (mainElement) {
-        let articleElement = mainElement.querySelector("article[data-page-sections]"); // Find <article> inside <main>
-        if (articleElement) {
-            const pageSections = articleElement.getAttribute("data-page-sections");
-            console.log("✅ Found article inside <main> with data-page-sections:", pageSections);
-            console.log(`Found article inside <main> with data-page-sections: ${pageSections}`);
-        } else {
-            console.warn("⚠️ No <article> with data-page-sections inside <main> found.");
-        }
-    } else {
-        console.warn("⚠️ No <main> tag found in the hierarchy.");
-    }
-     
+  
+      // 🔍 Mutation Observer to Watch for Toolbar
+      function observeToolbar() {
+          console.log("📡 Observing DOM for Toolbar...");
+          let observer = new MutationObserver(() => {
+              let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+              if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
+                  console.log("📌 Toolbar Found! Injecting Plugin Icon...");
+                  injectPluginIcon(toolbar);
+                  observer.disconnect(); // Stop observing once injected
+              }
+          });
+          observer.observe(document.body, { childList: true, subtree: true });
+      }
+  
+      // 🎨 Inject SquareCraft Plugin Icon
+      function injectPluginIcon(toolbar) {
+          if (!toolbar) {
+              console.error("❌ Cannot inject icon: Toolbar is null.");
+              return;
+          }
+          if (toolbar.querySelector("[data-squarecraft-icon]")) {
+              console.warn("⚠️ SquareCraft Plugin Icon Already Exists. Skipping...");
+              return;
+          }
+  
+          console.log("🎨 Injecting SquareCraft Plugin Icon...");
+          const pluginButton = document.createElement("button");
+          pluginButton.setAttribute("data-squarecraft-icon", "true");
+          pluginButton.style.border = "none";
+          pluginButton.style.background = "transparent";
+          pluginButton.style.cursor = "pointer";
+          pluginButton.style.marginLeft = "10px";
+  
+          const img = document.createElement("img");
+          img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Your plugin logo
+          img.alt = "SquareCraft Plugin";
+          img.width = 24;
+          img.height = 24;
+          img.style.display = "block";
+  
+          pluginButton.appendChild(img);
+          toolbar.appendChild(pluginButton);
+  
+          console.log("🎉 SquareCraft Icon Successfully Added!");
+  
+          // ✅ Click Event for Plugin
+          pluginButton.addEventListener("click", function () {
+              alert("SquareCraft Plugin Clicked!");
+          });
+      }
+  
+      // 🔄 Re-inject icon if removed
+      setInterval(() => {
+          let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+          if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
+              console.log("🔄 Re-injecting SquareCraft Icon...");
+              injectPluginIcon(toolbar);
+          }
+      }, 3000); // Check every 3 seconds
+  
+      observeToolbar(); // ✅ Start watching for the toolbar
+  
+      // 🎨 Widget Container for SquareCraft UI
+      const widgetContainer = document.createElement("div");
+      widgetContainer.id = "squarecraft-widget-container";
+      widgetContainer.style.position = "fixed"; // ✅ Fixed position to prevent scrolling issues
+      widgetContainer.style.top = "100px";
+      widgetContainer.style.left = "100px";
+      widgetContainer.style.cursor = "grab";
+      widgetContainer.style.zIndex = "9999";
+  
+      // 🖼️ Load External CSS
+      const link = document.createElement("link");
+      link.id = "squarecraft-styles";
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      link.href = "https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.css";
+      document.head.appendChild(link);
+  
+      // 💡 Enable Dragging for Widget
+      let offset = { x: 0, y: 0 };
+      widgetContainer.onmousedown = function (e) {
+          const rect = widgetContainer.getBoundingClientRect();
+          offset.x = e.clientX - rect.left;
+          offset.y = e.clientY - rect.top;
+  
+          const onMouseMove = (event) => {
+              widgetContainer.style.left = `${event.clientX - offset.x}px`;
+              widgetContainer.style.top = `${event.clientY - offset.y}px`;
+          };
+  
+          const onMouseUp = () => {
+              document.removeEventListener("mousemove", onMouseMove);
+              document.removeEventListener("mouseup", onMouseUp);
+          };
+  
+          document.addEventListener("mousemove", onMouseMove);
+          document.addEventListener("mouseup", onMouseUp);
+      };
+  
+      document.body.appendChild(widgetContainer);
+  
+      // 🔄 Fetch Existing Modifications from API
+      async function fetchModifications() {
+          try {
+              const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications?pageId=alkfja234");
+              if (!response.ok) {
+                  console.error("❌ Failed to fetch modifications:", await response.text());
+                  return;
+              }
+  
+              const data = await response.json();
+              console.log("📥 Fetched modifications:", data);
+  
+              if (data.modifications && data.modifications.fontSize) {
+                  document.querySelectorAll("[id^='block-']").forEach((el) => {
+                      el.style.fontSize = data.modifications.fontSize;
+                  });
+              }
+          } catch (error) {
+              console.error("🚨 Error fetching modifications:", error);
+          }
+      }
+  
+      fetchModifications(); // Fetch modifications on load
   });
+  
   
   
     // Apply font size change
