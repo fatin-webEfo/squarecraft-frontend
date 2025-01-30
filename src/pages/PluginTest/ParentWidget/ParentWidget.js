@@ -95,40 +95,24 @@
         document.addEventListener("click", function (event) {
             let targetElement = event.target; // The clicked element
         
-            // 🔍 Step 1: Find nearest parent with ID starting with "block-"
+            // 🔍 Step 1: Find the nearest parent with ID starting with "block-"
             let parentBlock = targetElement.closest('[id^="block-"]');
             if (parentBlock) {
-                console.log("✅ Parent Block Found:", parentBlock);
                 console.log("🆔 Parent Block ID:", parentBlock.id);
             } else {
                 console.log("❌ No parent block found.");
             }
         
-            // 🔍 Step 2: Find <article> after <main> with data-page-sections
-            let mainElement = document.querySelector("main");
-            if (mainElement) {
-                let articleElement = mainElement.nextElementSibling;
+            // 🔍 Step 2: Traverse up to find the closest <article> with data-page-sections
+            let articleElement = targetElement.closest("article[data-page-sections]");
         
-                // Traverse through siblings until we find an <article>
-                while (articleElement) {
-                    if (articleElement.tagName === "article") {
-                        break;
-                    }
-                    articleElement = articleElement.nextElementSibling;
-                }
-        
-                // If <article> is found, check for the attribute
-                if (articleElement && articleElement.hasAttribute("data-page-sections")) {
-                    console.log("✅ Article Found:", articleElement);
-                    console.log("📄 data-page-sections:", articleElement.getAttribute("data-page-sections"));
-                } else {
-                    console.log("❌ No <article> with data-page-sections found.");
-                }
+            if (articleElement) {
+                console.log("✅ Article Found:", articleElement);
+                console.log("📄 data-page-sections:", articleElement.getAttribute("data-page-sections"));
             } else {
-                console.log("❌ No <main> element found.");
+                console.log("❌ No <article> with data-page-sections found.");
             }
         });
-        
         
 
 
