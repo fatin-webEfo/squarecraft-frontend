@@ -26,7 +26,7 @@ function App() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center">
         <p className="text-xl text-red-600">{error}</p>
       </div>
     );

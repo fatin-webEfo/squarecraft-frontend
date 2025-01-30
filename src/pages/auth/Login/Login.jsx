@@ -73,7 +73,7 @@ const navigate = useNavigate();
       // Optionally, set a cookie for Squarespace (if required)
       document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60 * 1000}; domain=.squarespace.com; Secure; SameSite=None`;
       axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
-
+console.log(response)
 
       if(response.status===200){
         navigate("/dashboard/myWebsites");
