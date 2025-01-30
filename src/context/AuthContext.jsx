@@ -1,21 +1,23 @@
 import axios from "axios";
 import { useState, createContext, useEffect, useMemo, useCallback } from "react";
-
-// eslint-disable-next-line react-refresh/only-export-components
+import { useSanitize } from "../hooks/DomSanitize/DomSanitize";
+import { API } from "../hooks/Api/Api";
 export const AuthContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 const AuthProvider = ({ children }) => {
+  const {sanitize} = useSanitize(); // ✅ Initialize sanitizer
   const [user, setUserState] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const setUser = useCallback((userData) => {
     if (userData) {
-      localStorage.setItem("squarCraft_user", JSON.stringify(userData));
+      const sanitizedUser = sanitize(userData); // ✅ Sanitize before storing
+      localStorage.setItem("squarCraft_user", JSON.stringify(sanitizedUser));
 
       window.parent.postMessage(
-        { type: "squarCraft_user", payload: userData },
+        { type: "squarCraft_user", payload: sanitizedUser },
         "https://steady-cobbler-fd4750.netlify.app"
       );
     } else {
@@ -27,30 +29,31 @@ const AuthProvider = ({ children }) => {
       );
     }
     setUserState(userData);
-  }, []);
+  }, [sanitize]);
 
   const fetchProfile = useCallback(async (userId) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://webefo-backend.vercel.app/api/v1/profile/${userId}`,
+        `${API}/api/v1/get-userProfile`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("squarCraft_auth_token")}`,
           },
           withCredentials: true,
-        }
+        } 
       );
-      console.log("Get method of authcontext",response.data);
-      setUser(response.data.profile); 
+
+      console.log("Get method of authcontext", response.data);
+      setUser(sanitize(response?.data)); 
     } catch (err) {
       console.error("Error fetching profile:", err);
-  
+
       if (err.response?.status === 404) {
         console.warn("Profile not found, but user exists. Defaulting to user data.");
         const storedUser = localStorage.getItem("squarCraft_user");
         if (storedUser) {
-          setUser(JSON.parse(storedUser)); // Use stored user data
+          setUser(sanitize(JSON.parse(storedUser))); // ✅ Sanitize localStorage data
         }
       } else {
         setError(err.response?.data?.message || "Failed to fetch profile.");
@@ -58,20 +61,16 @@ const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [setUser]);
-  
+  }, [setUser, sanitize]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("squarCraft_user");
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
+      const parsedUser = sanitize(JSON.parse(storedUser)); // ✅ Sanitize on load
       setUserState(parsedUser);
 
       window.parent.postMessage(
-        {
-          type: "squarCraft_user",
-          payload: parsedUser,
-        },
+        { type: "squarCraft_user", payload: parsedUser },
         "*"
       );
 
@@ -79,21 +78,16 @@ const AuthProvider = ({ children }) => {
         fetchProfile(parsedUser.user_id ? parsedUser.user_id : parsedUser.userId);
       }
     }
-  }, [fetchProfile]);
+  }, [fetchProfile, sanitize]);
 
   const registerUser = useCallback(
     async (userData) => {
       setLoading(true);
       try {
-        if (
-          !userData ||
-          !userData.name ||
-          !userData.email ||
-          !userData.squarCraft_auth_token
-        ) {
+        if (!userData || !userData.name || !userData.email || !userData.squarCraft_auth_token) {
           throw new Error("Invalid user data provided.");
         }
-        setUser(userData);
+        setUser(sanitize(userData)); // ✅ Sanitize before setting user
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -101,7 +95,7 @@ const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     },
-    [setUser]
+    [setUser, sanitize]
   );
 
   const loginUser = useCallback(
@@ -111,7 +105,7 @@ const AuthProvider = ({ children }) => {
         if (!userData || !userData.email || !userData.squarCraft_auth_token) {
           throw new Error("Invalid user data provided.");
         }
-        setUser(userData);
+        setUser(sanitize(userData)); // ✅ Sanitize before setting user
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -119,7 +113,7 @@ const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     },
-    [setUser]
+    [setUser, sanitize]
   );
 
   const logoutUser = useCallback(async () => {
@@ -127,7 +121,7 @@ const AuthProvider = ({ children }) => {
     try {
       // eslint-disable-next-line no-unused-vars
       const response = await axios.post(
-        "https://webefo-backend.vercel.app/api/v1/logout",
+        `${API}/api/v1/logout`,
         {},
         {
           headers: {
@@ -158,7 +152,7 @@ const AuthProvider = ({ children }) => {
       loginUser,
       logoutUser,
       setUserState,
-      fetchProfile, 
+      fetchProfile,
       error,
       loading,
     }),
@@ -167,11 +161,7 @@ const AuthProvider = ({ children }) => {
 
   console.log("contextValue", contextValue);
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;
