@@ -231,8 +231,8 @@ function addImageButton() {
                                  </div>
                              </div>
                              <div class="squareCraft-flex  squareCraft-items-center squareCraft-justify-between squareCraft-gap-2">
-                                 <p class="squareCraft-text-center squareCraft-cursor-pointer squareCraft-bg-EF7C2F squareCraft-w-full squareCrafttext-center squareCraftrounded-md squareCraft-py-1px squareCraft-rounded-6px squareCraft-gap-10px squareCraft-hover:bg-d87838 squareCraft-transition-all squareCraft-duration-300">Normal</p>
-                                 <p class="squareCraft-text-center squareCraft-cursor-pointer squareCraft-bg-494949 squareCraft-w-full squareCrafttext-center squareCraftrounded-md squareCraft-py-1px squareCraft-rounded-6px squareCraft-gap-10px squareCraft-hover:bg-494848 squareCraft-transition-all squareCraft-duration-300">Hover</p>
+                                 <p class="squareCraft-text-center squareCraft-cursor-pointer squareCraft-bg-EF7C2F squareCraft-w-full squareCraft-margin-0 squareCrafttext-center squareCraftrounded-md squareCraft-py-1px squareCraft-rounded-6px squareCraft-gap-10px squareCraft-hover:bg-d87838 squareCraft-transition-all squareCraft-duration-300">Normal</p>
+                                 <p class="squareCraft-text-center squareCraft-cursor-pointer squareCraft-bg-494949 squareCraft-w-full squareCraft-margin-0  squareCrafttext-center squareCraftrounded-md squareCraft-py-1px squareCraft-rounded-6px squareCraft-gap-10px squareCraft-hover:bg-494848 squareCraft-transition-all squareCraft-duration-300">Hover</p>
                              </div>
      
      
