@@ -1,19 +1,19 @@
 import axios from "axios";
-import { useState, createContext, useEffect, useMemo, useCallback } from "react";
+import { useState, createContext, useEffect, useMemo, useCallback, useContext } from "react";
 import { useSanitize } from "../hooks/DomSanitize/DomSanitize";
 import { API } from "../hooks/Api/Api";
 export const AuthContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 const AuthProvider = ({ children }) => {
-  const {sanitize} = useSanitize(); // ✅ Initialize sanitizer
+  const {sanitize} = useSanitize(); 
   const [user, setUserState] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const setUser = useCallback((userData) => {
     if (userData) {
-      const sanitizedUser = sanitize(userData); // ✅ Sanitize before storing
+      const sanitizedUser = sanitize(userData); 
       localStorage.setItem("squarCraft_user", JSON.stringify(sanitizedUser));
 
       window.parent.postMessage(
@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
     setUserState(userData);
   }, [sanitize]);
 
-  const fetchProfile = useCallback(async (userId) => {
+  const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(
@@ -65,6 +65,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("squarCraft_user");
+    
     if (storedUser) {
       const parsedUser = sanitize(JSON.parse(storedUser)); // ✅ Sanitize on load
       setUserState(parsedUser);
@@ -78,7 +79,12 @@ const AuthProvider = ({ children }) => {
         fetchProfile(parsedUser.user_id ? parsedUser.user_id : parsedUser.userId);
       }
     }
-  }, [fetchProfile, sanitize]);
+
+    window.authData = {
+      user,
+      token: localStorage.getItem("squarCraft_auth_token") || null,
+    };
+  }, [fetchProfile, sanitize, user]);
 
   const registerUser = useCallback(
     async (userData) => {
@@ -137,6 +143,9 @@ const AuthProvider = ({ children }) => {
       document.cookie =
         "squarCraft_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.yoursquarespace.com; secure; samesite=strict;";
       setError(null);
+
+
+      
     } catch (err) {
       console.error("Logout Error:", err.message);
       setError("Failed to log out. Please try again.");
@@ -165,3 +174,6 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+export const useWidget = () => {
+  return useContext(AuthContext);
+};

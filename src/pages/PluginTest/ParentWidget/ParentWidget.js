@@ -1,5 +1,13 @@
     ( async function loadSquareCraftPlugin () {
         console.log("✅ SquareCraft Plugin Loaded");
+
+
+        const authData = window.authData;
+        if (authData && authData.token) {
+          console.log("🔑 Auth Token from React Context:", authData?.token);
+        } else {
+          console.warn("⚠️ Auth data not available in parent-widget.js");
+        }
     
         const widgetContainer = document.createElement("div");
         widgetContainer.id = "squarecraft-widget-container";
