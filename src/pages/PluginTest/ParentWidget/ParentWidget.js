@@ -92,6 +92,37 @@
         document.addEventListener("DOMContentLoaded", function () {
             waitForToolbar();
         });
+        document.addEventListener("click", function (event) {
+            let targetElement = event.target; // The clicked element
+        
+            // 🔍 Step 1: Find nearest parent with ID starting with "block-"
+            let parentBlock = targetElement.closest('[id^="block-"]');
+            if (parentBlock) {
+                console.log("✅ Parent Block Found:", parentBlock);
+                console.log("🆔 Parent Block ID:", parentBlock.id);
+            } else {
+                console.log("❌ No parent block found.");
+            }
+        
+            // 🔍 Step 2: Find <article> after <main> with data-page-sections
+            let mainElement = document.querySelector("main");
+            if (mainElement) {
+                let articleElement = mainElement.nextElementSibling; // First element after <main>
+                while (articleElement && articleElement.tagName !== "ARTICLE") {
+                    articleElement = articleElement.nextElementSibling;
+                }
+                
+                if (articleElement && articleElement.hasAttribute("data-page-sections")) {
+                    console.log("✅ Article Found:", articleElement);
+                    console.log("📄 data-page-sections:", articleElement.getAttribute("data-page-sections"));
+                } else {
+                    console.log("❌ No <article> with data-page-sections found.");
+                }
+            } else {
+                console.log("❌ No <main> element found.");
+            }
+        });
+        
 
 
 
@@ -344,93 +375,8 @@
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
         };
-    
-        let selectedElement = null;
-    
-        // Add click event listener to the document
         document.addEventListener("DOMContentLoaded", async function () {
         console.log("✅ SquareCraft Plugin Loaded");
-    
-        // 🛠 Helper Function: Deep Query Selector (Handles Shadow DOM)
-        function queryDeep(selector) {
-            function searchWithin(node) {
-                if (!node) return null;
-                let found = node.querySelector(selector);
-                if (found) return found;
-                for (const child of node.children) {
-                    if (child.shadowRoot) {
-                        let shadowMatch = searchWithin(child.shadowRoot);
-                        if (shadowMatch) return shadowMatch;
-                    }
-                }
-                return null;
-            }
-            return searchWithin(document.body);
-        }
-    
-        // 🔍 Mutation Observer to Watch for Toolbar
-        function observeToolbar() {
-            console.log("📡 Observing DOM for Toolbar...");
-            let observer = new MutationObserver(() => {
-                let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
-                if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
-                    console.log("📌 Toolbar Found! Injecting Plugin Icon...");
-                    injectPluginIcon(toolbar);
-                    observer.disconnect(); // Stop observing once injected
-                }
-            });
-            observer.observe(document.body, { childList: true, subtree: true });
-        }
-    
-        // 🎨 Inject SquareCraft Plugin Icon
-        function injectPluginIcon(toolbar) {
-            if (!toolbar) {
-                console.error("❌ Cannot inject icon: Toolbar is null.");
-                return;
-            }
-            if (toolbar.querySelector("[data-squarecraft-icon]")) {
-                console.warn("⚠️ SquareCraft Plugin Icon Already Exists. Skipping...");
-                return;
-            }
-    
-            console.log("🎨 Injecting SquareCraft Plugin Icon...");
-            const pluginButton = document.createElement("button");
-            pluginButton.setAttribute("data-squarecraft-icon", "true");
-            pluginButton.style.border = "none";
-            pluginButton.style.background = "transparent";
-            pluginButton.style.cursor = "pointer";
-            pluginButton.style.marginLeft = "10px";
-    
-            const img = document.createElement("img");
-            img.src = "https://webefo.com/wp-content/uploads/2023/09/cropped-Webefo-Favicon.png"; // Your plugin logo
-            img.alt = "SquareCraft Plugin";
-            img.width = 24;
-            img.height = 24;
-            img.style.display = "block";
-    
-            pluginButton.appendChild(img);
-            toolbar.appendChild(pluginButton);
-    
-            console.log("🎉 SquareCraft Icon Successfully Added!");
-    
-            // ✅ Click Event for Plugin
-            pluginButton.addEventListener("click", function () {
-                alert("SquareCraft Plugin Clicked!");
-            });
-        }
-    
-        // 🔄 Re-inject icon if removed
-        setInterval(() => {
-            let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
-            if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
-                console.log("🔄 Re-injecting SquareCraft Icon...");
-                injectPluginIcon(toolbar);
-            }
-        }, 3000); // Check every 3 seconds
-    
-        observeToolbar(); // ✅ Start watching for the toolbar
-    
-        // 🎨 Widget Container for SquareCraft UI
         const widgetContainer = document.createElement("div");
         widgetContainer.id = "squarecraft-widget-container";
         widgetContainer.style.position = "fixed"; // ✅ Fixed position to prevent scrolling issues
@@ -470,109 +416,11 @@
     
         document.body.appendChild(widgetContainer);
     
-        // 🔄 Fetch Existing Modifications from API
-        async function fetchModifications() {
-            try {
-                const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications?pageId=alkfja234");
-                if (!response.ok) {
-                    console.error("❌ Failed to fetch modifications:", await response.text());
-                    return;
-                }
-    
-                const data = await response.json();
-                console.log("📥 Fetched modifications:", data);
-    
-                if (data.modifications && data.modifications.fontSize) {
-                    document.querySelectorAll("[id^='block-']").forEach((el) => {
-                        el.style.fontSize = data.modifications.fontSize;
-                    });
-                }
-            } catch (error) {
-                console.error("🚨 Error fetching modifications:", error);
-            }
-        }
-    
-        fetchModifications(); // Fetch modifications on load
+     
     });
     
     
     
-        // Apply font size change
-        document.getElementById("apply-font-size").addEventListener("click", async () => {
-        const fontSize = document.getElementById("font-size-input").value;
-    
-        if (!selectedElement) {
-            alert("No element selected. Please click on an element first.");
-            return;
-        }
-    
-        if (!fontSize) {
-            alert("Please enter a valid font size.");
-            return;
-        }
-    
-        // Apply the font size to the selected element
-        selectedElement.style.fontSize = `${fontSize}px`;
-    
-        // Send the modification to the API
-        const payload = {
-            pageId: "alkfja234",
-            modifications: {
-            fontSize: `${fontSize}px`,
-            },
-            userId: "67962823ce065360d822548f",
-        };
-    
-        try {
-            const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-            });
-    
-            if (response.ok) {
-            console.log("Font size updated successfully:", payload);
-            alert("Font size updated successfully!");
-            } else {
-            console.error("Failed to update font size:", await response.text());
-            alert("Failed to update font size.");
-            }
-        } catch (error) {
-            console.error("Error while sending request:", error);
-            alert("Error while sending request.");
-        }
-        });
-    
-        // Fetch existing modifications from the API
-        async function fetchModifications() {
-        try {
-            const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications?pageId=alkfja234", {
-            method: "GET",
-            });
-    
-            if (response.ok) {
-            const data = await response.json();
-            console.log("Fetched modifications:", data);
-    
-            // Apply modifications to elements
-            if (data.modifications && data.modifications.fontSize) {
-                const elements = document.querySelectorAll("[id^='block-']");
-                elements.forEach((element) => {
-                element.style.fontSize = data.modifications.fontSize;
-                });
-                alert(`Applied font size: ${data.modifications.fontSize} to all elements.`);
-            }
-            } else {
-            console.error("Failed to fetch modifications:", await response.text());
-            }
-        } catch (error) {
-            console.error("Error fetching modifications:", error);
-        }
-        }
-    
-        // Fetch modifications on load
-        fetchModifications();
+   
     })();
     
