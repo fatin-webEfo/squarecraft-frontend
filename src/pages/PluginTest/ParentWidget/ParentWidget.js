@@ -25,38 +25,83 @@
         document.head.appendChild(jqueryScript);
 
     
-        function injectSquareCraftButton() {
-            const toolbar = document.querySelector('.sqs-toolbar-buttons');
-
+        function queryDeep(selector) {
+            function searchWithin(node) {
+                if (!node) return null;
+                let found = node.querySelector(selector);
+                if (found) return found;
+                for (const child of node.children) {
+                    if (child.shadowRoot) {
+                        let shadowMatch = searchWithin(child.shadowRoot);
+                        if (shadowMatch) return shadowMatch;
+                    }
+                }
+                return null;
+            }
+            return searchWithin(document.body);
+        }
+    
+        // 🔍 Mutation Observer to Watch for Toolbar
+        function observeToolbar() {
+            console.log("📡 Observing DOM for Toolbar...");
+            let observer = new MutationObserver(() => {
+                let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]'); // 🔥 Squarespace Viewport Toolbar
+                if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
+                    console.log("📌 Toolbar Found! Injecting Plugin Icon...");
+                    injectPluginIcon(toolbar);
+                    observer.disconnect(); // Stop observing once injected
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    
+        // 🎨 Inject SquareCraft Plugin Icon
+        function injectPluginIcon(toolbar) {
             if (!toolbar) {
-                setTimeout(injectSquareCraftButton, 500);
+                console.error("❌ Cannot inject icon: Toolbar is null.");
                 return;
             }
-            if(toolbar){
-                console.log("toolbar is already" , toolbar)
+            if (toolbar.querySelector("[data-squarecraft-icon]")) {
+                console.warn("⚠️ SquareCraft Plugin Icon Already Exists. Skipping...");
+                return;
             }
-
-            if (document.querySelector('#squareCraftButton')) return;
-
-            const button = document.createElement('button');
-            button.id = 'squareCraftButton';
-            button.innerHTML = '<img src="https://i.ibb.co.com/VpxFTKBz/Group-29.jpg" alt="SquareCraft">';
-            button.style.cssText = `
-                background: transparent;
-                border: none;
-                cursor: pointer;
-                margin-left: 10px;
-            `;
-            toolbar.appendChild(button);
-
-            button.addEventListener('click', () => {
-                alert('SquareCraft Plugin Activated!');
+    
+            console.log("🎨 Injecting SquareCraft Plugin Icon...");
+            const pluginButton = document.createElement("button");
+            pluginButton.setAttribute("data-squarecraft-icon", "true");
+            pluginButton.style.border = "none";
+            pluginButton.style.background = "transparent";
+            pluginButton.style.cursor = "pointer";
+            pluginButton.style.marginLeft = "10px";
+    
+            const img = document.createElement("img");
+            img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // ✅ Your Plugin Icon
+            img.alt = "SquareCraft Plugin";
+            img.width = 24;
+            img.height = 24;
+            img.style.display = "block";
+    
+            pluginButton.appendChild(img);
+            toolbar.appendChild(pluginButton);
+    
+            console.log("🎉 SquareCraft Icon Successfully Added!");
+    
+            // ✅ Click Event for Plugin
+            pluginButton.addEventListener("click", function () {
+                alert("SquareCraft Plugin Clicked!");
             });
-
-            console.log('SquareCraft button injected successfully!');
         }
-
-        setTimeout(injectSquareCraftButton, 1000);
+    
+        // 🔄 Re-inject icon if removed
+        setInterval(() => {
+            let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+            if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
+                console.log("🔄 Re-injecting SquareCraft Icon...");
+                injectPluginIcon(toolbar);
+            }
+        }, 3000); // Check every 3 seconds
+    
+        observeToolbar();
 
 
 
