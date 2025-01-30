@@ -1,4 +1,4 @@
-    (async function () {
+    ( async function loadSquareCraftPlugin () {
         console.log("✅ SquareCraft Plugin Loaded");
     
         const widgetContainer = document.createElement("div");
@@ -107,11 +107,17 @@
             // 🔍 Step 2: Find <article> after <main> with data-page-sections
             let mainElement = document.querySelector("main");
             if (mainElement) {
-                let articleElement = mainElement.nextElementSibling; // First element after <main>
-                while (articleElement && articleElement.tagName !== "ARTICLE") {
+                let articleElement = mainElement.nextElementSibling;
+        
+                // Traverse through siblings until we find an <article>
+                while (articleElement) {
+                    if (articleElement.tagName === "article") {
+                        break;
+                    }
                     articleElement = articleElement.nextElementSibling;
                 }
-                
+        
+                // If <article> is found, check for the attribute
                 if (articleElement && articleElement.hasAttribute("data-page-sections")) {
                     console.log("✅ Article Found:", articleElement);
                     console.log("📄 data-page-sections:", articleElement.getAttribute("data-page-sections"));
@@ -122,6 +128,7 @@
                 console.log("❌ No <main> element found.");
             }
         });
+        
         
 
 
@@ -422,5 +429,6 @@
     
     
    
-    })();
+})();
+
     
