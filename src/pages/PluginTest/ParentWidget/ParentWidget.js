@@ -38,31 +38,13 @@
                 }
                 return null;
             }
-            return searchWithin(document.body);
+            return searchWithin(document.body) || document.querySelector('.toolbar');
         }
     
-        // 🔍 Mutation Observer to Watch for Toolbar
-        function observeToolbar() {
-            console.log("📡 Observing DOM for Toolbar...");
-            let observer = new MutationObserver(() => {
-                let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]'); // 🔥 Squarespace Viewport Toolbar
-                if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
-                    console.log("📌 Toolbar Found! Injecting Plugin Icon...");
-                    injectPluginIcon(toolbar);
-                    observer.disconnect(); // Stop observing once injected
-                }
-            });
-            observer.observe(document.body, { childList: true, subtree: true });
-        }
-    
-        // 🎨 Inject SquareCraft Plugin Icon
         function injectPluginIcon(toolbar) {
-            if (!toolbar) {
-                console.error("❌ Cannot inject icon: Toolbar is null.");
-                return;
-            }
+            if (!toolbar) return console.error("❌ Toolbar not found.");
             if (toolbar.querySelector("[data-squarecraft-icon]")) {
-                console.warn("⚠️ SquareCraft Plugin Icon Already Exists. Skipping...");
+                console.warn("⚠️ SquareCraft Plugin Icon Already Exists.");
                 return;
             }
     
@@ -73,35 +55,43 @@
             pluginButton.style.background = "transparent";
             pluginButton.style.cursor = "pointer";
             pluginButton.style.marginLeft = "10px";
+            pluginButton.style.display = "block";
+            pluginButton.style.opacity = "1";
     
             const img = document.createElement("img");
-            img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // ✅ Your Plugin Icon
+            img.src = "https://webefo.com/wp-content/uploads/2023/09/cropped-Webefo-Favicon.png";
             img.alt = "SquareCraft Plugin";
             img.width = 24;
             img.height = 24;
-            img.style.display = "block";
     
             pluginButton.appendChild(img);
             toolbar.appendChild(pluginButton);
     
             console.log("🎉 SquareCraft Icon Successfully Added!");
-    
-            // ✅ Click Event for Plugin
-            pluginButton.addEventListener("click", function () {
-                alert("SquareCraft Plugin Clicked!");
-            });
         }
     
-        // 🔄 Re-inject icon if removed
-        setInterval(() => {
-            let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
-            if (toolbar && !toolbar.querySelector("[data-squarecraft-icon]")) {
-                console.log("🔄 Re-injecting SquareCraft Icon...");
-                injectPluginIcon(toolbar);
-            }
-        }, 3000); // Check every 3 seconds
+        function waitForToolbar(maxAttempts = 10, delay = 1000) {
+            let attempts = 0;
     
-        observeToolbar();
+            function check() {
+                let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
+                if (toolbar) {
+                    console.log("✅ Toolbar found, injecting icon...");
+                    injectPluginIcon(toolbar);
+                } else if (attempts < maxAttempts) {
+                    console.log(`🔄 Toolbar not found, retrying (${attempts + 1}/${maxAttempts})...`);
+                    attempts++;
+                    setTimeout(check, delay);
+                } else {
+                    console.error("❌ Toolbar not found after max retries.");
+                }
+            }
+            check();
+        }
+    
+        document.addEventListener("DOMContentLoaded", function () {
+            waitForToolbar();
+        });
 
 
 
@@ -412,7 +402,7 @@
             pluginButton.style.marginLeft = "10px";
     
             const img = document.createElement("img");
-            img.src = "https://i.ibb.co/LXKK6swV/Group-29.jpg"; // Your plugin logo
+            img.src = "https://webefo.com/wp-content/uploads/2023/09/cropped-Webefo-Favicon.png"; // Your plugin logo
             img.alt = "SquareCraft Plugin";
             img.width = 24;
             img.height = 24;
