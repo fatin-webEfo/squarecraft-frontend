@@ -64,21 +64,7 @@ const AuthProvider = ({ children }) => {
   }, [setUser, sanitize]);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("squarCraft_user");
     
-    if (storedUser) {
-      const parsedUser = sanitize(JSON.parse(storedUser)); // ✅ Sanitize on load
-      setUserState(parsedUser);
-
-      window.parent.postMessage(
-        { type: "squarCraft_user", payload: parsedUser },
-        "*"
-      );
-
-      if (parsedUser?.user_id ? parsedUser.user_id : parsedUser?.userId) {
-        fetchProfile(parsedUser.user_id ? parsedUser.user_id : parsedUser.userId);
-      }
-    }
 const setTokenToScript = (token) => {
   const widgetScript = document.getElementById("squarecraft-script");
   if (widgetScript && token) {
