@@ -8,7 +8,7 @@
       if (token) {
         console.log("Token received from script tag:", token);
         localStorage.setItem("squareCraft_auth_token", token);
-        document.cookie = `squareCraft_auth_token=${token}; path=/;`;
+        document.cookie = `squareCraft_auth_token=${token}; path=.squarespace.com;`;
       }
 
       const widgetContainer = document.createElement("div");
