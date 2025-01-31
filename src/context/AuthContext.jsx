@@ -79,11 +79,30 @@ const AuthProvider = ({ children }) => {
         fetchProfile(parsedUser.user_id ? parsedUser.user_id : parsedUser.userId);
       }
     }
-
+const setTokenToScript = (token) => {
+  const widgetScript = document.getElementById("squarecraft-script");
+  if (widgetScript && token) {
+    widgetScript.setAttribute("data-token", token);
+    console.log("Token set to widget:", token);
+  }
+};
+const authToken = localStorage.getItem("squarCraft_auth_token");
+if (authToken) {
+  setTokenToScript(authToken);
+}
     window.authData = {
       user,
       token: localStorage.getItem("squarCraft_auth_token") || null,
     };
+    const token = localStorage.getItem("squarCraft_auth_token");
+
+    if (token) {
+      const widgetScript = document.createElement("script");
+      widgetScript.src = `https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.js`;
+      widgetScript.defer = true;
+      widgetScript.dataset.token = token;
+      document.body.appendChild(widgetScript);
+    }
   }, [fetchProfile, sanitize, user]);
 
   const registerUser = useCallback(

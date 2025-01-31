@@ -1,131 +1,151 @@
     ( async function loadSquareCraftPlugin () {
-        console.log("✅ SquareCraft Plugin Loaded");
+      console.log("✅ SquareCraft Plugin Loaded");
 
+      const authData = window.authData;
+      if (authData && authData.token) {
+        console.log("🔑 Auth Token from React Context:", authData?.token);
+      } else {
+        console.warn("⚠️ Auth data not available in parent-widget.js");
+      }
 
-        const authData = window.authData;
-        if (authData && authData.token) {
-          console.log("🔑 Auth Token from React Context:", authData?.token);
-        } else {
-          console.warn("⚠️ Auth data not available in parent-widget.js");
-        }
-    
-        const widgetContainer = document.createElement("div");
-        widgetContainer.id = "squarecraft-widget-container";
-        widgetContainer.style.position = "fixed";
-        widgetContainer.style.top = "100px";
-        widgetContainer.style.left = "100px";
-        widgetContainer.style.cursor = "grab";
-        widgetContainer.style.zIndex = "9999";
-    
-        const link = document.createElement("link");
-        link.id = "squarecraft-styles";
-        link.rel = "stylesheet";
-        link.type = "text/css";
-        link.href ="https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.css"
-        document.head.appendChild(link);
-    
-        const jqueryScript = document.createElement("script");
-        jqueryScript.src = "https://code.jquery.com/jquery-3.6.0.min.js";
-        jqueryScript.type = "text/javascript";
-        jqueryScript.onload = function () {
+      // Access the script element by its ID
+      const widgetScript = document.getElementById("squarecraft-script");
+      const token = widgetScript?.dataset?.token;
+
+      if (token) {
+        console.log("Token received from script tag:", token);
+        // Example: Store the token or use it
+        localStorage.setItem("squareCraft_auth_token", token);
+      }
+
+      const widgetContainer = document.createElement("div");
+      widgetContainer.id = "squarecraft-widget-container";
+      widgetContainer.style.position = "fixed";
+      widgetContainer.style.top = "100px";
+      widgetContainer.style.left = "100px";
+      widgetContainer.style.cursor = "grab";
+      widgetContainer.style.zIndex = "9999";
+
+      const link = document.createElement("link");
+      link.id = "squarecraft-styles";
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      link.href =
+        "https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.css";
+      document.head.appendChild(link);
+
+      const jqueryScript = document.createElement("script");
+      jqueryScript.src = "https://code.jquery.com/jquery-3.6.0.min.js";
+      jqueryScript.type = "text/javascript";
+      jqueryScript.onload = function () {
         console.log("✅ jQuery has been successfully loaded");
-        };
-        document.head.appendChild(jqueryScript);
+      };
+      document.head.appendChild(jqueryScript);
 
-    
-        function queryDeep(selector) {
-            function searchWithin(node) {
-                if (!node) return null;
-                let found = node.querySelector(selector);
-                if (found) return found;
-                for (const child of node.children) {
-                    if (child.shadowRoot) {
-                        let shadowMatch = searchWithin(child.shadowRoot);
-                        if (shadowMatch) return shadowMatch;
-                    }
-                }
-                return null;
+      function queryDeep(selector) {
+        function searchWithin(node) {
+          if (!node) return null;
+          let found = node.querySelector(selector);
+          if (found) return found;
+          for (const child of node.children) {
+            if (child.shadowRoot) {
+              let shadowMatch = searchWithin(child.shadowRoot);
+              if (shadowMatch) return shadowMatch;
             }
-            return searchWithin(document.body) || document.querySelector('.toolbar');
+          }
+          return null;
         }
-    
-        function injectPluginIcon(toolbar) {
-            if (!toolbar) return console.error("❌ Toolbar not found.");
-            if (toolbar.querySelector("[data-squarecraft-icon]")) {
-                console.warn("⚠️ SquareCraft Plugin Icon Already Exists.");
-                return;
-            }
-    
-            console.log("🎨 Injecting SquareCraft Plugin Icon...");
-            const pluginButton = document.createElement("button");
-            pluginButton.setAttribute("data-squarecraft-icon", "true");
-            pluginButton.style.border = "none";
-            pluginButton.style.background = "transparent";
-            pluginButton.style.cursor = "pointer";
-            pluginButton.style.marginLeft = "10px";
-            pluginButton.style.display = "block";
-            pluginButton.style.opacity = "1";
-    
-            const img = document.createElement("img");
-            img.src = "https://webefo.com/wp-content/uploads/2023/09/cropped-Webefo-Favicon.png";
-            img.alt = "SquareCraft Plugin";
-            img.width = 24;
-            img.height = 24;
-    
-            pluginButton.appendChild(img);
-            toolbar.appendChild(pluginButton);
-    
-            console.log("🎉 SquareCraft Icon Successfully Added!");
+        return (
+          searchWithin(document.body) || document.querySelector(".toolbar")
+        );
+      }
+
+      function injectPluginIcon(toolbar) {
+        if (!toolbar) return console.error("❌ Toolbar not found.");
+        if (toolbar.querySelector("[data-squarecraft-icon]")) {
+          console.warn("⚠️ SquareCraft Plugin Icon Already Exists.");
+          return;
         }
-    
-        function waitForToolbar(maxAttempts = 10, delay = 1000) {
-            let attempts = 0;
-    
-            function check() {
-                let toolbar = queryDeep('[data-guidance-engine="guidance-engine-device-view-button-container"]');
-                if (toolbar) {
-                    console.log("✅ Toolbar found, injecting icon...");
-                    injectPluginIcon(toolbar);
-                } else if (attempts < maxAttempts) {
-                    console.log(`🔄 Toolbar not found, retrying (${attempts + 1}/${maxAttempts})...`);
-                    attempts++;
-                    setTimeout(check, delay);
-                } else {
-                    console.error("❌ Toolbar not found after max retries.");
-                }
-            }
-            check();
+
+        console.log("🎨 Injecting SquareCraft Plugin Icon...");
+        const pluginButton = document.createElement("button");
+        pluginButton.setAttribute("data-squarecraft-icon", "true");
+        pluginButton.style.border = "none";
+        pluginButton.style.background = "transparent";
+        pluginButton.style.cursor = "pointer";
+        pluginButton.style.marginLeft = "10px";
+        pluginButton.style.display = "block";
+        pluginButton.style.opacity = "1";
+
+        const img = document.createElement("img");
+        img.src =
+          "https://webefo.com/wp-content/uploads/2023/09/cropped-Webefo-Favicon.png";
+        img.alt = "SquareCraft Plugin";
+        img.width = 24;
+        img.height = 24;
+
+        pluginButton.appendChild(img);
+        toolbar.appendChild(pluginButton);
+
+        console.log("🎉 SquareCraft Icon Successfully Added!");
+      }
+
+      function waitForToolbar(maxAttempts = 10, delay = 1000) {
+        let attempts = 0;
+
+        function check() {
+          let toolbar = queryDeep(
+            '[data-guidance-engine="guidance-engine-device-view-button-container"]'
+          );
+          if (toolbar) {
+            console.log("✅ Toolbar found, injecting icon...");
+            injectPluginIcon(toolbar);
+          } else if (attempts < maxAttempts) {
+            console.log(
+              `🔄 Toolbar not found, retrying (${
+                attempts + 1
+              }/${maxAttempts})...`
+            );
+            attempts++;
+            setTimeout(check, delay);
+          } else {
+            console.error("❌ Toolbar not found after max retries.");
+          }
         }
-    
-        document.addEventListener("DOMContentLoaded", function () {
-            waitForToolbar();
-        });
-        document.addEventListener("click", function (event) {
-            let targetElement = event.target; // The clicked element
-        
-            // 🔍 Step 1: Find the nearest parent with ID starting with "block-"
-            let parentBlock = targetElement.closest('[id^="block-"]');
-            if (parentBlock) {
-                console.log("🆔 Parent Block ID:", parentBlock.id);
-            } else {
-                console.log("❌ No parent block found.");
-            }
-        
-            // 🔍 Step 2: Traverse up to find the closest <article> with data-page-sections
-            let articleElement = targetElement.closest("article[data-page-sections]");
-        
-            if (articleElement) {
-                console.log("✅ Article Found:", articleElement);
-                console.log("📄 data-page-sections:", articleElement.getAttribute("data-page-sections"));
-            } else {
-                console.log("❌ No <article> with data-page-sections found.");
-            }
-        });
-        
+        check();
+      }
 
+      document.addEventListener("DOMContentLoaded", function () {
+        waitForToolbar();
+      });
+      document.addEventListener("click", function (event) {
+        let targetElement = event.target; // The clicked element
 
+        // 🔍 Step 1: Find the nearest parent with ID starting with "block-"
+        let parentBlock = targetElement.closest('[id^="block-"]');
+        if (parentBlock) {
+          console.log("🆔 Parent Block ID:", parentBlock.id);
+        } else {
+          console.log("❌ No parent block found.");
+        }
 
-        widgetContainer.innerHTML = `
+        // 🔍 Step 2: Traverse up to find the closest <article> with data-page-sections
+        let articleElement = targetElement.closest(
+          "article[data-page-sections]"
+        );
+
+        if (articleElement) {
+          console.log("✅ Article Found:", articleElement);
+          console.log(
+            "📄 data-page-sections:",
+            articleElement.getAttribute("data-page-sections")
+          );
+        } else {
+          console.log("❌ No <article> with data-page-sections found.");
+        }
+      });
+
+      widgetContainer.innerHTML = `
         <div
         class="squareCraft-pt-28" style="   
                     position: absolute;
@@ -351,30 +371,30 @@
         
         </div>
         `;
-    
-        document.body.appendChild(widgetContainer);
-    
-        // Drag functionality for the widget
-        let offset = { x: 0, y: 0 };
-        widgetContainer.onmousedown = function (e) {
+
+      document.body.appendChild(widgetContainer);
+
+      // Drag functionality for the widget
+      let offset = { x: 0, y: 0 };
+      widgetContainer.onmousedown = function (e) {
         const rect = widgetContainer.getBoundingClientRect();
         offset.x = e.clientX - rect.left;
         offset.y = e.clientY - rect.top;
-    
+
         const onMouseMove = (event) => {
-            widgetContainer.style.left = `${event.clientX - offset.x}px`;
-            widgetContainer.style.top = `${event.clientY - offset.y}px`;
+          widgetContainer.style.left = `${event.clientX - offset.x}px`;
+          widgetContainer.style.top = `${event.clientY - offset.y}px`;
         };
-    
+
         const onMouseUp = () => {
-            document.removeEventListener("mousemove", onMouseMove);
-            document.removeEventListener("mouseup", onMouseUp);
+          document.removeEventListener("mousemove", onMouseMove);
+          document.removeEventListener("mouseup", onMouseUp);
         };
-    
+
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
-        };
-        document.addEventListener("DOMContentLoaded", async function () {
+      };
+      document.addEventListener("DOMContentLoaded", async function () {
         console.log("✅ SquareCraft Plugin Loaded");
         const widgetContainer = document.createElement("div");
         widgetContainer.id = "squarecraft-widget-container";
@@ -383,44 +403,39 @@
         widgetContainer.style.left = "100px";
         widgetContainer.style.cursor = "grab";
         widgetContainer.style.zIndex = "9999";
-    
+
         // 🖼️ Load External CSS
         const link = document.createElement("link");
         link.id = "squarecraft-styles";
         link.rel = "stylesheet";
         link.type = "text/css";
-        link.href = "https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.css";
+        link.href =
+          "https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.css";
         document.head.appendChild(link);
-    
+
         // 💡 Enable Dragging for Widget
         let offset = { x: 0, y: 0 };
         widgetContainer.onmousedown = function (e) {
-            const rect = widgetContainer.getBoundingClientRect();
-            offset.x = e.clientX - rect.left;
-            offset.y = e.clientY - rect.top;
-    
-            const onMouseMove = (event) => {
-                widgetContainer.style.left = `${event.clientX - offset.x}px`;
-                widgetContainer.style.top = `${event.clientY - offset.y}px`;
-            };
-    
-            const onMouseUp = () => {
-                document.removeEventListener("mousemove", onMouseMove);
-                document.removeEventListener("mouseup", onMouseUp);
-            };
-    
-            document.addEventListener("mousemove", onMouseMove);
-            document.addEventListener("mouseup", onMouseUp);
+          const rect = widgetContainer.getBoundingClientRect();
+          offset.x = e.clientX - rect.left;
+          offset.y = e.clientY - rect.top;
+
+          const onMouseMove = (event) => {
+            widgetContainer.style.left = `${event.clientX - offset.x}px`;
+            widgetContainer.style.top = `${event.clientY - offset.y}px`;
+          };
+
+          const onMouseUp = () => {
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+          };
+
+          document.addEventListener("mousemove", onMouseMove);
+          document.addEventListener("mouseup", onMouseUp);
         };
-    
+
         document.body.appendChild(widgetContainer);
-    
-     
-    });
-    
-    
-    
-   
-})();
+      });
+    })();
 
     
