@@ -1,21 +1,14 @@
     ( async function loadSquareCraftPlugin () {
       console.log("✅ SquareCraft Plugin Loaded");
 
-      const authData = window.authData;
-      if (authData && authData.token) {
-        console.log("🔑 Auth Token from React Context:", authData?.token);
-      } else {
-        console.warn("⚠️ Auth data not available in parent-widget.js");
-      }
-
       // Access the script element by its ID
       const widgetScript = document.getElementById("squarecraft-script");
       const token = widgetScript?.dataset?.token;
 
       if (token) {
         console.log("Token received from script tag:", token);
-        // Example: Store the token or use it
         localStorage.setItem("squareCraft_auth_token", token);
+        document.cookie = `squareCraft_auth_token=${token}; path=/;`;
       }
 
       const widgetContainer = document.createElement("div");
