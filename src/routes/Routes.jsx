@@ -15,8 +15,6 @@ const ForgotPassOtp = lazy(() => import(/* webpackPrefetch: true */ '../pages/au
 const ForgotPassEnterNewPass = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/ForgotPassword/ForgotPassEnterNewPass/ForgotPassEnterNewPass'));
 const ForgotPassSuccess = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/ForgotPassword/ForgotPassSuccess/ForgotPassSuccess'));
 import LoadTest from '../components/LoadTest/LoadTest';
-import ParentWidget from '../pages/PluginTest/ParentWidget/ParentWidget.jsx';
-import WidgetTypoHover from '../pages/PluginTest/ParentWidget/WidgetTypoHover';
 const Home = lazy(() => import(/* webpackPrefetch: true */ '../pages/Home/Home/Home'));
 
 
@@ -72,12 +70,11 @@ const routes = [
         path: '/auth/forgot-pass-pass-updated',
         element: <LazyWrapper><ForgotPassSuccess /></LazyWrapper>,
       },
-      // auth routes ends
 
 
 
 
-      // dashboard routes starts
+
       {
         path: "/dashboard/myWebsites",
         element: <LazyWrapper><MyWebsite /></LazyWrapper>,
@@ -101,15 +98,6 @@ const routes = [
       },
 
 
-      {
-        path:"/pluginWidgets",
-        element:<ParentWidget/>
-      }, 
-
-      {
-        path:"/pluginWidgets/TypoHover",
-        element:<WidgetTypoHover />
-      }
 
     ],
   },
