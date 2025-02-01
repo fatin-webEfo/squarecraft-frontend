@@ -80,15 +80,8 @@ if (authToken) {
       user,
       token: localStorage.getItem("squarCraft_auth_token") || null,
     };
-    const token = localStorage.getItem("squarCraft_auth_token");
 
-    if (token) {
-      const widgetScript = document.createElement("script");
-      widgetScript.src = `https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.js`;
-      widgetScript.defer = true;
-      widgetScript.dataset.token = token;
-      document.body.appendChild(widgetScript);
-    }
+   
   }, [fetchProfile, sanitize, user]);
 
   const registerUser = useCallback(

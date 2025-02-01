@@ -7,9 +7,10 @@ import { AuthContext } from "../../../context/AuthContext";
 
 const MyWebsite = () => {
     useTitle("My Website | SquareCraft");
-    const { user, loading, error } = useContext(AuthContext);
+    const {  loading, error } = useContext(AuthContext);
+    const squarCraft_auth_token = localStorage.getItem("squarCraft_auth_token");
     const installationCode = `<script  id="squarecraft-script" src="https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.js" data-token="${
-      user?.user_id ? user?.user_id : user?.id 
+        squarCraft_auth_token
     }" defer></script>`;
 
     const [plugins, setPlugins] = useState([{ id: 1, name: "", copied: false }]);
