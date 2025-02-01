@@ -1,7 +1,6 @@
 (async function loadSquareCraftPlugin() {
   console.log("✅ SquareCraft Plugin Loaded");
 
-  /** 🔹 Get token from script tag */
   const widgetScript = document.getElementById("squarecraft-script");
   const token = widgetScript?.dataset?.token;
 
@@ -11,19 +10,16 @@
     document.cookie = `squareCraft_auth_token=${token}; path=.squarespace.com;`;
   }
 
-  /** 🔹 Wait for DOM to fully load */
   document.addEventListener("DOMContentLoaded", function () {
     console.log("📜 DOM Fully Loaded!");
     initializeSquareCraft();
   });
 
-  /** 🔥 Main Plugin Initialization */
   function initializeSquareCraft() {
     createWidget();
     attachEventListeners();
   }
 
-  /** 🔹 Creates draggable widget UI */
   function createWidget() {
     const widgetContainer = document.createElement("div");
     widgetContainer.id = "squarecraft-widget-container";
@@ -33,17 +29,22 @@
     widgetContainer.style.cursor = "grab";
     widgetContainer.style.zIndex = "9999";
 
-    /** 🔹 Load External CSS */
     const link = document.createElement("link");
     link.id = "squarecraft-styles";
     link.rel = "stylesheet";
     link.href = "https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.css";
     document.head.appendChild(link);
 
-    /** 🔹 Widget HTML */
+    const jqueryScript = document.createElement("script");
+    jqueryScript.src = "https://code.jquery.com/jquery-3.6.0.min.js";
+    jqueryScript.onload = function () {
+      console.log("✅ jQuery Loaded Successfully");
+    };
+    document.head.appendChild(jqueryScript);
+
     widgetContainer.innerHTML = `
       <div style="width: 300px; background: #2c2c2c; padding: 20px; border-radius: 18px; border: 1.5px solid #3D3D3D;">
-        <p style="color: white;">🎨 SquareCraft Widget Loaded</p>
+        <p style="color: white;">🎨 SquareCraft Widget</p>
         <p id="squareCraftPercentage" style="color: white;">Border Radius: 0%</p>
         <input type="range" min="0" max="100" value="0" id="squareCraftRange">
         <button id="squareCraftPublish" style="width: 100%; padding: 10px; background: #EF7C2F; color: white; border: none; border-radius: 5px; cursor: pointer;">
@@ -54,7 +55,6 @@
 
     document.body.appendChild(widgetContainer);
 
-    /** 🔹 Draggable Widget */
     let offset = { x: 0, y: 0 };
     widgetContainer.onmousedown = function (e) {
       const rect = widgetContainer.getBoundingClientRect();
@@ -74,11 +74,19 @@
       document.addEventListener("mousemove", onMouseMove);
       document.addEventListener("mouseup", onMouseUp);
     };
+
+    const rangeInput = document.getElementById("squareCraftRange");
+    const progressText = document.getElementById("squareCraftPercentage");
+
+    if (rangeInput && progressText) {
+      rangeInput.addEventListener("input", (e) => {
+        progressText.textContent = `Border Radius: ${e.target.value}%`;
+      });
+    }
   }
 
 
 
-  /** 🔹 Attaches Event Listeners */
   function attachEventListeners() {
     document.addEventListener("click", (event) => {
       let { pageId, elementId } = getPageAndElement(event.target);
@@ -98,7 +106,6 @@
     });
   }
 
-  /** 🔹 Get Page & Element Data */
   function getPageAndElement(targetElement) {
     let page = targetElement.closest("article[data-page-sections]");
     let block = targetElement.closest('[id^="block-"]');
@@ -114,7 +121,6 @@
     };
   }
 
-  /** 🔹 Get Computed CSS */
   function getCSSModifications(element) {
     if (!element) return null;
     const computedStyle = window.getComputedStyle(element);
@@ -128,11 +134,10 @@
     };
   }
 
-  /** 🔹 Apply Styles */
   function applyStylesToElement(elementId, css) {
     const element = document.getElementById(elementId);
     if (!element) {
-      console.warn(`⚠️ Element #${elementId} not found.`);
+      console.error(`⚠️ Element #${elementId} not found.`);
       return;
     }
 
@@ -143,10 +148,9 @@
     console.log(`🎨 Styles applied to #${elementId}:`, css);
   }
 
-  /** 🔹 Save Modifications */
   async function saveModifications(pageId, elementId, css) {
     if (!pageId || !elementId || !css) {
-      console.warn("⚠️ Missing data: Page ID or Element ID is undefined.");
+      console.error("⚠️ Missing data: Page ID or Element ID is undefined.");
       return;
     }
 
@@ -157,8 +161,8 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: "679b4e3aee8e48bf97172661", modifications: [{ pageId, elements: [{ elementId, css }] }] }),
-        mode: "cors",
       });
+      console.log(response)
 
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       console.log("✅ Changes Saved Successfully!");
