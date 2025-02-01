@@ -1,5 +1,13 @@
 (async function loadSquareCraftPlugin() {
   console.log("✅ SquareCraft Plugin Loaded");
+  const widgetScript = document.getElementById("squarecraft-script");
+  const token = widgetScript?.dataset?.token;
+
+  if (token) {
+    console.log("Token received from script tag:", token);
+    localStorage.setItem("squareCraft_auth_token", token);
+    document.cookie = `squareCraft_auth_token=${token}; path=.squarespace.com;`;
+  }
 
   let selectedElement = null; // Store last clicked element
 
@@ -147,7 +155,7 @@
     try {
       const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}`, },
         body: JSON.stringify({ userId: "679b4e3aee8e48bf97172661", modifications: [{ pageId, elements: [{ elementId, css }] }] }),
       });
 
