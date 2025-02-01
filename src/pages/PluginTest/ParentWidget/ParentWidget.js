@@ -1,6 +1,8 @@
 (async function loadSquareCraftPlugin() {
   console.log("✅ SquareCraft Plugin Loaded");
 
+  let selectedElement = null; // Store last clicked element
+
   function initializeSquareCraft() {
     createWidget();
     attachEventListeners();
@@ -36,35 +38,19 @@
     `;
 
     document.body.appendChild(widgetContainer);
-
-    let offset = { x: 0, y: 0 };
-    widgetContainer.onmousedown = function (e) {
-      const rect = widgetContainer.getBoundingClientRect();
-      offset.x = e.clientX - rect.left;
-      offset.y = e.clientY - rect.top;
-
-      const onMouseMove = (event) => {
-        widgetContainer.style.left = `${event.clientX - offset.x}px`;
-        widgetContainer.style.top = `${event.clientY - offset.y}px`;
-      };
-
-      const onMouseUp = () => {
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
-      };
-
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
-    };
   }
 
   function attachEventListeners() {
+    // 🖱️ Detect Clicked Element & Store it
     document.addEventListener("click", (event) => {
       let { pageId, elementId } = getPageAndElement(event.target);
       if (!pageId || !elementId) return;
+      
+      selectedElement = event.target; // ✅ Store selected element
       console.log(`🆔 Page ID: ${pageId}, Element ID: ${elementId}`);
     });
 
+    // 🎨 Apply Style on Input Change
     document.getElementById("squareCraftFontSize").addEventListener("input", applyStyle);
     document.getElementById("squareCraftBgColor").addEventListener("input", applyStyle);
     document.getElementById("squareCraftBorderRadius").addEventListener("input", function () {
@@ -72,15 +58,20 @@
       applyStyle();
     });
 
+    // 💾 Publish Changes on Button Click
     document.getElementById("squareCraftPublish").addEventListener("click", async () => {
-      let activeElement = document.activeElement;
-      let { pageId, elementId } = getPageAndElement(activeElement);
+      if (!selectedElement) {
+        console.warn("⚠️ No element selected for publishing.");
+        return;
+      }
+
+      let { pageId, elementId } = getPageAndElement(selectedElement);
       if (!pageId || !elementId) {
         console.warn("⚠️ No valid page or block found for publishing.");
         return;
       }
 
-      let css = getCSSModifications(activeElement);
+      let css = getCSSModifications(selectedElement);
       console.log("🎨 Publishing Changes:", { pageId, elementId, css });
 
       await saveModifications(pageId, elementId, css);
@@ -103,16 +94,18 @@
   }
 
   function applyStyle() {
-    let activeElement = document.activeElement;
-    if (!activeElement) return;
+    if (!selectedElement) {
+      console.warn("⚠️ No element selected to apply styles.");
+      return;
+    }
 
     let fontSize = document.getElementById("squareCraftFontSize").value + "px";
     let bgColor = document.getElementById("squareCraftBgColor").value;
     let borderRadius = document.getElementById("squareCraftBorderRadius").value + "px";
 
-    activeElement.style.fontSize = fontSize;
-    activeElement.style.backgroundColor = bgColor;
-    activeElement.style.borderRadius = borderRadius;
+    selectedElement.style.fontSize = fontSize;
+    selectedElement.style.backgroundColor = bgColor;
+    selectedElement.style.borderRadius = borderRadius;
   }
 
   function getCSSModifications(element) {
@@ -136,7 +129,8 @@
     }
 
     Object.keys(css).forEach((prop) => {
-      element.style[prop] = css[prop];
+      let cssProperty = prop.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+      element.style[cssProperty] = css[prop];
     });
 
     console.log(`🎨 Styles applied to #${elementId}:`, css);
@@ -149,7 +143,6 @@
     }
 
     applyStylesToElement(elementId, css);
-    console.log("CSS: " + css)
 
     try {
       const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
@@ -158,7 +151,9 @@
         body: JSON.stringify({ userId: "679b4e3aee8e48bf97172661", modifications: [{ pageId, elements: [{ elementId, css }] }] }),
       });
 
-      console.log("✅ Changes Saved Successfully!" , response);
+      const data = await response.json();
+      console.log("✅ Changes Saved Successfully!", data);
+
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
     } catch (error) {
       console.error("❌ Error saving modifications:", error);
