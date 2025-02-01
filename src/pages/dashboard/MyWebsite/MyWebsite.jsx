@@ -4,10 +4,11 @@ import useTitle from "../../../hooks/useTitle";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaPlugCirclePlus } from "react-icons/fa6";
 import { AuthContext } from "../../../context/AuthContext";
+import { Link } from "react-router";
 
 const MyWebsite = () => {
     useTitle("My Website | SquareCraft");
-    const {  loading, error } = useContext(AuthContext);
+    const {  loading,user } = useContext(AuthContext);
     const squarCraft_auth_token = localStorage.getItem("squarCraft_auth_token");
     const installationCode = `<script  id="squarecraft-script" src="https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.js" data-token="${
         squarCraft_auth_token
@@ -37,9 +38,6 @@ const MyWebsite = () => {
 
     if (loading) {
         return <div>Loading...</div>;
-    }
-    if (error) {
-        return <div>Error: {error.message}</div>;
     }
 
     return (
@@ -83,14 +81,27 @@ const MyWebsite = () => {
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <button
+                            <div className="gap-2 flex  items-center">
+                            {
+                                user ? (<> <button
                                     onClick={() => copyToClipboard(plugin.id)}
-                                    className={`w-full lg:w-[12rem] py-3 rounded-2xl text-white shadow-md text-center mx-auto text-sm transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600 ${plugin.copied ? "bg-green-600" : "bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600"
+                                    className={`w-full lg:w-[12rem] py-3  rounded-2xl text-white shadow-md text-center mx-auto text-sm transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600 ${plugin.copied ? "bg-green-600" : "bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600"
                                         }`}
                                 >
                                     {plugin.copied ? "Copied!" : "Copy Installation Code"}
                                 </button>
+                                <HiOutlineDotsVertical className="items-end ml-auto" /></>) : (<Link to ="/auth/login" className="gap-2 flex  items-center"> <button
+                                    onClick={() => copyToClipboard(plugin.id)}
+                                    className={`w-full lg:w-[12rem] py-3 rounded-2xl text-white shadow-md text-center mx-auto text-sm transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600 ${plugin.copied ? "bg-green-600" : "bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600"
+                                        }`}
+                                >
+                                   {" Sign In to Copy"}
+                                </button>
                                 <HiOutlineDotsVertical className="items-end ml-auto" />
+                                
+                                </Link>)
+                               }
+                            </div>
                             </div>
                         </div>
                     </div>

@@ -4,7 +4,7 @@ import Image from '../../hooks/Image/Image';
 import qs from "../../../public/images/navbar/question.svg"
 import notification from "../../../public/images/navbar/notification.svg"
 import downArrow from "../../../public/images/navbar/downArrow.svg"
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ProfileDropDown from '../ProfileDropDown/ProfileDropDown';
 import blankuser from "../../../public/images/navbar/blankuser.png";
 // import menu from "../../../public/images/navbar/menu.png";
@@ -12,8 +12,12 @@ import blankuser from "../../../public/images/navbar/blankuser.png";
 import { AuthContext } from '../../context/AuthContext';
 
 const Navbar = () => {
-    const { user, loading, error } = useContext(AuthContext);
-    console.log(user)
+    const { user, loading, fetchProfile } = useContext(AuthContext);
+    useEffect( () => {
+      if (!user) {
+        fetchProfile();
+      }
+    }, [user, fetchProfile]);
   const location = useLocation();
   const pathname = location.pathname;
   const [profileDropdown, setProfileDropdown] = useState(false);
@@ -21,13 +25,11 @@ const Navbar = () => {
     setProfileDropdown(!profileDropdown);
   }
 
+
   const isDashboardPricingPlan = ['/dashboard/pricingPlan', '/dashboard/myWebsites', '/dashboard/pluginLibraries','/profile/editProfile', "/"].includes(pathname);
   const isAuthRegister = ['/auth/register'].includes(pathname);
   if (loading) {
     return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error: {error.message}</div>;
   }
   return (
     <div className="w-full bg-[#F7F5F7] flex items-center justify-center fixed p-6 z-[9999] top-0">
