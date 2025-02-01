@@ -158,6 +158,8 @@
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
+            "pageId": pageId,
+            "userId": "679b4e3aee8e48bf97172661"
           },
           body: JSON.stringify({ userId: "679b4e3aee8e48bf97172661", modifications: [{ pageId, elements: [{ elementId, css }] }] }),
         });
