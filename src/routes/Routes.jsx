@@ -16,6 +16,7 @@ const ForgotPassEnterNewPass = lazy(() => import(/* webpackPrefetch: true */ '..
 const ForgotPassSuccess = lazy(() => import(/* webpackPrefetch: true */ '../pages/auth/ForgotPassword/ForgotPassSuccess/ForgotPassSuccess'));
 import LoadTest from '../components/LoadTest/LoadTest';
 import PluginLibraries from '../pages/dashboard/PluginLibraries/PluginLibraries';
+import Pricingplan from '../pages/dashboard/Pricingplan/Pricingplan';
 const Home = lazy(() => import(/* webpackPrefetch: true */ '../pages/Home/Home/Home'));
 
 
@@ -72,10 +73,6 @@ const routes = [
         element: <LazyWrapper><ForgotPassSuccess /></LazyWrapper>,
       },
 
-
-
-
-
       {
         path: "/dashboard/myWebsites",
         element: <LazyWrapper><MyWebsite /></LazyWrapper>,
@@ -86,6 +83,7 @@ const routes = [
       },
       {
         path: "/dashboard/pricingPlan",
+        element: <LazyWrapper> <Pricingplan /> </LazyWrapper>,
 
       },
 
