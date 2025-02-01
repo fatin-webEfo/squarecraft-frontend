@@ -13,9 +13,13 @@
       const progressText = document.getElementById("squareCraftPercentage");
       const rangeInput = document.getElementById("squareCraftRange");
       
-      rangeInput?.addEventListener("input", (e) => {
-          progressText.textContent = `${e.target.value}%`; // Update percentage text
-      });
+      if (progressText && rangeInput) {
+        rangeInput.addEventListener("input", (e) => {
+          progressText.textContent = `${e.target.value}%`;
+        });
+      } else {
+        console.warn("⚠️ Progress elements not found!");
+      }
       
       
       
@@ -166,6 +170,20 @@
         };
       }
 
+      // function applyStylesToElement(elementId, css) {
+      //   const element = document.getElementById(elementId);
+      //   if (!element) {
+      //     console.warn(`⚠️ Element with ID "${elementId}" not found.`);
+      //     return;
+      //   }
+      
+      //   Object.keys(css).forEach((prop) => {
+      //     element.style[prop] = css[prop];
+      //   });
+      
+      //   console.log(`🎨 Styles applied to #${elementId}:`, css);
+      // }
+
       function applyStylesToElement(elementId, css) {
         const element = document.getElementById(elementId);
         if (!element) {
@@ -174,11 +192,13 @@
         }
       
         Object.keys(css).forEach((prop) => {
-          element.style[prop] = css[prop];
+          let cssProperty = prop.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+          element.style[cssProperty] = css[prop];
         });
       
         console.log(`🎨 Styles applied to #${elementId}:`, css);
       }
+      
       
       
 
