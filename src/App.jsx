@@ -24,17 +24,13 @@ function App() {
 
 
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center">
-        <p className="text-xl text-red-600">{error}</p>
-      </div>
-    );
-  }
-
-
   return (
     <>
+    {
+      error && <div className="bg-red-500 fixed top-5 shadow-sm shadow-red-100  text-white px-6 py-1.5 rounded-md">
+        {error.message}
+      </div>  // Error message when authentication fails or encounters an issue while loading the page.
+    }
       <PageLoader isLoading={isLoading} />
       <Navbar />
      {

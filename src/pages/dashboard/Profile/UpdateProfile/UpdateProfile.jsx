@@ -112,9 +112,9 @@ const UpdateProfile = () => {
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
         <div className="mx-auto">
           <p className="text-[26px] font-semibold text-center mx-auto">Update Your Profile</p>
-          {user?.emailVerified === false && (
+          {user?.verified === false && (
             <p className="text-[#FF0000] text-center mt-2 text-xs border rounded-xl px-4 py-1 border-red-200 bg-red-50">
-              Please verify your email to update your profile
+              Please verify your email to update your profile . <span className="underline cursor-pointer">Check your email</span>
             </p>
           )}
         </div>

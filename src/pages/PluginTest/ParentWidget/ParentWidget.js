@@ -112,9 +112,8 @@
         waitForToolbar();
       });
       document.addEventListener("click", function (event) {
-        let targetElement = event.target; // The clicked element
+        let targetElement = event.target;
 
-        // 🔍 Step 1: Find the nearest parent with ID starting with "block-"
         let parentBlock = targetElement.closest('[id^="block-"]');
         if (parentBlock) {
           console.log("🆔 Parent Block ID:", parentBlock.id);
@@ -122,7 +121,6 @@
           console.log("❌ No parent block found.");
         }
 
-        // 🔍 Step 2: Traverse up to find the closest <article> with data-page-sections
         let articleElement = targetElement.closest(
           "article[data-page-sections]"
         );
@@ -367,7 +365,6 @@
 
       document.body.appendChild(widgetContainer);
 
-      // Drag functionality for the widget
       let offset = { x: 0, y: 0 };
       widgetContainer.onmousedown = function (e) {
         const rect = widgetContainer.getBoundingClientRect();
@@ -391,13 +388,12 @@
         console.log("✅ SquareCraft Plugin Loaded");
         const widgetContainer = document.createElement("div");
         widgetContainer.id = "squarecraft-widget-container";
-        widgetContainer.style.position = "fixed"; // ✅ Fixed position to prevent scrolling issues
+        widgetContainer.style.position = "fixed"; 
         widgetContainer.style.top = "100px";
         widgetContainer.style.left = "100px";
         widgetContainer.style.cursor = "grab";
         widgetContainer.style.zIndex = "9999";
 
-        // 🖼️ Load External CSS
         const link = document.createElement("link");
         link.id = "squarecraft-styles";
         link.rel = "stylesheet";
@@ -406,7 +402,6 @@
           "https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.css";
         document.head.appendChild(link);
 
-        // 💡 Enable Dragging for Widget
         let offset = { x: 0, y: 0 };
         widgetContainer.onmousedown = function (e) {
           const rect = widgetContainer.getBoundingClientRect();

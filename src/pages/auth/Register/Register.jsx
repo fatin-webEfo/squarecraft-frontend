@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import useTitle from "../../../hooks/useTitle";
 import emailIcon from "../../../../public/images/auth/login/email.svg";
@@ -9,12 +9,10 @@ import squarespace from "../../../../public/images/auth/login/squareSpace.svg";
 import eyeIcon from "../../../../public/images/auth/login/eye.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import { useNavigate } from "react-router";
-import { AuthContext } from "../../../context/AuthContext";
 import { API } from "../../../hooks/Api/Api";
 
 const RegisterSchema = () => {
   useTitle("Sign Up | SquareCraft");
-  const { registerUser} = useContext(AuthContext);
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -58,7 +56,6 @@ const RegisterSchema = () => {
     e.preventDefault();
     setErrors({});
   
-    // Final validation check before submission
     validateField("name", name);
     validateField("email", email);
     validateField("password", password);
@@ -71,7 +68,6 @@ const RegisterSchema = () => {
     try {
       setLoading(true);
   
-      // API request to register
       const response = await axios.post(
         `${API}/api/v1/register`,
         { name, email, password, confirmPassword },
@@ -79,37 +75,15 @@ const RegisterSchema = () => {
       );
   
       const squarCraft_auth_token = response?.data?.squarCraft_auth_token;
-  
+      console.log(response)
       if (response?.status === 201) {
-        const registerUserData = {
-          name: response?.data?.user?.name,
-          email: response?.data?.user?.email,
-          squarCraft_auth_token: response?.data?.squarCraft_auth_token,
-          user_id: response?.data?.user?.id,
-          phone: response?.data?.user?.phone || "",
-          verified:response?.data?.user?.verified,
-        };
-  console.log(response)
-        registerUser(registerUserData);
-  
         localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
         sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-  
         axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
   
-        document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60 * 1000}; domain=https://maroon-quillfish-bbn6.squarespace.com; secure; samesite=None`;
-        axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
-  
-        window.parent.postMessage(
-          { type: "squarCraft_auth_token", squarCraft_auth_token },
-          "https://www.squarespace.com"
-        );
-  
-        // Navigate to dashboard
         navigate("/dashboard/myWebsites");
       }
     } catch (error) {
-      // Handle errors gracefully
       setErrors((prev) => ({
         ...prev,
         submit: error?.response?.data?.message || "An error occurred.",

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import {  useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -11,13 +11,13 @@ import useTitle from "../../../hooks/useTitle";
 import tik from "../../../../public/images/auth/login/tik.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import ButtonLoader from "../../../hooks/ButtonLoader/ButtonLoader";
-import { AuthContext } from "../../../context/AuthContext";
 import { API } from "../../../hooks/Api/Api";
+import { AuthContext } from "../../../context/AuthContext";
 
 const Login = () => {
   useTitle("Sign In | SquareCraft");
-    const { loginUser} = useContext(AuthContext);
-  
+    const { setUserState } = useContext(AuthContext);
+
 const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,10 +34,6 @@ const navigate = useNavigate();
     if (!email) newErrors.email = "Email is required.";
     else if (!emailRegex.test(email)) newErrors.email = "Invalid email format.";
 
-    if (!password) newErrors.password = "Password is required.";
-    else if (password.length < 8)
-      newErrors.password = "Password must be at least 8 characters.";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -46,37 +42,23 @@ const navigate = useNavigate();
     e.preventDefault();
     if (!validate()) return;
 
-    try {
+    try { 
       setLoading(true);
       const response = await axios.post(`${API}/api/v1/login`, {
         email,
         password,
         rememberMe: isChecked,
-      },{
-        // withCredentials: true,
       });
-      const loginUserData = {
-       name: response?.data?.user?.name,
-        email: response?.data?.user?.email,
-        user_id: response?.data?.user?.id,
-        squarCraft_auth_token: response?.data?.squarCraft_auth_token,
-        emailVerified:response?.data?.emailVerified,
-        phone:response?.data?.user?.phone || "",
-      }
-      loginUser(loginUserData);
-      const squarCraft_auth_token = response.data.squarCraft_auth_token;
+      const squarCraft_auth_token = response?.data?.squarCraft_auth_token;
       localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
       document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${60 * 60}`;
       axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
-  
-      // Optionally, set a cookie for Squarespace (if required)
-      document.cookie = `squarCraft_auth_token=${squarCraft_auth_token}; path=/; max-age=${30 * 24 * 60 * 60 * 1000}; domain=.squarespace.com; Secure; SameSite=None`;
-      axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
-console.log(response)
+       console.log(response)
 
       if(response.status===200){
         navigate("/dashboard/myWebsites");
+        setUserState(response?.data?.user)
       }
     
     } catch (error) {
