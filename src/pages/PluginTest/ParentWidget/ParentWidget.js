@@ -13,7 +13,7 @@
       const progressText = document.getElementById("squareCraftPercentage");
       const rangeInput = document.getElementById("squareCraftRange");
       
-      rangeInput.addEventListener("input", (e) => {
+      rangeInput?.addEventListener("input", (e) => {
           progressText.textContent = `${e.target.value}%`; // Update percentage text
       });
       
