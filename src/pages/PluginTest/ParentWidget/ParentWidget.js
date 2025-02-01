@@ -151,10 +151,8 @@
         body: JSON.stringify({ userId: "679b4e3aee8e48bf97172661", modifications: [{ pageId, elements: [{ elementId, css }] }] }),
       });
 
-      const data = await response.json();
-      console.log("✅ Changes Saved Successfully!", data);
+      console.log("✅ Changes Saved Successfully!", response);
 
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
     } catch (error) {
       console.error("❌ Error saving modifications:", error);
     }
