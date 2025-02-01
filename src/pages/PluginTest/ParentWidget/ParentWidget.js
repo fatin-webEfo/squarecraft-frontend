@@ -10,7 +10,15 @@
         localStorage.setItem("squareCraft_auth_token", token);
         document.cookie = `squareCraft_auth_token=${token}; path=.squarespace.com;`;
       }
-
+      const progressText = document.getElementById("squareCraftPercentage");
+      const rangeInput = document.getElementById("squareCraftRange");
+      
+      rangeInput.addEventListener("input", (e) => {
+          progressText.textContent = `${e.target.value}%`; // Update percentage text
+      });
+      
+      
+      
       const widgetContainer = document.createElement("div");
       widgetContainer.id = "squarecraft-widget-container";
       widgetContainer.style.position = "fixed";
@@ -135,6 +143,80 @@
           console.log("❌ No <article> with data-page-sections found.");
         }
       });
+      function getPageAndElement(targetElement) {
+        let page = targetElement.closest("article[data-page-sections]");
+        let block = targetElement.closest('[id^="block-"]');
+    
+        return {
+          pageId: page ? page.getAttribute("data-page-sections") : null,
+          elementId: block ? block.id : null,
+        };
+      }
+
+      function getCSSModifications(element) {
+        if (!element) return null;
+        const computedStyle = window.getComputedStyle(element);
+    
+        return {
+          "font-size": computedStyle.fontSize,
+          "background-color": computedStyle.backgroundColor,
+          "border-radius": computedStyle.borderRadius,
+          "color": computedStyle.color,
+          "padding": computedStyle.padding,
+        };
+      }
+
+
+      
+
+      async function saveModifications(pageId, elementId, css) {
+        if (!pageId || !elementId || !css) {
+          console.warn("⚠️ Missing data: Page ID or Element ID is undefined.");
+          return;
+        }
+    
+        const userId = "679b5c69284d88169aeb1bc4"; // Replace with dynamic userId if available
+        const modification = [
+          {
+            pageId,
+            modifications: [
+              {
+                elementId,
+                css,
+              },
+            ],
+          },
+        ];
+    
+        try {
+          const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId, modification }),
+            credentials: "include",
+          });
+    
+          const data = await response.json();
+          console.log("✅ API Response:", data);
+        } catch (error) {
+          console.error("❌ Error saving modifications:", error);
+        }
+      }
+      document.addEventListener("click", (event) => {
+        let { pageId, elementId } = getPageAndElement(event.target);
+    
+        if (pageId && elementId) {
+          console.log(`🆔 Page ID: ${pageId}, Element ID: ${elementId}`);
+          let css = getCSSModifications(event.target);
+          console.log("🎨 Captured CSS:", css);
+    
+          saveModifications(pageId, elementId, css);
+        } else {
+          console.warn("⚠️ No valid page or element found for this click.");
+        }
+      });
 
       widgetContainer.innerHTML = `
         <div
@@ -237,6 +319,19 @@
                                     </div>
 
                                 </div>
+
+                                 <div class="squareCraft-container">
+                                <p class="squareCraft-margin-0 squareCraft-font-sm">
+                                    Border Radius: <span id="squareCraftPercentage" class="squareCraft-percentage">0%</span>
+                                </p>
+                            
+                                <!-- Progress Bar & Color Picker -->
+                                <div class="squareCraft-controls">
+                                    <input type="range" min="0" max="100" value="0" id="squareCraftRange" class="squareCraft-range">
+                                </div>
+                            
+                              
+                            </div>
                                 <p class="squareCraft-w-full squareCraft-text-center squareCraft-mt-5 squareCraft-py-1px squareCraft-cursor-pointer squareCraft-rounded-md squareCraft-bg-EF7C2F squareCraft-text-color-white">Publish</p>
                                 <!-- <div class="squareCraft-mt-2  squareCraft-grid squareCraft-grid-cols-12 squareCraft-justify-between squareCraft-gap-3">
                                     <div class="squareCraft-col-span-8 squareCraft-rounded-md squareCraft-h-9 squareCraft-justify-between squareCraft-flex squareCraft-items-center squareCraft-bg-3f3f3f squareCraft-border-585858 squareCraft-border  squareCraft-rounded">

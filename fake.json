@@ -1,0 +1,48 @@
+{
+    "user_id": "65f2a9b4e1d23456789abcde",
+    "modifications": [
+      {
+        "page_id": "home-12345",
+        "elements": [
+          {
+            "element_id": "header-logo",
+            "css": {
+              "width": "150px",
+              "height": "auto",
+              "border-radius": "10px"
+            }
+          },
+          {
+            "element_id": "hero-title",
+            "css": {
+              "color": "#ff5733",
+              "font-size": "24px",
+              "font-weight": "bold"
+            }
+          }
+        ]
+      },
+      {
+        "page_id": "about-67890",
+        "elements": [
+          {
+            "element_id": "about-text",
+            "css": {
+              "color": "#333",
+              "line-height": "1.6",
+              "text-align": "center"
+            }
+          },
+          {
+            "element_id": "team-section",
+            "css": {
+              "display": "grid",
+              "grid-template-columns": "repeat(3, 1fr)",
+              "gap": "20px"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  
