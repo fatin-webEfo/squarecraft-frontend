@@ -139,6 +139,7 @@
             },
             body: JSON.stringify(modification),
           });
+          console.log(response);
       
           const data = await response.json();
           console.log("✅ API Response:", data);
