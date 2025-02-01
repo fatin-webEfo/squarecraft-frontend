@@ -53,7 +53,7 @@
     document.addEventListener("click", (event) => {
       let { pageId, elementId } = getPageAndElement(event.target);
       if (!pageId || !elementId) return;
-      
+
       selectedElement = event.target; // ✅ Store selected element
       console.log(`🆔 Page ID: ${pageId}, Element ID: ${elementId}`);
     });
@@ -155,7 +155,11 @@
     try {
       const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
         method: "POST",
-        headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}`, },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        credentials : "include",
         body: JSON.stringify({ userId: "679b4e3aee8e48bf97172661", modifications: [{ pageId, elements: [{ elementId, css }] }] }),
       });
 
