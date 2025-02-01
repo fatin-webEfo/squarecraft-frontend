@@ -13,7 +13,7 @@
       const progressText = document.getElementById("squareCraftPercentage");
       const rangeInput = document.getElementById("squareCraftRange");
       
-      rangeInput.addEventListener("input", (e) => {
+      rangeInput?.addEventListener("input", (e) => {
           progressText.textContent = `${e.target.value}%`; // Update percentage text
       });
       
@@ -166,7 +166,20 @@
         };
       }
 
-
+      function applyStylesToElement(elementId, css) {
+        const element = document.getElementById(elementId);
+        if (!element) {
+          console.warn(`⚠️ Element with ID "${elementId}" not found.`);
+          return;
+        }
+      
+        Object.keys(css).forEach((prop) => {
+          element.style[prop] = css[prop];
+        });
+      
+        console.log(`🎨 Styles applied to #${elementId}:`, css);
+      }
+      
       
 
       async function saveModifications(pageId, elementId, css) {
@@ -174,36 +187,39 @@
           console.warn("⚠️ Missing data: Page ID or Element ID is undefined.");
           return;
         }
-    
-        const userId = "679b5c69284d88169aeb1bc4"; // Replace with dynamic userId if available
-        const modification = [
-          {
-            pageId,
-            modifications: [
-              {
-                elementId,
-                css,
-              },
-            ],
-          },
-        ];
-    
+      
+      
+        // 🔥 Apply changes instantly before API call
+        applyStylesToElement(elementId, css);
+      
+        const modification = {
+          userId: "679b4e3aee8e48bf97172661",
+          modifications: [
+            {
+              pageId,
+              elements: [{ elementId, css }],
+            },
+          ],
+        };
+      
         try {
           const response = await fetch("https://webefo-backend.vercel.app/api/v1/modifications", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ userId, modification }),
+            body: JSON.stringify(modification),
             credentials: "include",
           });
-    
+      
           const data = await response.json();
           console.log("✅ API Response:", data);
         } catch (error) {
           console.error("❌ Error saving modifications:", error);
         }
       }
+      
       document.addEventListener("click", (event) => {
         let { pageId, elementId } = getPageAndElement(event.target);
     
