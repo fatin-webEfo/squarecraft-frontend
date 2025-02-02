@@ -1,6 +1,7 @@
   (async function loadSquareCraftPlugin() {
-    const currentPath = window.location.pathname;
-    console.log("current path" , currentPath)
+    const currentURL = window.location.href;
+console.log("🔗 Full URL:", currentURL);
+
     console.log("✅ SquareCraft Plugin Loaded");
     const widgetScript = document.getElementById("squarecraft-script");
     const token = widgetScript?.dataset?.token;
@@ -185,7 +186,6 @@
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token || localStorage.getItem("squareCraft_auth_token")}`,
-            "pageId": pageId, 
           }
         });
     
