@@ -14,6 +14,7 @@
     function initializeSquareCraft() {
       createWidget();
       attachEventListeners();
+      fetchModifications();
     }
 
     function createWidget() {
@@ -130,19 +131,64 @@
     }
 
     function applyStylesToElement(elementId, css) {
-      const element = document.getElementById(elementId);
+      const element = document.querySelector(`[id="${elementId}"], .${elementId}`);
       if (!element) {
         console.warn(`⚠️ Element #${elementId} not found.`);
         return;
       }
-
+    
       Object.keys(css).forEach((prop) => {
         let cssProperty = prop.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
         element.style[cssProperty] = css[prop];
       });
-
-      console.log(`🎨 Styles applied to #${elementId}:`, css);
+    
+      console.log(`🎨 Styles applied to ${elementId}:`, css);
     }
+    
+    function applySavedModifications(data) {
+      if (!data || !data.modifications) {
+        console.warn("⚠️ No modifications found.");
+        return;
+      }
+    
+      data.modifications.forEach((modification) => {
+        modification.elements.forEach((element) => {
+          const elementId = element.elementId;
+          const css = element.css;
+    
+          applyStylesToElement(elementId, css);
+        });
+      });
+    
+      console.log("🎨 Applied fetched modifications to elements.");
+    }
+    
+    async function fetchModifications() {
+      try {
+        const userId = "679b4e3aee8e48bf97172661"; // Hardcoded userId
+        const response = await fetch(`https://webefo-backend.vercel.app/api/v1/get-modifications?userId=${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token || localStorage.getItem("squareCraft_auth_token")}`
+
+          }
+        });
+    
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const data = await response.json();
+        console.log("📥 Fetched Modifications:", data);
+    
+        applySavedModifications(data); // Apply fetched styles to elements
+    
+      } catch (error) {
+        console.error("❌ Error fetching modifications:", error);
+      }
+    }
+    
 
     async function saveModifications(pageId, elementId, css) {
       if (!pageId || !elementId || !css) {
@@ -157,7 +203,8 @@
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            "Authorization": `Bearer ${token || localStorage.getItem("squareCraft_auth_token")}`
+,
             "pageId": pageId,
             "userId": "679b4e3aee8e48bf97172661"
           },
