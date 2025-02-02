@@ -72,6 +72,7 @@
   }
 
   const widgetScript = document.getElementById("squarecraft-script");
+  
   const token = widgetScript?.dataset?.token;
   if (token) {
     console.log("🔑 Token received:", token);
