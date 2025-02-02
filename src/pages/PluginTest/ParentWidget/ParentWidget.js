@@ -168,12 +168,13 @@
     async function fetchModifications() {
       try {
         const userId = "679b4e3aee8e48bf97172661"; 
-    
+        
         let pageElement = document.querySelector("article[data-page-sections]");
         let pageId = pageElement ? pageElement.getAttribute("data-page-sections") : null;
     
         if (!pageId) {
-          console.warn("⚠️ No valid page ID found.");
+          console.warn("⚠️ No valid page ID found. Retrying...");
+          setTimeout(fetchModifications, 2000); // Retry after 2 seconds
           return;
         }
     
@@ -201,6 +202,7 @@
         console.error("❌ Error fetching modifications:", error);
       }
     }
+    
     
     
 
