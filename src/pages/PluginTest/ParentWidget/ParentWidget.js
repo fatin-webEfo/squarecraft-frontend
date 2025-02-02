@@ -4,25 +4,20 @@
     if (!window.location.href.includes("squarespace.com/config")) return;
 
     console.log("🔹 Injecting Custom Admin Logo...");
-
-    // Find Squarespace Navbar
     const toolbar = document.querySelector('[data-test="header-nav"]'); 
+    console.log("toolbar found...", toolbar);
     if (!toolbar) {
       console.warn("⚠️ Squarespace navbar not found.");
       return;
     }
 
-    // Prevent duplicate logo injection
     if (document.getElementById("customAdminLogo")) return;
 
-    // Create Logo Element
     const logoWrapper = document.createElement("div");
     logoWrapper.id = "customAdminLogo";
     logoWrapper.style.display = "flex";
     logoWrapper.style.alignItems = "center";
     logoWrapper.style.marginLeft = "10px";
-
-    // Add Image
     const logo = document.createElement("img");
     logo.src = "https://i.ibb.co.com/LXKK6swV/Group-29.jpg"; // Replace with your logo URL
     logo.alt = "Your Plugin";
@@ -38,6 +33,26 @@
     console.log("✅ Custom Admin Logo Added to Squarespace Navbar");
 
   }, 2000);
+
+  function isEditingMode() {
+    return document.body.classList.contains("sqs-editing");
+  }
+  function observeDOMChanges() {
+    const observer = new MutationObserver(() => {
+      console.log("🔄 DOM Updated - Checking for changes...");
+  
+      if (isEditingMode()) {
+        console.log("🛠 Detected Edit Mode - Rechecking modifications...");
+        setTimeout(fetchModifications, 3000); // ✅ Wait 3s before fetching again
+      } else {
+        fetchModifications();
+      }
+    });
+  
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+  
+    
 
   // ✅ Ensure full URL logs correctly
   setTimeout(() => {
@@ -71,6 +86,7 @@
     createWidget();
     attachEventListeners();
     fetchModifications();
+    observeDOMChanges();
     toggleWidgetVisibility();
   }
 
@@ -244,34 +260,45 @@
   async function fetchModifications() {
     try {
       const userId = "679b4e3aee8e48bf97172661";
+  
+      // 🔹 Detect Edit Mode
+      if (isEditingMode()) {
+        console.log("🛠 Squarespace is in Edit Mode - Waiting for changes...");
+        setTimeout(fetchModifications, 3000); // Retry after 3s
+        return;
+      }
+  
       let pageElement = document.querySelector("article[data-page-sections]");
       let pageId = pageElement ? pageElement.getAttribute("data-page-sections") : null;
   
       if (!pageId) {
-        console.warn("⚠️ No valid page ID found. Retrying...");
+        console.warn("⚠️ No valid page ID found. Retrying in 2s...");
         setTimeout(fetchModifications, 2000);
         return;
       }
   
       console.log(`📄 Fetching modifications for Page ID: ${pageId}`);
   
-      const response = await fetch(`https://webefo-backend.vercel.app/api/v1/get-modifications?userId=${userId}&pageId=${pageId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token || localStorage.getItem("squareCraft_auth_token")}`,
+      const response = await fetch(
+        `https://webefo-backend.vercel.app/api/v1/get-modifications?userId=${userId}&pageId=${pageId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token || localStorage.getItem("squareCraft_auth_token")}`,
+          },
         }
-      });
+      );
   
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
   
       const data = await response.json();
       console.log("📥 Fetched Modifications:", data);
   
-      // ✅ Ensure only the correct page modifications are applied
       data.modifications.forEach(({ page_id, elements }) => {
         if (page_id === pageId) {
           elements.forEach(({ elementId, css }) => {
+            console.log(`🎨 Applying styles to ${elementId}`);
             applyStylesToElement(elementId, css);
           });
         }
@@ -281,6 +308,8 @@
       console.error("❌ Error fetching modifications:", error);
     }
   }
+  
+  
   
 
   async function saveModifications(pageId, elementId, css) {
