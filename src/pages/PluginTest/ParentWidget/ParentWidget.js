@@ -1,4 +1,6 @@
   (async function loadSquareCraftPlugin() {
+    const currentPath = window.location.pathname;
+    console.log("current path" , currentPath)
     console.log("✅ SquareCraft Plugin Loaded");
     const widgetScript = document.getElementById("squarecraft-script");
     const token = widgetScript?.dataset?.token;
