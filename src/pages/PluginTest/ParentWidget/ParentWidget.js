@@ -1,5 +1,43 @@
 (async function loadSquareCraftPlugin() {
   console.log("✅ SquareCraft Plugin Loaded");
+  setTimeout(() => {
+    if (!window.location.href.includes("squarespace.com/config")) return;
+
+    console.log("🔹 Injecting Custom Admin Logo...");
+
+    // Find Squarespace Navbar
+    const toolbar = document.querySelector('[data-test="header-nav"]'); 
+    if (!toolbar) {
+      console.warn("⚠️ Squarespace navbar not found.");
+      return;
+    }
+
+    // Prevent duplicate logo injection
+    if (document.getElementById("customAdminLogo")) return;
+
+    // Create Logo Element
+    const logoWrapper = document.createElement("div");
+    logoWrapper.id = "customAdminLogo";
+    logoWrapper.style.display = "flex";
+    logoWrapper.style.alignItems = "center";
+    logoWrapper.style.marginLeft = "10px";
+
+    // Add Image
+    const logo = document.createElement("img");
+    logo.src = "https://i.ibb.co.com/LXKK6swV/Group-29.jpg"; // Replace with your logo URL
+    logo.alt = "Your Plugin";
+    logo.style.width = "28px";
+    logo.style.height = "28px";
+    logo.style.borderRadius = "50%";
+    logo.style.cursor = "pointer";
+
+    // Append to Squarespace Admin Toolbar
+    logoWrapper.appendChild(logo);
+    toolbar.appendChild(logoWrapper);
+
+    console.log("✅ Custom Admin Logo Added to Squarespace Navbar");
+
+  }, 2000);
 
   // ✅ Ensure full URL logs correctly
   setTimeout(() => {
@@ -148,10 +186,23 @@
 
   function applyStyle() {
     if (!selectedElement) return;
-    selectedElement.style.fontSize = document.getElementById("squareCraftFontSize").value + "px";
-    selectedElement.style.backgroundColor = document.getElementById("squareCraftBgColor").value;
-    selectedElement.style.borderRadius = document.getElementById("squareCraftBorderRadius").value + "px";
+  
+    const fontSize = document.getElementById("squareCraftFontSize").value + "px";
+    selectedElement.querySelectorAll("h1, h2, h3, h4, h5, h6, p, span, a, div, li, strong, em").forEach(el => {
+      el.style.fontSize = fontSize;
+    });
+  
+    const bgColor = document.getElementById("squareCraftBgColor").value;
+    selectedElement.style.backgroundColor = bgColor;
+  
+    const borderRadius = document.getElementById("squareCraftBorderRadius").value + "px";
+    selectedElement.style.borderRadius = borderRadius;
+    selectedElement.querySelectorAll("img").forEach(img => {
+      img.style.borderRadius = borderRadius;
+    });
   }
+  
+  
   function getCSSModifications(element) {
     if (!element) return null;
     const computedStyle = window.getComputedStyle(element);
@@ -166,43 +217,71 @@
   function applyStylesToElement(elementId, css) {
     const element = document.getElementById(elementId);
     if (!element) return;
-
+  
     Object.keys(css).forEach((prop) => {
-      element.style[prop] = css[prop];
+      if (prop === "font-size") {
+        // ✅ Apply font-size to all text elements
+        element.querySelectorAll("h1, h2, h3, p, span, a").forEach(el => {
+          el.style.fontSize = css[prop];
+        });
+      } else if (prop === "border-radius") {
+        // ✅ Apply border-radius to element & images inside it
+        element.style.borderRadius = css[prop];
+        element.querySelectorAll("img").forEach(img => {
+          img.style.borderRadius = css[prop];
+        });
+      } else {
+        // ✅ Apply all other styles normally
+        element.style[prop] = css[prop];
+      }
     });
-
+  
     console.log(`🎨 Styles applied to ${elementId}:`, css);
   }
+  
+
 
   async function fetchModifications() {
     try {
       const userId = "679b4e3aee8e48bf97172661";
-
-      console.log(`📄 Fetching modifications for User ID: ${userId}`);
-
-      const response = await fetch(`https://webefo-backend.vercel.app/api/v1/get-modifications?userId=${userId}`, {
+      let pageElement = document.querySelector("article[data-page-sections]");
+      let pageId = pageElement ? pageElement.getAttribute("data-page-sections") : null;
+  
+      if (!pageId) {
+        console.warn("⚠️ No valid page ID found. Retrying...");
+        setTimeout(fetchModifications, 2000);
+        return;
+      }
+  
+      console.log(`📄 Fetching modifications for Page ID: ${pageId}`);
+  
+      const response = await fetch(`https://webefo-backend.vercel.app/api/v1/get-modifications?userId=${userId}&pageId=${pageId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token || localStorage.getItem("squareCraft_auth_token")}`,
         }
       });
-
+  
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
+  
       const data = await response.json();
       console.log("📥 Fetched Modifications:", data);
-
-      data.modifications.forEach(({ elements }) => {
-        elements.forEach(({ elementId, css }) => {
-          applyStylesToElement(elementId, css);
-        });
+  
+      // ✅ Ensure only the correct page modifications are applied
+      data.modifications.forEach(({ page_id, elements }) => {
+        if (page_id === pageId) {
+          elements.forEach(({ elementId, css }) => {
+            applyStylesToElement(elementId, css);
+          });
+        }
       });
-
+  
     } catch (error) {
       console.error("❌ Error fetching modifications:", error);
     }
   }
+  
 
   async function saveModifications(pageId, elementId, css) {
     if (!pageId || !elementId || !css) return;
