@@ -165,23 +165,33 @@
     
     async function fetchModifications() {
       try {
-        const userId = "679b4e3aee8e48bf97172661"; // Hardcoded userId
+        const userId = "679b4e3aee8e48bf97172661"; 
+    
+        let pageElement = document.querySelector("article[data-page-sections]");
+        let pageId = pageElement ? pageElement.getAttribute("data-page-sections") : null;
+    
+        if (!pageId) {
+          console.warn("⚠️ No valid page ID found.");
+          return;
+        }
+    
+        console.log(`📄 Fetching modifications for Page ID: ${pageId}`);
+    
         const response = await fetch(`https://webefo-backend.vercel.app/api/v1/get-modifications?userId=${userId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token || localStorage.getItem("squareCraft_auth_token")}`
-
+            "Authorization": `Bearer ${token || localStorage.getItem("squareCraft_auth_token")}`,
+            "pageId": pageId, 
           }
         });
-        console.log("get method response" , response)
     
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
     
         const data = await response.json();
-        console.log("📥 Fetched Modifications:", data);
+        console.log("📥 Fetched Modifications: get method", data);
     
         applySavedModifications(data); // Apply fetched styles to elements
     
@@ -189,6 +199,7 @@
         console.error("❌ Error fetching modifications:", error);
       }
     }
+    
     
 
     async function saveModifications(pageId, elementId, css) {
