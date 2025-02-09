@@ -19,8 +19,8 @@ const MyWebsite = () => {
         return `<script id="squarecraft-script"
             src="https://fatin-webefo.github.io/squareCraft-Plugin/squareCraft.js"
             data-token="${squarCraft_auth_token}"
-            u-id="${user?.id}"
-            w-id="${pluginId}"
+            data-u-id="${user?.id}"
+            data-w-id="${pluginId}"
             defer
             ></script>`;
     };
