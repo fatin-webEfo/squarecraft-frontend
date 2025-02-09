@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import useTitle from "../../../hooks/useTitle";
 import emailIcon from "../../../../public/images/auth/login/email.svg";
@@ -10,9 +10,12 @@ import eyeIcon from "../../../../public/images/auth/login/eye.svg";
 import Notification from "../../../hooks/Notification/Notification";
 import { useNavigate } from "react-router";
 import { API } from "../../../hooks/Api/Api";
+import { AuthContext } from "../../../context/AuthContext";
 
 const RegisterSchema = () => {
   useTitle("Sign Up | SquareCraft");
+      const { postPlugins } = useContext(AuthContext); 
+  
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -71,7 +74,7 @@ const RegisterSchema = () => {
       const response = await axios.post(
         `${API}/api/v1/register`,
         { name, email, password, confirmPassword },
-        { withCredentials: true } // Allows cookies to be sent/received
+        { withCredentials: true } 
       );
   
       const squarCraft_auth_token = response?.data?.squarCraft_auth_token;
@@ -82,6 +85,7 @@ const RegisterSchema = () => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
   
         navigate("/dashboard/myWebsites");
+        
       }
     } catch (error) {
       setErrors((prev) => ({
@@ -91,6 +95,7 @@ const RegisterSchema = () => {
     } finally {
       setLoading(false);
     }
+    postPlugins();
   };
   
 
@@ -113,7 +118,6 @@ const RegisterSchema = () => {
 
         <div className="mt-6">
           <form onSubmit={handleSubmit}>
-            {/* Name input */}
             <div className="w-full">
               <p>Name <span className="text-2xl text-red-600">*</span></p>
               <div className="relative w-full">
@@ -137,8 +141,6 @@ const RegisterSchema = () => {
               </div>
               {errors?.name && <p className="text-xs text-red-600">{errors?.name}</p>}
             </div>
-
-            {/* Email input */}
             <div className="w-full">
               <p>Email <span className="text-2xl text-red-600">*</span></p>
               <div className="relative w-full">
@@ -162,8 +164,6 @@ const RegisterSchema = () => {
               </div>
               {errors?.email && <p className="text-xs text-red-600">{errors?.email}</p>}
             </div>
-
-            {/* Password input */}
             <div className="w-full">
               <p>Password <span className="text-2xl text-red-600">*</span></p>
               <div className="relative w-full">
@@ -193,8 +193,6 @@ const RegisterSchema = () => {
               </div>
               {errors?.password && <p className="text-xs text-red-600">{errors?.password}</p>}
             </div>
-
-            {/* Confirm Password input */}
             <div className="w-full">
               <p>Confirm Password <span className="text-2xl text-red-600">*</span></p>
               <div className="relative w-full">
@@ -226,8 +224,6 @@ const RegisterSchema = () => {
                 <p className="text-xs text-red-600">{errors?.confirmPassword}</p>
               )}
             </div>
-
-            {/* Submit Button */}
             <button
               type="submit"
               className="w-full mt-6 text-center block bg-jaffa-400 py-3 rounded-[10px] font-semibold"
