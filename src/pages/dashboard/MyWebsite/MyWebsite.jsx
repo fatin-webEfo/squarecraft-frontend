@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { motion } from "framer-motion";
 import useTitle from "../../../hooks/useTitle";
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -8,41 +8,53 @@ import { Link } from "react-router";
 
 const MyWebsite = () => {
     useTitle("My Website | SquareCraft");
-    const {  loading,user } = useContext(AuthContext);
+    const { user, myPlugins, postPlugins, setMyPlugins } = useContext(AuthContext);
+    
+    console.log("My plugins:", myPlugins);
+    console.log("User:", user);
+
     const squarCraft_auth_token = localStorage.getItem("squarCraft_auth_token");
-    const installationCode = `<script  id="squarecraft-script" src="https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.js" data-token="${
-        squarCraft_auth_token
-    }" defer></script>`;
 
-    const [plugins, setPlugins] = useState([{ id: 1, name: "", copied: false }]);
+    const generateInstallationCode = (pluginId) => {
+        return `<script id="squarecraft-script"
+            src="https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.js"
+            data-token="${squarCraft_auth_token}"
+            u-id="${user?.id}"
+            w-id="${pluginId}"
+            defer
+            ></script>`;
+    };
 
-    const copyToClipboard = (pluginId) => {
-        navigator.clipboard.writeText(installationCode);
-        setPlugins(prevPlugins =>
+    const updatePluginState = (pluginId, newState) => {
+        setMyPlugins(prevPlugins =>
             prevPlugins.map(plugin =>
-                plugin.id === pluginId ? { ...plugin, copied: true } : plugin
+                plugin._id === pluginId ? { ...plugin, ...newState } : plugin
             )
         );
-        setTimeout(() => {
-            setPlugins(prevPlugins =>
-                prevPlugins.map(plugin =>
-                    plugin.id === pluginId ? { ...plugin, copied: false } : plugin
-                )
-            );
-        }, 2000);
     };
 
-    const addPlugin = () => {
-        setPlugins([...plugins, { id: plugins.length + 1, name: "", copied: false }]);
+    const copyToClipboard = async (pluginId) => {
+        try {
+            const installationCode = generateInstallationCode(pluginId); // Generate the correct script for the plugin
+            await navigator.clipboard.writeText(installationCode);
+
+            updatePluginState(pluginId, { copied: true, loading: true });
+
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate delay
+
+            updatePluginState(pluginId, { copied: false, loading: false });
+
+        } catch (error) {
+            console.error("❌ Copy Error:", error);
+        }
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    const addPlugin = async () => {
+        await postPlugins();
+    };
 
     return (
         <div className="bg-white pt-10 pb-20 px-6 md:px-12">
-            {/* Header Section */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -52,15 +64,14 @@ const MyWebsite = () => {
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
                     Install SquareCraft on Your Website
                 </h1>
-                <p className="mt-2 text-sm font-medium text-gray-600 ">
+                <p className="mt-2 text-sm font-medium text-gray-600">
                     Add this script inside the <span className="font-bold">HEADER</span> section.
                 </p>
             </motion.div>
 
-            {/* Plugins List */}
-            {plugins?.map((plugin) => (
+            {myPlugins?.map((plugin) => (
                 <motion.div
-                    key={plugin.id}
+                    key={plugin._id}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
@@ -72,43 +83,46 @@ const MyWebsite = () => {
                                 type="text"
                                 placeholder="Your plugin name"
                                 className="w-full py-1 focus:outline-none"
-                                value={plugin.name}
+                                value={plugin.pluginName}
                                 onChange={(e) => {
-                                    const newPlugins = plugins.map((p) => p.id === plugin.id ? { ...p, name: e.target.value } : p);
-                                    setPlugins(newPlugins);
+                                    const newPlugins = myPlugins.map((p) =>
+                                        p._id === plugin._id ? { ...p, pluginName: e.target.value } : p
+                                    );
+                                    setMyPlugins(newPlugins);
                                 }}
                             />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                            <div className="gap-2 flex  items-center">
-                            {
-                                user ? (<> <button
-                                    onClick={() => copyToClipboard(plugin.id)}
-                                    className={`w-full lg:w-[12rem] py-3  rounded-2xl text-white shadow-md text-center mx-auto text-sm transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600 ${plugin.copied ? "bg-green-600" : "bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600"
-                                        }`}
-                                >
-                                    {plugin.copied ? "Copied!" : "Copy Installation Code"}
-                                </button>
-                                <HiOutlineDotsVertical className="items-end ml-auto" /></>) : (<Link to ="/auth/login" className="gap-2 flex  items-center"> <button
-                                    onClick={() => copyToClipboard(plugin.id)}
-                                    className={`w-full lg:w-[12rem] py-3 rounded-2xl text-white shadow-md text-center mx-auto text-sm transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600 ${plugin.copied ? "bg-green-600" : "bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600"
-                                        }`}
-                                >
-                                   {" Sign In to Copy"}
-                                </button>
-                                <HiOutlineDotsVertical className="items-end ml-auto" />
-                                
-                                </Link>)
-                               }
-                            </div>
+                                <div className="gap-2 flex items-center">
+                                    {user ? (
+                                        <>
+                                            <button
+                                                onClick={() => copyToClipboard(plugin._id)}
+                                                className={`w-full lg:w-[12rem] py-3 rounded-2xl text-white shadow-md text-center mx-auto text-sm transition duration-300 ease-in-out transform hover:scale-105 
+                                                    ${plugin.copied ? "bg-orange-600" : "bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600"}`}
+                                            >
+                                                {plugin.loading ? "Copying..." : plugin.copied ? "Copied!" : "Copy Installation Code"}
+                                            </button>
+                                            <HiOutlineDotsVertical className="items-end ml-auto" />
+                                        </>
+                                    ) : (
+                                        <Link to="/auth/login" className="gap-2 flex items-center">
+                                            <button
+                                                className="w-full lg:w-[12rem] py-3 rounded-2xl text-white shadow-md text-center mx-auto text-sm transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-jaffa-400 to-orange-600 hover:bg-gradient-to-l hover:from-jaffa-500 hover:to-orange-600"
+                                            >
+                                                Sign In to Copy
+                                            </button>
+                                            <HiOutlineDotsVertical className="items-end ml-auto" />
+                                        </Link>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </motion.div>
             ))}
 
-            {/* Add More Plugin Button */}
             <button
                 onClick={addPlugin}
                 className="flex cursor-pointer mx-auto rounded-xl px-4 py-1.5 hover:border-b hover:border-gray-300 transition-all duration-300 items-center justify-center mt-4 text-sm text-gray-500 gap-1.5"
@@ -117,7 +131,6 @@ const MyWebsite = () => {
                 <p className="text-gray-500">Add New Plugin</p>
             </button>
 
-            {/* Video Guide Section */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
