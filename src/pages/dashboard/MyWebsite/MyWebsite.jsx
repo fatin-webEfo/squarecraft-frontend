@@ -17,7 +17,7 @@ const MyWebsite = () => {
 
     const generateInstallationCode = (pluginId) => {
         return `<script id="squarecraft-script"
-            src="https://fatin-webefo.github.io/squarecraft-frontend/src/pages/PluginTest/ParentWidget/ParentWidget.js"
+            src="https://fatin-webefo.github.io/squareCraft-Plugin/squareCraft.js"
             data-token="${squarCraft_auth_token}"
             u-id="${user?.id}"
             w-id="${pluginId}"
