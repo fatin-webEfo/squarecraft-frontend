@@ -9,6 +9,7 @@ const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [pluginLoading, setpluginLoading] = useState(false);
+  const [postPluginsLoading, setPostPluginsLoading] = useState(false);
   const [myPlugins, setMyPlugins] = useState([]);
   
 
@@ -36,7 +37,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const postPlugins = useCallback(async () => {
-    setpluginLoading(true);
+    setPostPluginsLoading(true);
     try {
         const newPlugin = {
             pluginName: "New Plugin",
@@ -52,16 +53,18 @@ const AuthProvider = ({ children }) => {
                 withCredentials: true,
             }
         );
-
-        console.log("✅ New Plugin Created:", response.data);
         
-        // ✅ Append the new plugin directly to the state
+
+        if(response.status === 201){
+          setPostPluginsLoading(false);
+          console.log("✅ New Plugin Created:", response.data);
         setMyPlugins((prevPlugins) => [...prevPlugins, response.data.plugin]);
+        }
 
     } catch (error) {
         console.error("❌ Error creating plugin:", error);
     } finally {
-        setpluginLoading(false);
+        setPostPluginsLoading(false);
     }
 }, []);
 
@@ -130,14 +133,16 @@ const getPlugin = useCallback(async () => {
       user,
       myPlugins,
       logoutUser,
-      fetchProfile,
+      fetchProfile,postPluginsLoading,
       pluginLoading,
-      postPlugins,setMyPlugins,
+      postPlugins,
+      setMyPlugins,
+      setpluginLoading,
       loading,
       setUserState,
       error,
     }),
-    [user, logoutUser, fetchProfile, postPlugins,pluginLoading,setMyPlugins, myPlugins, loading, error]
+    [user, logoutUser, fetchProfile,setpluginLoading,postPluginsLoading, postPlugins,pluginLoading,setMyPlugins, myPlugins, loading, error]
   );
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
