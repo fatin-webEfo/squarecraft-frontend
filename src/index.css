@@ -65,3 +65,23 @@
     background-position: 600px;
   }
 }
+
+
+::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #222 !important;
+  border-radius: 100% !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff7f00 !important;
+  border-radius: 100% !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e67600 !important;
+  border-radius: 100%;
+}
