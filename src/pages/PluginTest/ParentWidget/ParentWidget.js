@@ -277,7 +277,6 @@
     try {
       const userId = "679b4e3aee8e48bf97172661";
   
-      // 🔹 Detect Edit Mode
       if (isEditingMode()) {
         console.log("🛠 Squarespace is in Edit Mode - Waiting for changes...");
         setTimeout(fetchModifications, 3000); // Retry after 3s

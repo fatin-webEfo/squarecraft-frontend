@@ -14,7 +14,7 @@ import { AuthContext } from "../../../context/AuthContext";
 
 const RegisterSchema = () => {
   useTitle("Sign Up | SquareCraft");
-      const { postPlugins } = useContext(AuthContext); 
+      const { postPlugins, setUserState } = useContext(AuthContext); 
   
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -27,7 +27,7 @@ const RegisterSchema = () => {
   const [errors, setErrors] = useState({});
 
   const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
   const validateField = (fieldName, value) => {
     let error = "";
@@ -42,7 +42,7 @@ const RegisterSchema = () => {
         break;
       case "password":
         if (!value) error = "Password is required.";
-        else if (!passwordRegex.test(value)) error = "Password must be at least 8 characters long and contain a number.";
+        else if (!passwordRegex.test(value)) error = "must be at least 8 characters & a number.";
         break;
       case "confirmPassword":
         if (!value) error = "Please confirm your password.";
@@ -79,10 +79,13 @@ const RegisterSchema = () => {
   
       const squarCraft_auth_token = response?.data?.squarCraft_auth_token;
       console.log(response)
+      setUserState(response?.data?.user)
+      localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+      sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
+      document.cookie = `squareCraft_auth_token=${squarCraft_auth_token}; path=/;`;
+
       if (response?.status === 201) {
-        localStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-        sessionStorage.setItem("squarCraft_auth_token", squarCraft_auth_token);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${squarCraft_auth_token}`;
   
         navigate("/dashboard/myWebsites");
         
