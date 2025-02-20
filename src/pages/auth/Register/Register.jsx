@@ -27,33 +27,41 @@ const RegisterSchema = () => {
   const [errors, setErrors] = useState({});
 
   const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
   const validateField = (fieldName, value) => {
     let error = "";
-
-    switch (fieldName) {
-      case "name":
-        if (!value) error = "Name is required.";
-        break;
-      case "email":
-        if (!value) error = "Email is required.";
-        else if (!emailRegex.test(value)) error = "Please enter a valid email address.";
-        break;
-      case "password":
-        if (!value) error = "Password is required.";
-        else if (!passwordRegex.test(value)) error = "at least 8 char, number, capital, special char.";
-        break;
-      case "confirmPassword":
-        if (!value) error = "Please confirm your password.";
-        else if (value !== password) error = "Passwords do not match.";
-        break;
-      default:
-        break;
+  
+    if (fieldName === "name") {
+      if (!value) error = "Name is required.";
     }
-
+  
+    if (fieldName === "email") {
+      if (!value) error = "Email is required.";
+      else if (!emailRegex.test(value)) error = "Please enter a valid email address.";
+    }
+  
+    if (fieldName === "password") {
+      if (!value) {
+        error = "Password is required.";
+      } else if (value.length < 8) {
+        error = "Password must be at least 8 characters.";
+      } else if (!/[A-Z]/.test(value)) {
+        error = "Password must contain at least one uppercase letter.";
+      } else if (!/\d/.test(value)) {
+        error = "Password must contain at least one number.";
+      } else if (!/[@$!%*?&]/.test(value)) {
+        error = "Password must contain at least one special character (@$!%*?&).";
+      }
+    }
+  
+    if (fieldName === "confirmPassword") {
+      if (!value) error = "Please confirm your password.";
+      else if (value !== password) error = "Passwords do not match.";
+    }
+  
     setErrors((prev) => ({ ...prev, [fieldName]: error }));
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -170,16 +178,16 @@ const RegisterSchema = () => {
             <div className="w-full">
               <p>Password <span className="text-2xl text-red-600">*</span></p>
               <div className="relative w-full">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    validateField("password", e.target.value);
-                  }}
-                  className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-[#f7decd] border-[#EDEDED] pr-10 pl-[38px] border py-3"
-                  placeholder="Enter Your Password"
-                />
+              <input
+  type={showPassword ? "text" : "password"}
+  value={password}
+  onChange={(e) => {
+    setPassword(e.target.value);
+    validateField("password", e.target.value);
+  }}
+  className="w-full rounded-lg mt-2 bg-[#FAFBFE] focus:outline-[#f7decd] border-[#EDEDED] pr-10 pl-[38px] border py-3"
+  placeholder="Enter Your Password"
+/>
                 <img
                   src={lockIcon}
                   className="absolute top-[24px] left-3.5"
