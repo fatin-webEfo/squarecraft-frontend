@@ -42,7 +42,7 @@ const RegisterSchema = () => {
         break;
       case "password":
         if (!value) error = "Password is required.";
-        else if (!passwordRegex.test(value)) error = "must be at least 8 characters & a number.";
+        else if (!passwordRegex.test(value)) error = "at least 8 char, number, capital, special char.";
         break;
       case "confirmPassword":
         if (!value) error = "Please confirm your password.";
