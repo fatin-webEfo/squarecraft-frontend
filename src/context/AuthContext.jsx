@@ -14,27 +14,37 @@ const AuthProvider = ({ children }) => {
   
 
   const fetchProfile = useCallback(async () => {
+    setLoading(true); // Start loading
+  
     try {
-      setLoading(true);
       const token = localStorage.getItem("squarCraft_auth_token");
       if (!token) {
         setUserState(null);
+        setLoading(false); 
         return;
       }
-
+  
       const response = await axios.get(`${API}/api/v1/get-userProfile`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
-
-      setUserState(response.data);
+  
+      if (response.status === 200) {
+        setUserState(response.data);
+        console.log("✅ User Profile Fetched:", response.data);
+      } else {
+        setUserState(null);
+        setError("Failed to fetch profile.");
+      }
     } catch (err) {
       console.error("❌ Error fetching profile:", err);
+      setUserState(null);
       setError(err.response?.data?.message || "Failed to fetch profile.");
     } finally {
-      setLoading(false);
+      setLoading(false); // Ensure loading stops in all cases
     }
   }, []);
+  
 
   const postPlugins = useCallback(async () => {
     setPostPluginsLoading(true);
