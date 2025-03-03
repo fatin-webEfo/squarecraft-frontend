@@ -2,6 +2,7 @@
   "name": "squarecraft-frontend",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://squareplugin.com",
   "type": "module",
   "scripts": {
     "dev": "vite",
