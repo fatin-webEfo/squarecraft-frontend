@@ -1,5 +1,5 @@
 
-import "./PageLoader.css"; // Import the CSS file for the loader animation
+import "./PageLoader.css"; 
 
 // eslint-disable-next-line react/prop-types
 const PageLoader = ({ isLoading }) => {
