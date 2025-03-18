@@ -1,4 +1,4 @@
-export const API = "admin.squareplugin.com";
+export const API = "https://admin.squareplugin.com";
 
 // https://webefo-backend.onrender.com
 // http://localhost:8000
