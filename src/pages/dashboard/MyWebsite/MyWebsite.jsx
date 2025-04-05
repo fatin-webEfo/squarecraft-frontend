@@ -36,7 +36,7 @@ const MyWebsite = () => {
 
     const copyToClipboard = async (pluginId) => {
         try {
-            const installationCode = generateInstallationCode(pluginId); // Generate the correct script for the plugin
+            const installationCode = generateInstallationCode(pluginId); 
             await navigator.clipboard.writeText(installationCode);
 
             updatePluginState(pluginId, { copied: true, loading: true });
