@@ -17,7 +17,7 @@ const MyWebsite = () => {
     const squarCraft_auth_token = localStorage.getItem("squarCraft_auth_token");
 
     const generateInstallationCode = (pluginId) => {
-        return `<script id="squarecraft-script"
+        return `<script id="squareCraft-script"
             src="https://fatin-webefo.github.io/squareCraft-plugin/squareCraft.js"
             data-token="${squarCraft_auth_token}"
             data-u-id="${user?.id}"
